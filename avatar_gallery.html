@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aura Pulse — Galerie & Atelier des Avatars Shōnen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { gold: '#F59E0B', cyan: '#06B6D4', crimson: '#E11D48', purple: '#8B5CF6' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="./src/styles.css" />
+  <style>
+    body { background: #05080E; font-family: 'Inter', sans-serif; }
+    .avatar-card { background: radial-gradient(circle at 50% 20%, #111827 0%, #070B14 100%); }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen p-4 sm:p-8 selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- Header -->
+  <header class="max-w-6xl mx-auto mb-8 text-center space-y-3">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-widest">
+      ⚡ Aura Pulse: Iron Strike • Charadesign V2
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">
+      Atelier & Galerie des <span class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Avatars Shōnen</span>
+    </h1>
+    <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto">
+      Visualisez les 3 morphologies corporelles, les 3 coiffures emblématiques et les équipements de force modulaires (ceinture à levier, genouillères 7mm, bandes néon) sans copyright.
+    </p>
+    <div class="pt-2 flex flex-wrap justify-center gap-3">
+      <a href="./index.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-amber-500/20">
+        ← Retourner à l'App IronPulse
+      </a>
+    </div>
+  </header>
+
+  <!-- Showcase des 3 Archétypes Majeurs -->
+  <main class="max-w-6xl mx-auto space-y-12">
+    
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+          <span>🥋</span> 5 Archétypes Majeurs (V-Taper, Baki, Ippo, Titan, Valkyrie)
+        </h2>
+        <span class="text-xs text-slate-400 font-semibold">100% Vectoriel SVG Réactif</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4" id="archetypes-grid">
+        <!-- Rendu injecté dynamiquement par JS -->
+      </div>
+    </div>
+
+    <!-- Atelier Interactif en Direct -->
+    <section class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl">
+      <div class="text-center mb-6">
+        <span class="text-amber-400 text-xs font-black uppercase tracking-wider">Configuration en temps réel</span>
+        <h2 class="text-2xl font-black text-white">Atelier de Test Interactif</h2>
+        <p class="text-slate-400 text-xs sm:text-sm">Cliquez sur les options ci-dessous pour voir l'avatar se transformer instantanément :</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Visualiseur de l'avatar en direct -->
+        <div class="lg:col-span-5 flex flex-col items-center justify-center">
+          <div id="live-avatar-stage" class="w-full max-w-[280px]"></div>
+          <div id="live-stats-badge" class="mt-4 px-4 py-1.5 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-bold text-amber-300">
+            V-Taper Athlétique • Spiky Striker • Or Solaire
+          </div>
+        </div>
+
+        <!-- Panneau de Contrôles Dynamiques -->
+        <div class="lg:col-span-7 space-y-5">
+          <!-- Morphologie -->
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-300 mb-2">1. Morphologie Corporelle</label>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="morphology-selector"></div>
+          </div>
+
+          <!-- Coiffure -->
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-300 mb-2">2. Coiffure Shōnen</label>
+            <div class="grid grid-cols-3 gap-2" id="hair-selector"></div>
+          </div>
+
+          <!-- Teinte Cheveux -->
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-300 mb-2">3. Couleur des Cheveux</label>
+            <div class="flex flex-wrap gap-2" id="hair-color-selector"></div>
+          </div>
+
+          <!-- Aura de Ki -->
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-300 mb-2">4. Aura d'Énergie Cinétique</label>
+            <div class="flex flex-wrap gap-2" id="aura-selector"></div>
+          </div>
+
+          <!-- Équipements de Force & Reliques -->
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-slate-300 mb-2">5. Équipement de Force & Combat</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2" id="equipment-selector"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-6xl mx-auto mt-12 text-center text-xs text-slate-500 py-6 border-t border-slate-800/80">
+    Aura Pulse: Iron Strike • Lore et Assets 100% Originaux • Modèles SVG Haute Fidélité
+  </footer>
+
+  <!-- Inclusion des modules d'avatar de l'application -->
+  <script src="./src/audio.js"></script>
+  <script src="./src/data.js"></script>
+  <script src="./src/storage.js"></script>
+  <script src="./src/rpg.js"></script>
+  <script>
+    // Initialisation de la Galerie avec le moteur de rendu officiel rpg.js
+    document.addEventListener('DOMContentLoaded', () => {
+      const rpg = window.IronPulse?.RPG;
+      if (!rpg) return;
+
+      // 1. Définition des 3 Archétypes Clés
+      const archetypes = [
+        {
+          name: "The Striker (V-Taper)",
+          badge: "Équilibre Force & Vitesse",
+          desc: "Silhouette athlétique shōnen classique avec dorsaux évasés, ceinture à levier en acier et coiffure Spiky Striker.",
+          appearance: {
+            visualMode: 'custom-rig',
+            gender: 'male',
+            morphology: 'athletic-vtaper',
+            hairstyle: 'spiky-striker',
+            hairColor: 'obsidian',
+            auraStyle: 'gold',
+            skinTone: 'tan',
+            outfit: 'outfit-dogi',
+            powerEquipments: ['equip-belt', 'equip-wristwraps']
+          }
+        },
+        {
+          name: "The Ogre Hanma (Baki)",
+          badge: "Démon & Striations",
+          desc: "Trapèzes en cobra géants, dentelés en dents de requin, striations sternales et vascularisation sous tension.",
+          appearance: {
+            visualMode: 'custom-rig',
+            gender: 'male',
+            morphology: 'ogre-hanma',
+            hairstyle: 'spiky-striker',
+            hairColor: 'crimson',
+            auraStyle: 'crimson',
+            skinTone: 'tan',
+            outfit: 'outfit-dogi',
+            powerEquipments: ['equip-belt', 'equip-demon-back', 'equip-wristwraps'],
+            warMarking: 'baki-scars',
+            expression: 'berserk'
+          }
+        },
+        {
+          name: "The Iron Puncheur (Ippo)",
+          badge: "Épaules Canons & Impact",
+          desc: "Épaules en boulets de canon, cou blindé absorbeur de chocs, bandages de boxe en gaze et vapeur de surchauffe.",
+          appearance: {
+            visualMode: 'custom-rig',
+            gender: 'male',
+            morphology: 'iron-puncher',
+            hairstyle: 'tactical-crop',
+            hairColor: 'obsidian',
+            auraStyle: 'gold',
+            skinTone: 'golden',
+            outfit: 'outfit-compression',
+            powerEquipments: ['equip-boxer-wraps', 'equip-belt'],
+            warMarking: 'ippo-focus',
+            expression: 'determined'
+          }
+        },
+        {
+          name: "The Titan (Colossal)",
+          badge: "Puissance Brute 1RM",
+          desc: "Carrure lourde de powerlifter avec trapèzes massifs, pectoraux denses, genouillères 7mm et coupe Cyber-Undercut.",
+          appearance: {
+            visualMode: 'custom-rig',
+            gender: 'male',
+            morphology: 'colossal-titan',
+            hairstyle: 'cyber-undercut',
+            hairColor: 'silver',
+            auraStyle: 'crimson',
+            skinTone: 'bronze',
+            outfit: 'outfit-techwear',
+            powerEquipments: ['equip-belt', 'equip-sleeves', 'equip-wristwraps']
+          }
+        },
+        {
+          name: "The Stalker (Valkyrie Agile)",
+          badge: "Vitesse Cinétique & Nervosité",
+          desc: "Physique profilé et réactif de calisthénie, crinière Stellar Flow flamboyante, collant de compression et aura cyan.",
+          appearance: {
+            visualMode: 'custom-rig',
+            gender: 'female',
+            morphology: 'agile-stalker',
+            hairstyle: 'stellar-flow',
+            hairColor: 'crimson',
+            auraStyle: 'cyan',
+            skinTone: 'light',
+            outfit: 'outfit-compression',
+            powerEquipments: ['equip-wristwraps']
+          }
+        }
+      ];
+
+      const grid = document.getElementById('archetypes-grid');
+      grid.innerHTML = archetypes.map((arch) => {
+        const heroState = {
+          ...rpg.getHero(),
+          appearance: arch.appearance,
+          hairObj: rpg.HAIR_COLORS.find(h => h.id === arch.appearance.hairColor),
+          hairStyleObj: rpg.HAIRSTYLES.find(h => h.id === arch.appearance.hairstyle),
+          morphologyObj: rpg.MORPHOLOGIES.find(m => m.id === arch.appearance.morphology),
+          skinObj: rpg.SKIN_TONES.find(s => s.id === arch.appearance.skinTone),
+          auraObj: rpg.AURA_STYLES.find(a => a.id === arch.appearance.auraStyle),
+          outfitObj: rpg.OUTFITS.find(o => o.id === arch.appearance.outfit),
+          powerEquipments: arch.appearance.powerEquipments,
+          relicsStatus: []
+        };
+        const svgContent = rpg.renderHeroAvatarSVG(heroState, { compact: false });
+
+        return `
+          <div class="avatar-card border border-slate-800 rounded-3xl p-5 flex flex-col items-center hover:border-amber-500/50 transition duration-300">
+            <span class="px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-amber-300 text-[10px] font-black uppercase tracking-wider mb-3">
+              ${arch.badge}
+            </span>
+            <div class="w-full flex justify-center my-1">
+              ${svgContent}
+            </div>
+            <div class="w-full mt-4 pt-4 border-t border-slate-800/80 text-center">
+              <h3 class="text-lg font-black text-white">${arch.name}</h3>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">${arch.desc}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 2. Initialisation de l'Atelier Interactif
+      let liveConfig = {
+        visualMode: 'custom-rig',
+        gender: 'male',
+        morphology: 'athletic-vtaper',
+        hairstyle: 'spiky-striker',
+        hairColor: 'obsidian',
+        auraStyle: 'gold',
+        skinTone: 'tan',
+        outfit: 'outfit-dogi',
+        powerEquipments: ['equip-belt', 'equip-wristwraps']
+      };
+
+      function renderLiveAvatar() {
+        const liveHero = {
+          ...rpg.getHero(),
+          appearance: liveConfig,
+          hairObj: rpg.HAIR_COLORS.find(h => h.id === liveConfig.hairColor),
+          hairStyleObj: rpg.HAIRSTYLES.find(h => h.id === liveConfig.hairstyle),
+          morphologyObj: rpg.MORPHOLOGIES.find(m => m.id === liveConfig.morphology),
+          skinObj: rpg.SKIN_TONES.find(s => s.id === liveConfig.skinTone),
+          auraObj: rpg.AURA_STYLES.find(a => a.id === liveConfig.auraStyle),
+          outfitObj: rpg.OUTFITS.find(o => o.id === liveConfig.outfit),
+          powerEquipments: liveConfig.powerEquipments,
+          relicsStatus: []
+        };
+        document.getElementById('live-avatar-stage').innerHTML = rpg.renderHeroAvatarSVG(liveHero);
+        
+        const morphName = rpg.MORPHOLOGIES.find(m => m.id === liveConfig.morphology)?.label || 'Morphologie';
+        const hairName = rpg.HAIRSTYLES.find(h => h.id === liveConfig.hairstyle)?.label || 'Coiffure';
+        const auraName = rpg.AURA_STYLES.find(a => a.id === liveConfig.auraStyle)?.name || 'Aura';
+        document.getElementById('live-stats-badge').innerText = `${morphName} • ${hairName} • ${auraName}`;
+      }
+
+      // Morphologies
+      const morphEl = document.getElementById('morphology-selector');
+      morphEl.innerHTML = (rpg.MORPHOLOGIES || []).map(m => `
+        <button class="morph-btn px-2 py-2 rounded-xl text-[11px] font-bold border transition ${liveConfig.morphology === m.id ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md' : 'bg-slate-950 border-slate-800 text-slate-300'}" data-id="${m.id}">
+          ${m.icon} ${(m.label || m.name || '').split(' ')[0]}
+        </button>
+      `).join('');
+      morphEl.querySelectorAll('.morph-btn').forEach(b => {
+        b.onclick = () => {
+          liveConfig.morphology = b.dataset.id;
+          morphEl.querySelectorAll('.morph-btn').forEach(btn => {
+            btn.className = `morph-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition ${btn.dataset.id === liveConfig.morphology ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 border-slate-800 text-slate-300'}`;
+          });
+          renderLiveAvatar();
+        };
+      });
+
+      // Hairstyles
+      const hairEl = document.getElementById('hair-selector');
+      hairEl.innerHTML = (rpg.HAIRSTYLES || []).map(h => `
+        <button class="hair-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition ${liveConfig.hairstyle === h.id ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 border-slate-800 text-slate-300'}" data-id="${h.id}">
+          ${h.icon || '⚡'} ${(h.label || h.name || '').split(' ')[0]}
+        </button>
+      `).join('');
+      hairEl.querySelectorAll('.hair-btn').forEach(b => {
+        b.onclick = () => {
+          liveConfig.hairstyle = b.dataset.id;
+          hairEl.querySelectorAll('.hair-btn').forEach(btn => {
+            btn.className = `hair-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition ${btn.dataset.id === liveConfig.hairstyle ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 border-slate-800 text-slate-300'}`;
+          });
+          renderLiveAvatar();
+        };
+      });
+
+      // Hair Colors
+      const hairColorEl = document.getElementById('hair-color-selector');
+      hairColorEl.innerHTML = (rpg.HAIR_COLORS || []).map(hc => `
+        <button class="hair-col-btn px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition ${liveConfig.hairColor === hc.id ? 'border-amber-400 bg-amber-500/20 text-white' : 'border-slate-800 bg-slate-950 text-slate-400'}" data-id="${hc.id}">
+          <span class="w-3 h-3 rounded-full" style="background:${hc.hex}"></span> ${hc.label || hc.name || ''}
+        </button>
+      `).join('');
+      hairColorEl.querySelectorAll('.hair-col-btn').forEach(b => {
+        b.onclick = () => {
+          liveConfig.hairColor = b.dataset.id;
+          hairColorEl.querySelectorAll('.hair-col-btn').forEach(btn => {
+            btn.className = `hair-col-btn px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition ${btn.dataset.id === liveConfig.hairColor ? 'border-amber-400 bg-amber-500/20 text-white' : 'border-slate-800 bg-slate-950 text-slate-400'}`;
+          });
+          renderLiveAvatar();
+        };
+      });
+
+      // Aura Styles
+      const auraEl = document.getElementById('aura-selector');
+      auraEl.innerHTML = (rpg.AURA_STYLES || []).map(a => `
+        <button class="aura-btn px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition ${liveConfig.auraStyle === a.id ? 'border-amber-400 bg-amber-500/20 text-white' : 'border-slate-800 bg-slate-950 text-slate-400'}" data-id="${a.id}">
+          <span class="w-3 h-3 rounded-full" style="background:${a.primary}"></span> ${a.label || a.name || ''}
+        </button>
+      `).join('');
+      auraEl.querySelectorAll('.aura-btn').forEach(b => {
+        b.onclick = () => {
+          liveConfig.auraStyle = b.dataset.id;
+          auraEl.querySelectorAll('.aura-btn').forEach(btn => {
+            btn.className = `aura-btn px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition ${btn.dataset.id === liveConfig.auraStyle ? 'border-amber-400 bg-amber-500/20 text-white' : 'border-slate-800 bg-slate-950 text-slate-400'}`;
+          });
+          renderLiveAvatar();
+        };
+      });
+
+      // Equipments
+      const equipList = [
+        { id: 'equip-belt', name: 'Ceinture Levier' },
+        { id: 'equip-sleeves', name: 'Genouillères 7mm' },
+        { id: 'equip-wristwraps', name: 'Bandes Poignets' },
+        { id: 'equip-straps', name: 'Sangles Tirage' },
+        { id: 'equip-boxer-wraps', name: 'Bandages Boxe (Ippo)' },
+        { id: 'equip-demon-back', name: 'Dos Démon (Baki)' }
+      ];
+      const equipEl = document.getElementById('equipment-selector');
+      function renderEquips() {
+        equipEl.innerHTML = equipList.map(eq => {
+          const active = liveConfig.powerEquipments.includes(eq.id);
+          return `
+            <button class="eq-btn px-2.5 py-2 rounded-xl text-[11px] font-bold border transition ${active ? 'bg-emerald-500 text-slate-950 border-emerald-400' : 'bg-slate-950 border-slate-800 text-slate-400'}" data-id="${eq.id}">
+              ${active ? '✓' : '+'} ${eq.name}
+            </button>
+          `;
+        }).join('');
+        equipEl.querySelectorAll('.eq-btn').forEach(b => {
+          b.onclick = () => {
+            const id = b.dataset.id;
+            if (liveConfig.powerEquipments.includes(id)) {
+              liveConfig.powerEquipments = liveConfig.powerEquipments.filter(x => x !== id);
+            } else {
+              liveConfig.powerEquipments.push(id);
+            }
+            renderEquips();
+            renderLiveAvatar();
+          };
+        });
+      }
+      renderEquips();
+
+      // Rendu initial
+      renderLiveAvatar();
+    });
+  </script>
+</body>
+</html>

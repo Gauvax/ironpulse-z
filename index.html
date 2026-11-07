@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fr" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#080B11" />
+    <meta name="description" content="IronPulse Z by Aura Fit — MMORPG de musculation 3D avec Avatar interactif, Donjons de Boss et Coach IA Gemini." />
+    <title>IronPulse Z — MMORPG Musculation 3D & Coach IA</title>
+
+    <!-- Meta Tags PWA & Immersion Plein Écran Native (iOS & Android) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="IronPulse Z" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="IronPulse Z" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="icon" type="image/svg+xml" href="./src/icon.svg" />
+    <link rel="apple-touch-icon" href="./src/icon.svg" />
+
+    <script>
+      // Détection d'environnement : support universel file:/// vs PWA / http
+      if (window.location.protocol !== 'file:') {
+        var manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = './manifest.json';
+        document.head.appendChild(manifestLink);
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./src/styles.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@2.29.1"
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-[#05080D] text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+    <!-- Splash Screen Éclair & Préchargeur Shōnen (Vision Alpha & Bêta) -->
+    <div id="ironpulse-splash" style="position:fixed;inset:0;z-index:99999;background:#060910;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.45s cubic-bezier(0.16,1,0.3,1),visibility 0.45s;font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;">
+      <style>
+        @keyframes pulse-ring {
+          0%, 100% { transform: scale(1); opacity: 0.35; }
+          50% { transform: scale(1.08); opacity: 0.85; }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { filter: drop-shadow(0 0 14px rgba(6,182,212,0.45)); }
+          50% { filter: drop-shadow(0 0 28px rgba(245,158,11,0.65)); }
+        }
+        @keyframes shimmer-bar {
+          0% { width: 15%; transform: translateX(-20%); }
+          50% { width: 78%; transform: translateX(10%); }
+          100% { width: 96%; transform: translateX(4%); }
+        }
+      </style>
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+        <div style="position:absolute;width:124px;height:124px;border-radius:50%;border:2px dashed rgba(6,182,212,0.5);animation:pulse-ring 2.4s ease-in-out infinite;"></div>
+        <div style="width:84px;height:84px;border-radius:24px;background:linear-gradient(135deg,#0E1524,#182338);border:1.5px solid rgba(56,189,248,0.4);display:flex;align-items:center;justify-content:center;animation:pulse-glow 2.4s ease-in-out infinite;box-shadow:0 12px 32px rgba(0,0,0,0.85);">
+          <span style="font-size:42px;line-height:1;">⚡</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="font-size:19px;font-weight:900;letter-spacing:0.08em;color:#FFFFFF;text-transform:uppercase;">IRONPULSE</span>
+        <span style="font-size:19px;font-weight:900;color:#F59E0B;text-transform:uppercase;">Z</span>
+        <span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);letter-spacing:0.05em;margin-left:4px;">AURA FIT</span>
+      </div>
+      <p id="splash-status" style="font-size:11px;font-weight:600;color:#94A3B8;letter-spacing:0.03em;margin:0 0 16px 0;">Éveil du Chasseur de Fonte...</p>
+      <div style="width:160px;height:4px;border-radius:999px;background:#1E293B;overflow:hidden;position:relative;">
+        <div id="splash-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,#06B6D4,#10B981,#F59E0B);animation:shimmer-bar 1.6s ease-in-out infinite;"></div>
+      </div>
+      <div id="splash-fallback" style="display:none;margin-top:20px;text-align:center;max-width:280px;">
+        <p style="font-size:11px;color:#EF4444;margin-bottom:8px;">Connexion ou ressource différée.</p>
+        <button onclick="window.location.reload()" style="padding:6px 14px;border-radius:10px;background:#1E293B;color:#F8FAFC;font-size:11px;font-weight:700;border:1px solid #334155;cursor:pointer;">Réessayer ↻</button>
+      </div>
+    </div>
+
+    <!-- Conteneur Mobile Principal -->
+    <div id="app-root" class="app-shell-framed"></div>
+
+    <!-- Moteur WebGL 3D Three.js + Modules de l'application (v3.7 - Sports & Martial Arts Manga Archetypes) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="./src/audio.js?v=3.7"></script>
+    <script src="./src/data.js?v=3.7"></script>
+    <script src="./src/storage.js?v=3.7"></script>
+    <script src="./src/rpg.js?v=3.7"></script>
+    <script src="./src/hero3d.js?v=3.7"></script>
+    <script src="./src/aiCoach.js?v=3.7"></script>
+    <script src="./src/hardware.js?v=3.7"></script>
+    <script src="./src/charts.js?v=3.7"></script>
+    <script src="./src/app.js?v=3.7"></script>
+    <script>
+      // Bootloader Résilient Tout-Terrain (Vision Gamma)
+      function dismissSplash() {
+        var splash = document.getElementById('ironpulse-splash');
+        if (!splash) return;
+        splash.style.opacity = '0';
+        splash.style.visibility = 'hidden';
+        setTimeout(function () {
+          if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+        }, 460);
+      }
+
+      function tryBoot() {
+        if (window.__ironpulse_ready) return true;
+        if (window.IronPulse && window.IronPulse.App) {
+          try {
+            var saved = localStorage.getItem('ironpulse_app_state_v1');
+            if (saved) {
+              var st = JSON.parse(saved);
+              if (st && st.rpg && st.rpg.appearance) {
+                st.rpg.appearance.visualMode = 'model-3d';
+                localStorage.setItem('ironpulse_app_state_v1', JSON.stringify(st));
+              }
+            }
+          } catch (e) {}
+
+          window.__ironpulse_ready = true;
+          try {
+            window.IronPulse.App.init();
+          } catch (err) {
+            console.error('[IronPulse App.init Error]:', err);
+          }
+          dismissSplash();
+
+          if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+            navigator.serviceWorker.register('./sw.js').catch(function () {});
+          }
+          return true;
+        }
+        return false;
+      }
+
+      function startIronPulse() {
+        if (tryBoot()) return;
+
+        // Boucle d'écoute active jusqu'au chargement complet des scripts
+        var bootInterval = setInterval(function () {
+          if (tryBoot()) {
+            clearInterval(bootInterval);
+          }
+        }, 50);
+
+        window.addEventListener('load', function () {
+          if (tryBoot()) {
+            clearInterval(bootInterval);
+          }
+        });
+
+        // Garde-fou de sécurité étendu à 12 secondes pour les réseaux mobiles
+        setTimeout(function () {
+          if (!window.__ironpulse_ready) {
+            var fallback = document.getElementById('splash-fallback');
+            if (fallback) fallback.style.display = 'block';
+          } else {
+            clearInterval(bootInterval);
+          }
+        }, 12000);
+      }
+
+      if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', startIronPulse);
+      } else {
+        startIronPulse();
+      }
+    </script>
+  </body>
+</html>

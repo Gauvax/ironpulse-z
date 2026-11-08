@@ -1661,11 +1661,13 @@ window.IronPulse = window.IronPulse || {};
     const heroName = (hero && hero.heroName ? hero.heroName : 'MEHDI').toUpperCase();
     const classIcon = (hero && hero.classObj && hero.classObj.icon) ? hero.classObj.icon : '⚔️';
     const className = (hero && hero.classObj && hero.classObj.name) ? hero.classObj.name : 'Athlète Force Pure';
+    const auraPrim = (hero && hero.auraObj && hero.auraObj.primary) ? hero.auraObj.primary : '#06B6D4';
+    const auraSec = (hero && hero.auraObj && hero.auraObj.secondary) ? hero.auraObj.secondary : '#F59E0B';
 
     return `
-      <div class="shonen-portrait-stage relative w-full mx-auto select-none overflow-hidden rounded-2xl bg-gradient-to-b from-[#090E1A] to-[#04070D] border border-cyan-500/30 p-2 shadow-xl">
-        <!-- Anneau d'Aura de Ki Cyan & Or animée -->
-        <div class="shonen-aura-ring-cyan"></div>
+      <div style="--aura-primary: ${auraPrim}; --aura-secondary: ${auraSec};" class="shonen-portrait-stage relative w-full mx-auto select-none overflow-hidden rounded-2xl bg-gradient-to-b from-[#090E1A] to-[#04070D] border border-cyan-500/30 p-2 shadow-xl">
+        <!-- Anneau d'Aura de Ki Personnalisée & Animée -->
+        <div class="shonen-aura-ring" style="--aura-primary: ${auraPrim}; --aura-secondary: ${auraSec}; opacity: 0.75;"></div>
 
         <!-- Scène de l'Athlète Animé en Respiration Martiale -->
         <div class="relative flex flex-col items-center justify-center w-full" style="height: ${height};">

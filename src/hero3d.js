@@ -414,19 +414,23 @@ window.IronPulse = window.IronPulse || {};
       activeTargetZone: 'all'
     };
 
-    if (moveId === 'idle-combat') {
-      const breath = Math.sin(tSec * 2.4) * 0.018;
-      j.pelvis.y += breath * 0.4;
-      j.waist.y += breath * 0.6;
-      j.chest.y += breath * 0.9;
-      j.neck.y += breath * 0.9;
-      j.head.y += breath * 0.9;
-      j.shoulderL.y += breath * 0.8;
-      j.shoulderR.y += breath * 0.8;
-      j.elbowL = vec3(-0.24 * upperScale, 0.18 + breath * 0.6, 0.02);
-      j.elbowR = vec3(0.24 * upperScale, 0.18 + breath * 0.6, 0.02);
-      j.wristL = vec3(-0.24 * upperScale, -0.10 + breath * 0.4, 0.04);
-      j.wristR = vec3(0.24 * upperScale, -0.10 + breath * 0.4, 0.04);
+    if (!moveId || moveId === 'idle' || moveId === 'idle-combat') {
+      const breath = Math.sin(tSec * 2.2) * 0.022;
+      const sway = Math.sin(tSec * 1.1) * 0.008;
+      j.pelvis.y += breath * 0.35;
+      j.waist.y += breath * 0.55;
+      j.chest.y += breath * 0.95;
+      j.neck.y += breath * 0.95;
+      j.head.y += breath * 0.95;
+      j.shoulderL.y += breath * 0.85;
+      j.shoulderR.y += breath * 0.85;
+      j.shoulderL.x -= breath * 0.2;
+      j.shoulderR.x += breath * 0.2;
+      j.chest.z += breath * 0.35; // Expansion de la cage thoracique à l'inspiration
+      j.elbowL = vec3(-0.24 * upperScale - sway * 0.5, 0.18 + breath * 0.7, 0.02);
+      j.elbowR = vec3(0.24 * upperScale + sway * 0.5, 0.18 + breath * 0.7, 0.02);
+      j.wristL = vec3(-0.24 * upperScale - sway * 0.7, -0.10 + breath * 0.5, 0.04);
+      j.wristR = vec3(0.24 * upperScale + sway * 0.7, -0.10 + breath * 0.5, 0.04);
       j.activeTargetZone = 'core';
     } else if (moveId === 'squat') {
       const drop = repT * 0.42;
@@ -1752,9 +1756,11 @@ window.IronPulse = window.IronPulse || {};
       gl.camera.updateProjectionMatrix();
 
       gl.worldRoot.rotation.set(pitch, yaw, 0, 'XYZ');
+      const auraPulse = Math.sin(tSec * 3.8) * 0.32;
       gl.auraPointLight.color.set(isBurst ? '#FEF08A' : aura.primary);
-      gl.auraPointLight.intensity = isBurst ? 2.4 : (sk.tempo.phaseCode === 'CONC' ? 1.85 : 1.25);
+      gl.auraPointLight.intensity = (isBurst ? 2.4 : (sk.tempo.phaseCode === 'CONC' ? 1.85 : 1.35)) + auraPulse;
       gl.rimLight.color.set(aura.secondary);
+      gl.rimLight.intensity = 0.55 + auraPulse * 0.28;
 
       // --- OMBRES DE CONTACT SOL DYNAMIQUES (Soft Blob) ---
       if (gl.footShadowL && gl.footShadowR && gl.pelvisShadow) {

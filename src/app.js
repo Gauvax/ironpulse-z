@@ -4,7 +4,7 @@ window.IronPulse = window.IronPulse || {};
 (function (ns) {
   const ui = {
     currentTab: 'home', // 'home' | 'rpg' | 'exercises' | 'programs' | 'workout' | 'history' | 'progress' | 'profile'
-    frameMode: (typeof window !== 'undefined' && window.innerWidth <= 500) ? 'full' : 'framed', // 'framed' | 'full'
+    frameMode: (typeof window !== 'undefined' && window.innerWidth <= 640) ? 'full' : 'framed', // 'framed' | 'full'
     heroDisplayMode: 'art', // 'art' (Manga HD Plein Pied) | '3d' (Studio 3D 360�)
     // Assistant Premi�re Utilisation (Questionnaire Biom�trique + Avatar 3D + Tutoriel)
     onboardingOpen: false,
@@ -5222,7 +5222,7 @@ window.IronPulse = window.IronPulse || {};
     ];
 
     const heroQuick = ns.RPG ? ns.RPG.getHeroProfile() : null;
-    if (typeof window !== 'undefined' && window.innerWidth <= 500) {
+    if (typeof window !== 'undefined' && window.innerWidth <= 640) {
       ui.frameMode = 'full';
     }
     root.className = ui.frameMode === 'framed' ? 'app-shell-framed' : 'app-shell-full';

@@ -165,7 +165,7 @@ svg {
 }
 
 .app-shell-full {
-  max-width: 768px;
+  max-width: 100%;
   width: 100%;
   margin: 0 auto;
   min-height: 100vh;
@@ -174,8 +174,13 @@ svg {
   display: flex;
   flex-direction: column;
   background-color: var(--bg-dark);
-  border-left: 1px solid #1E293B;
-  border-right: 1px solid #1E293B;
+}
+@media (min-width: 768px) {
+  .app-shell-full {
+    max-width: 768px;
+    border-left: 1px solid #1E293B;
+    border-right: 1px solid #1E293B;
+  }
 }
 
 /* Modal Backdrop Contained Inside App Shell */

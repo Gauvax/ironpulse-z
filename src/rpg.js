@@ -1654,15 +1654,44 @@ window.IronPulse = window.IronPulse || {};
     `;
   }
 
-  // Rendu visuel du Héros : Modèle 3D Unique Professionnel (Exigences Client AAA)
+  // Rendu visuel du Héros : Avatar Shōnen Animé Uniformisé (Charte ALTR Plein Pied)
   function renderHeroAvatarSVG(hero, opts) {
-    if (ns.Hero3D) {
-      return ns.Hero3D.renderHero3DStageHTML({
-        showMoveSelector: !(opts && opts.compact),
-        compact: !!(opts && opts.compact)
-      });
-    }
-    return `<div class="p-4 text-center text-xs text-slate-400">Initialisation du modèle 3D...</div>`;
+    const compact = !!(opts && opts.compact);
+    const height = compact ? '180px' : '260px';
+    const heroName = (hero && hero.heroName ? hero.heroName : 'MEHDI').toUpperCase();
+    const classIcon = (hero && hero.classObj && hero.classObj.icon) ? hero.classObj.icon : '⚔️';
+    const className = (hero && hero.classObj && hero.classObj.name) ? hero.classObj.name : 'Athlète Force Pure';
+
+    return `
+      <div class="shonen-portrait-stage relative w-full mx-auto select-none overflow-hidden rounded-2xl bg-gradient-to-b from-[#090E1A] to-[#04070D] border border-cyan-500/30 p-2 shadow-xl">
+        <!-- Anneau d'Aura de Ki Cyan & Or animée -->
+        <div class="shonen-aura-ring-cyan"></div>
+
+        <!-- Scène de l'Athlète Animé en Respiration Martiale -->
+        <div class="relative flex flex-col items-center justify-center w-full" style="height: ${height};">
+          <!-- Onde de choc au sol -->
+          <div class="absolute bottom-1 w-32 h-4 rounded-full bg-cyan-400/20 blur-sm ki-shockwave-pulse pointer-events-none"></div>
+
+          <!-- Personnage Shonen Cel-Shading Plein Pied Animé -->
+          <img
+            src="./src/assets/hero-anime-original.svg"
+            alt="${heroName}"
+            style="max-height: 100%; width: auto;"
+            class="relative z-10 w-auto h-full object-contain drop-shadow-[0_10px_22px_rgba(6,182,212,0.45)] altr-animated-hero"
+          />
+
+          <!-- Badge Classe & Posture Martiale -->
+          <div class="absolute bottom-1.5 left-2 right-2 flex items-center justify-between px-2 py-0.5 rounded-lg bg-slate-950/80 border border-cyan-500/30 backdrop-blur-md z-20">
+            <span class="text-[9px] font-black text-cyan-300 flex items-center gap-1 font-mono">
+              <span>${classIcon}</span><span>${className}</span>
+            </span>
+            <span class="text-[8.5px] font-extrabold text-amber-400 font-mono tracking-wider">
+              TEMPO 3-1-1
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   function renderLegacyRig2D(hero) {

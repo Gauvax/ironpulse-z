@@ -313,6 +313,36 @@
       }).join('');
     }
 
+    function bindHero3DParallaxTilt() {
+      var stage = document.getElementById('hero-interactive-stage');
+      if (!stage || stage.dataset.tiltBound === 'true') return;
+      stage.dataset.tiltBound = 'true';
+      stage.style.perspective = '900px';
+
+      function onMove(e) {
+        var rect = stage.getBoundingClientRect();
+        var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+        var clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : null);
+        if (clientX === null || clientY === null) return;
+        var x = (clientX - rect.left) / rect.width - 0.5;
+        var y = (clientY - rect.top) / rect.height - 0.5;
+        var img = stage.querySelector('.altr-animated-hero');
+        if (img) {
+          img.style.transform = 'perspective(900px) rotateY(' + (x * 18).toFixed(1) + 'deg) rotateX(' + (-y * 14).toFixed(1) + 'deg) translate3d(' + (x * 10).toFixed(1) + 'px, ' + (y * 6).toFixed(1) + 'px, 16px)';
+        }
+      }
+      function onLeave() {
+        var img = stage.querySelector('.altr-animated-hero');
+        if (img) {
+          img.style.transform = '';
+        }
+      }
+      stage.addEventListener('mousemove', onMove);
+      stage.addEventListener('touchmove', onMove, { passive: true });
+      stage.addEventListener('mouseleave', onLeave);
+      stage.addEventListener('touchend', onLeave);
+    }
+
     function renderAirFocusHomeScreen() {
       if (window.__current_tab && window.__current_tab !== 'home') {
         syncFiveTabDock();
@@ -375,8 +405,9 @@
       if (is3D && ns.Hero3D && ns.Hero3D.renderStageHTML) {
         stageContent = '<div class="w-full h-full">' + ns.Hero3D.renderStageHTML(hero, { height: 260, showControls: true }) + '</div>';
       } else {
-        stageContent = '<div class="relative flex flex-col items-center justify-center h-full altr-hero-blend">' +
-          '<img src="./src/assets/hero-anime-original.svg" alt="ALTR Shonen Athlète" style="max-height:250px;width:auto;" class="relative z-10 w-auto h-[240px] sm:h-[250px] object-contain drop-shadow-[0_10px_22px_rgba(6,182,212,0.35)]" />' +
+        stageContent = '<div id="hero-interactive-stage" class="relative flex flex-col items-center justify-center h-full altr-hero-blend select-none">' +
+          '<div class="absolute bottom-1 w-44 h-5 rounded-full bg-cyan-400/25 blur-md ki-shockwave-pulse pointer-events-none"></div>' +
+          '<img src="./src/assets/hero-anime-original.svg" alt="ALTR Shonen Athlète" style="max-height:245px;width:auto;" class="relative z-10 w-auto h-[235px] sm:h-[245px] object-contain drop-shadow-[0_12px_26px_rgba(6,182,212,0.45)] altr-animated-hero cursor-pointer" title="Touchez ou déplacez le curseur pour inclinaison 3D Parallaxe" />' +
           '</div>';
       }
 
@@ -485,6 +516,10 @@
           if (ns.Hero3D.startLoop) ns.Hero3D.startLoop();
           if (ns.Hero3D.renderNow) ns.Hero3D.renderNow();
         }, 50);
+      } else {
+        setTimeout(function() {
+          bindHero3DParallaxTilt();
+        }, 30);
       }
     }
 

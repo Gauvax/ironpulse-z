@@ -941,3 +941,40 @@ input[type="number"] {
   animation: shonenAuraPulse 2.4s ease-in-out infinite;
   pointer-events: none;
 }
+
+/* Respiration Martiale & Animation Vivante du Héros Shonen */
+@keyframes shonenBreathing {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 10px 22px rgba(6, 182, 212, 0.45));
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02);
+    filter: drop-shadow(0 16px 30px rgba(6, 182, 212, 0.65));
+  }
+}
+
+.altr-animated-hero {
+  animation: shonenBreathing 3.4s ease-in-out infinite;
+  transform-origin: center bottom;
+  will-change: transform, filter;
+  transition: transform 0.12s ease-out;
+}
+
+/* Onde de choc d'Aura de Ki au sol */
+@keyframes kiGroundShockwave {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.95;
+    filter: blur(8px);
+  }
+}
+
+.ki-shockwave-pulse {
+  animation: kiGroundShockwave 2.8s ease-in-out infinite;
+  transform-origin: center center;
+}

@@ -166,7 +166,7 @@
   <script src="./src/app.js?v=4.1"></script>
 
   <script>
-    window.__hero3d_mode = true;
+    window.__hero3d_mode = false;
     window.__current_tab = 'home';
 
     var CLEAN_MAP = [
@@ -1044,7 +1044,7 @@
         setTimeout(renderAirFocusHomeScreen, 30);
         dismissSplash();
         if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-          navigator.serviceWorker.register('./sw.js?v=5.1').then(function(reg) {
+          navigator.serviceWorker.register('./sw.js?v=6.0').then(function(reg) {
             if (reg && reg.update) reg.update();
           }).catch(function(){});
         }

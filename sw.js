@@ -1,5 +1,5 @@
-// ALTHER FIT — Service Worker PWA (Cache Hors-Ligne & Rechargement Dynamique v5.2)
-const CACHE_NAME = 'alther-fit-v5.2-image2-ergo';
+// ALTHER FIT — Service Worker PWA (Cache Hors-Ligne & Rechargement Dynamique v6.0)
+const CACHE_NAME = 'alther-fit-v6.0-anime-gold';
 const STATIC_ASSETS = [
   './',
   './index.html',

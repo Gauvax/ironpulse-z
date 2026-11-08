@@ -5221,7 +5221,7 @@ window.IronPulse = window.IronPulse || {};
       <header class="shonen-top-header px-3.5 pt-2.5 pb-2 flex items-center justify-between shrink-0 z-20 border-b border-cyan-500/20 bg-[#060912]/95 backdrop-blur-xl">
         <div onclick="IronPulse.App.navigate('home')" class="flex items-center gap-2 cursor-pointer">
           <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 via-teal-400 to-amber-400 flex items-center justify-center text-slate-950 font-black text-sm shadow-[0_0_12px_rgba(6,182,212,0.5)]">
-            âš¡
+            ⚡
           </div>
           <div>
             <span class="text-sm font-black tracking-tight text-white font-mono">ALTHER <span class="text-cyan-400">FIT</span> <span class="text-[10px] text-amber-400 font-extrabold">ALTR</span></span>
@@ -5231,10 +5231,10 @@ window.IronPulse = window.IronPulse || {};
         <div class="flex items-center gap-1.5">
           <button
             onclick="IronPulse.App.openOnboardingWizard(4)"
-            class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 transition"
+            class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 transition flex items-center gap-1"
             title="Ouvrir le Tutoriel & Questionnaire"
           >
-            ðŸŽ“ Tuto
+            <span>🎓</span><span>Tuto</span>
           </button>
           <button
             onclick="IronPulse.App.navigate('history')"
@@ -5243,9 +5243,9 @@ window.IronPulse = window.IronPulse || {};
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
                 : 'bg-slate-900/80 text-slate-300 hover:text-white border border-slate-700/70'
             }"
-            title="Historique des sÃ©ances"
+            title="Historique des séances"
           >
-            ðŸ—“
+            📅
           </button>
           <button
             onclick="IronPulse.App.navigate('profile')"

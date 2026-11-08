@@ -1720,7 +1720,7 @@ window.IronPulse = window.IronPulse || {};
     // RENDU THREE.JS WEBGL (SI DISPONIBLE) OU FALLBACK CEL-SHADING LOGICIEL
     // ========================================================================
     if (gl) {
-      const customGlbUrl = app.customModelGlb || hero?.appearance?.customModelGlb || null;
+      const customGlbUrl = app.customModelGlb || hero?.appearance?.customModelGlb || './src/assets/models/hero-anime.glb';
       if (customGlbUrl && gl.currentGlbUrl !== customGlbUrl) {
         gl.currentGlbUrl = customGlbUrl;
         gl.loadGltfModel(

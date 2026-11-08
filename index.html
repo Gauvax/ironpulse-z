@@ -407,8 +407,7 @@
       } else {
         var auraPrim = (hero && hero.auraObj && hero.auraObj.primary) ? hero.auraObj.primary : '#06B6D4';
         var auraSec = (hero && hero.auraObj && hero.auraObj.secondary) ? hero.auraObj.secondary : '#F59E0B';
-        stageContent = '<div id="hero-interactive-stage" style="--aura-primary:' + auraPrim + '; --aura-secondary:' + auraSec + ';" class="relative flex flex-col items-center justify-center h-full altr-hero-blend select-none">' +
-          '<div class="shonen-aura-ring" style="--aura-primary:' + auraPrim + '; --aura-secondary:' + auraSec + '; opacity: 0.72;"></div>' +
+        stageContent = '<div id="hero-interactive-stage" class="relative flex flex-col items-center justify-center h-full altr-hero-blend select-none">' +
           '<div class="absolute bottom-1 w-44 h-5 rounded-full bg-cyan-400/25 blur-md ki-shockwave-pulse pointer-events-none"></div>' +
           '<img src="./src/assets/hero-anime-original.svg" alt="ALTR Shonen Athlète" style="max-height:245px;width:auto;" class="relative z-10 w-auto h-[235px] sm:h-[245px] object-contain drop-shadow-[0_12px_26px_rgba(6,182,212,0.45)] altr-animated-hero cursor-pointer" title="Touchez ou déplacez le curseur pour inclinaison 3D Parallaxe" />' +
           '</div>';

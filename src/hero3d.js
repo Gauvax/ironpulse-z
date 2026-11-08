@@ -1,4 +1,4 @@
-﻿// IronPulse Z — Moteur 3D WebGL Three.js (Shaders Cel-Shading Anime, Éclairage Dynamique 3D, Métronome de Tempo Biomécanique 3-1-1 & Audio Tactique/Cinétique)
+// IronPulse Z — Moteur 3D WebGL Three.js (Shaders Cel-Shading Anime, Éclairage Dynamique 3D, Métronome de Tempo Biomécanique 3-1-1 & Audio Tactique/Cinétique)
 window.IronPulse = window.IronPulse || {};
 
 (function (ns) {
@@ -2059,8 +2059,9 @@ window.IronPulse = window.IronPulse || {};
     const showMoveSelector = !!(opts.showMoveSelector || opts.showExerciseSelector);
     const moveMeta = exerciseId ? resolveMoveForExercise(exerciseId) : null;
     const isWebGLActive = Boolean(window.THREE);
+    const isArena = !!(opts.arenaMode || opts.transparent);
 
-    const tempoControlsHtml = `
+    const tempoControlsHtml = isArena ? '' : `
       <div class="flex items-center justify-between gap-1 pt-1.5">
         <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
           ${TEMPO_PRESETS.map((tp) => {
@@ -2094,7 +2095,7 @@ window.IronPulse = window.IronPulse || {};
       </div>
     `;
 
-    const selectorHtml = showMoveSelector
+    const selectorHtml = (showMoveSelector && !isArena)
       ? `
       <div class="flex gap-1 overflow-x-auto no-scrollbar pt-1.5">
         ${PREVIEW_MOVES.map((m) => {
@@ -2117,9 +2118,9 @@ window.IronPulse = window.IronPulse || {};
       : '';
 
     return `
-      <div class="w-full select-none">
-        <div class="shonen-portrait-stage relative w-full mx-auto">
-          <div class="shonen-portrait-frame relative rounded-2xl overflow-hidden border border-white/10 bg-[#070A11] shadow-2xl ${heightClass}" style="height: ${heightPx};">
+      <div class="w-full h-full select-none">
+        <div class="shonen-portrait-stage relative w-full h-full mx-auto">
+          <div class="shonen-portrait-frame relative w-full h-full ${isArena ? 'bg-transparent border-0 shadow-none' : 'rounded-2xl overflow-hidden border border-white/10 bg-[#070A11] shadow-2xl'} ${heightClass}" style="height: ${heightPx}; background: ${isArena ? 'transparent !important' : '#070A11'}; border: ${isArena ? 'none !important' : ''};">
             <canvas
               class="ironpulse-3d-canvas w-full h-full block cursor-pointer"
               data-exercise-id="${exerciseId}"
@@ -2128,34 +2129,36 @@ window.IronPulse = window.IronPulse || {};
             ></canvas>
 
             <!-- Contrôles Caméra 3D Studio (Three.js WebGL + Rotation 360° & Angles) -->
-            <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+            <div class="absolute ${isArena ? 'bottom-2 left-2 right-2 justify-center' : 'top-2.5 left-2.5 right-2.5 justify-between'} flex items-center pointer-events-none z-20">
+              ${isArena ? '' : `
               <span class="px-2.5 py-1 rounded-full bg-slate-950/80 border border-white/10 text-[9px] font-black uppercase tracking-wider text-slate-300 backdrop-blur-md">
                 ${isWebGLActive ? '⚡ THREE.JS WEBGL • STUDIO 3D' : '⚡ MOTEUR 3D • 360°'}
-              </span>
+              </span>`}
               <div class="flex items-center gap-1.5 pointer-events-auto">
                 <button
                   onclick="event.stopPropagation(); IronPulse.Hero3D.setAngle(0, 0.08)"
-                  class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-bold text-slate-200 backdrop-blur-md transition"
+                  class="px-2 py-0.5 rounded-lg bg-slate-900/85 hover:bg-slate-800 border border-cyan-500/30 text-[10px] font-bold text-slate-200 backdrop-blur-md transition shadow"
                   title="Vue de Face"
                 >Face</button>
                 <button
                   onclick="event.stopPropagation(); IronPulse.Hero3D.setAngle(1.25, 0.1)"
-                  class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-bold text-slate-200 backdrop-blur-md transition"
+                  class="px-2 py-0.5 rounded-lg bg-slate-900/85 hover:bg-slate-800 border border-cyan-500/30 text-[10px] font-bold text-slate-200 backdrop-blur-md transition shadow"
                   title="Vue de Profil (Idéal pour vérifier la posture)"
                 >Profil</button>
                 <button
                   onclick="event.stopPropagation(); IronPulse.Hero3D.setAngle(3.14, 0.08)"
-                  class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-bold text-slate-200 backdrop-blur-md transition"
+                  class="px-2 py-0.5 rounded-lg bg-slate-900/85 hover:bg-slate-800 border border-cyan-500/30 text-[10px] font-bold text-slate-200 backdrop-blur-md transition shadow"
                   title="Vue du Dos"
                 >Dos</button>
                 <button
                   onclick="event.stopPropagation(); IronPulse.Hero3D.toggleAutoRotate()"
-                  class="px-2 py-0.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-[10px] font-black text-emerald-300 backdrop-blur-md transition"
+                  class="px-2 py-0.5 rounded-lg bg-cyan-500/25 hover:bg-cyan-500/35 border border-cyan-400/50 text-[10px] font-black text-cyan-300 backdrop-blur-md transition shadow"
                   title="Rotation automatique 360°"
                 >↻ 360°</button>
               </div>
             </div>
 
+            ${isArena ? '' : `
             <!-- Bandeau inférieur : Métronome de Tempo Biomécanique 3-1-1 & Jauge de Phase en direct -->
             <div class="absolute bottom-1.5 left-1.5 right-1.5 px-2.5 py-1.5 rounded-xl bg-slate-950/90 border border-slate-800/90 backdrop-blur-sm pointer-events-none space-y-1">
               <div class="flex items-center justify-between gap-1">
@@ -2169,7 +2172,7 @@ window.IronPulse = window.IronPulse || {};
               <div class="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
                 <div class="hero3d-tempo-bar h-full rounded-full transition-all duration-75" style="width: 50%; background-color: #10B981;"></div>
               </div>
-            </div>
+            </div>`}
           </div>
         </div>
         ${tempoControlsHtml}

@@ -5243,7 +5243,7 @@ window.IronPulse = window.IronPulse || {};
             class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 border border-indigo-500/40 transition flex items-center gap-1"
             title="Ouvrir le Tutoriel & Questionnaire"
           >
-            <span>??</span><span>Tuto</span>
+            <span>🎓</span><span>Tuto</span>
           </button>
           <button
             onclick="IronPulse.App.navigate('history')"
@@ -5258,21 +5258,21 @@ window.IronPulse = window.IronPulse || {};
           </button>
           <button
             onclick="IronPulse.App.navigate('profile')"
-            class="px-2 py-1 rounded-lg text-[11px] font-bold transition ${
+            class="px-2 py-1 rounded-lg text-xs font-bold transition ${
               ui.currentTab === 'profile'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
                 : 'bg-slate-900/80 text-slate-300 hover:text-white border border-slate-700/70'
             }"
-            title="Profil & Param�tres"
+            title="Profil & Paramètres"
           >
-            ??
+            ⚙️
           </button>
           <button
             onclick="IronPulse.App.toggleFrameMode()"
-            class="hidden sm:inline-flex px-2 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/70 text-[10px] text-slate-300 font-medium"
+            class="hidden sm:inline-flex px-1.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/70 text-[10px] text-slate-300 font-medium"
             title="Basculer Cadre Mobile / Large"
           >
-            ${ui.frameMode === 'framed' ? '?' : '??'}
+            ${ui.frameMode === 'framed' ? '📱' : '🖥️'}
           </button>
         </div>
       </header>

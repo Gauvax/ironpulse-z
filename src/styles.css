@@ -118,6 +118,17 @@ svg {
   background: rgba(16, 185, 129, 0.6);
 }
 
+/* Flexible Grid Items Safety (Anti-Overflow Mobile) */
+.radial-dial-card, .relic-glow-slot {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+.radial-dial-card svg, .relic-glow-slot svg {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
 /* Mobile Frame on Desktop */
 .app-shell-framed {
   max-width: 430px;

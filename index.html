@@ -166,7 +166,7 @@
   <script src="./src/app.js?v=4.1"></script>
 
   <script>
-    window.__hero3d_mode = false;
+    window.__hero3d_mode = true;
     window.__current_tab = 'home';
 
     var CLEAN_MAP = [
@@ -287,7 +287,7 @@
         { id: 'rpg', iconSvg: SVG_ICONS.navGuild, label: 'GUILDES' },
         { id: 'workout', iconSvg: SVG_ICONS.navCombat, label: 'SÉANCE', isCenter: true },
         { id: 'programs', iconSvg: SVG_ICONS.navCampaign, label: 'CAMPAGNES' },
-        { id: 'progress', iconSvg: SVG_ICONS.navOracle, label: 'ORACLE IA' }
+        { id: 'progress', iconSvg: SVG_ICONS.navOracle, label: 'ORACLE' }
       ];
 
       dock.style.cssText = 'display:grid !important; grid-template-columns:repeat(5, minmax(0, 1fr)) !important; width:100% !important; gap:2px !important; padding:4px 4px calc(6px + env(safe-area-inset-bottom,0px)) !important; align-items:end !important; box-sizing:border-box !important; overflow:hidden !important;';
@@ -379,7 +379,7 @@
         var eq = m && m.equipped;
         var unl = m && m.unlocked;
         var act = unl ? "IronPulse.App.toggleEquipRelic('" + s.id + "'); setTimeout(renderAirFocusHomeScreen, 40);" : "IronPulse.App.openRpgSubTab('relics')";
-        return '<button onclick="' + act + '" class="relic-glow-slot ' + (eq ? 'equipped' : '') + ' w-full max-w-[42px] aspect-square mx-auto" title="' + s.label + '">' +
+        return '<button onclick="' + act + '" class="relic-glow-slot ' + (eq ? 'equipped' : '') + ' w-full max-w-[36px] sm:max-w-[40px] aspect-square mx-auto" title="' + s.label + '">' +
                '<span class="text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.7)] scale-90 sm:scale-100">' + s.svg + '</span></button>';
       }).join('');
 
@@ -398,7 +398,7 @@
         return '<div onclick="IronPulse.App.openRpgSubTab(\'hero\')" class="radial-dial-card cursor-pointer flex flex-col items-center justify-center p-0.5 sm:p-1.5 rounded-xl bg-[#090F1C]/90 border border-slate-800/80 hover:border-cyan-500/50 shadow-md min-w-0">' +
                '<span class="text-[9.5px] sm:text-[10.5px] font-black tracking-wider text-slate-300 uppercase leading-none mb-0.5">' + st.k + '</span>' +
                '<div class="relative w-8 h-8 sm:w-11 sm:h-11 flex items-center justify-center" style="max-width:38px;max-height:38px;width:100%;aspect-ratio:1/1;">' +
-               '<svg width="48" height="48" style="width:100%;height:100%;max-width:38px;max-height:38px;" class="transform -rotate-90" viewBox="0 0 36 36">' +
+               '<svg width="48" height="48" style="width:100%;height:100%;max-width:34px;max-height:34px;" class="transform -rotate-90" viewBox="0 0 36 36">' +
                '<path class="text-slate-800/80" stroke-width="3" stroke="#1E293B" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />' +
                '<path stroke-dasharray="100, 100" stroke-dashoffset="' + off + '" stroke-width="3" stroke-linecap="round" stroke="' + st.col + '" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />' +
                '</svg>' +
@@ -408,7 +408,13 @@
 
       var stageContent = '';
       if (is3D && ns.Hero3D && ns.Hero3D.renderStageHTML) {
-        stageContent = '<div class="w-full h-full">' + ns.Hero3D.renderStageHTML(hero, { height: 260, showControls: true, transparent: true, arenaMode: true }) + '</div>';
+        stageContent = '<div class="w-full h-full">' + ns.Hero3D.renderStageHTML({
+          compact: true,
+          arenaMode: true,
+          transparent: true,
+          showMoveSelector: false,
+          showAnglePresets: false
+        }) + '</div>';
       } else {
         var auraPrim = (hero && hero.auraObj && hero.auraObj.primary) ? hero.auraObj.primary : '#06B6D4';
         var auraSec = (hero && hero.auraObj && hero.auraObj.secondary) ? hero.auraObj.secondary : '#F59E0B';
@@ -479,13 +485,13 @@
         '  <!-- Neon overhead cyan bar -->' +
         '  <div class="absolute top-2 left-1/2 -translate-x-1/2 w-48 h-1 rounded-full bg-cyan-300 shadow-[0_0_16px_#22d3ee,0_0_30px_#06b6d4] opacity-80 pointer-events-none"></div>' +
         '  <div class="flex items-center justify-between z-10">' +
-        '    <button onclick="window.__hero3d_mode = !window.__hero3d_mode; renderAirFocusHomeScreen(); if(window.__hero3d_mode && window.IronPulse && window.IronPulse.Hero3D){ window.IronPulse.Hero3D.startLoop(); }" class="px-3 py-1 rounded-full text-[11px] font-black border transition backdrop-blur-md ' + (is3D ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.4)]' : 'bg-[#070D18]/85 text-slate-300 border-slate-700/80 hover:border-cyan-400') + '">' +
-        (is3D ? '⚡ 3D Modélisé' : '🎨 2D Shōnen') +
+        '    <button onclick="window.__hero3d_mode = !window.__hero3d_mode; renderAirFocusHomeScreen(); if(window.__hero3d_mode && window.IronPulse && window.IronPulse.Hero3D){ window.IronPulse.Hero3D.startLoop(); }" class="px-2.5 py-1 rounded-full text-[10.5px] font-black border transition backdrop-blur-md ' + (is3D ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.4)]' : 'bg-[#070D18]/85 text-slate-300 border-slate-700/80 hover:border-cyan-400') + '">' +
+        (is3D ? '⚡ 3D' : '🎨 2D') +
         '</button>' +
-        '    <div class="flex items-center gap-1 sm:gap-1.5">' +
-        '      <button onclick="IronPulse.App.openPlateCalculatorModal(100)" class="px-2.5 py-1 rounded-full text-[10px] sm:text-[10.5px] font-extrabold bg-[#070D18]/85 text-cyan-200 border border-cyan-500/40 backdrop-blur-md">⚖️ Disques</button>' +
-        '      <button onclick="IronPulse.App.openMuscleRecoveryModal()" class="px-2.5 py-1 rounded-full text-[10px] sm:text-[10.5px] font-extrabold bg-[#070D18]/85 text-emerald-200 border border-emerald-500/40 backdrop-blur-md">🧬 48h</button>' +
-        '      <button onclick="IronPulse.App.openVictoryShareModal()" class="px-2.5 py-1 rounded-full text-[10px] sm:text-[10.5px] font-extrabold bg-[#070D18]/85 text-amber-200 border border-amber-500/40 backdrop-blur-md">📸 Carte</button>' +
+        '    <div class="flex items-center gap-1">' +
+        '      <button onclick="IronPulse.App.openPlateCalculatorModal(100)" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#070D18]/85 text-cyan-200 border border-cyan-500/40 backdrop-blur-md">⚖️ Disques</button>' +
+        '      <button onclick="IronPulse.App.openMuscleRecoveryModal()" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#070D18]/85 text-emerald-200 border border-emerald-500/40 backdrop-blur-md">🧬 48h</button>' +
+        '      <button onclick="IronPulse.App.openVictoryShareModal()" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#070D18]/85 text-amber-200 border border-amber-500/40 backdrop-blur-md">📸 Carte</button>' +
         '    </div>' +
         '  </div>' +
         '  <div class="relative z-0 flex-1 flex items-center justify-center">' + stageContent + '</div>' +
@@ -500,21 +506,22 @@
         '<div class="grid grid-cols-6 gap-1">' + dialsHtml + '</div>' +
 
         '<!-- BANDEAU COMBAT QUOTIDIEN (IMAGE 2) -->' +
-        '<div class="dungeon-combat-card rounded-2xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">' +
-        '  <div class="min-w-0">' +
-        '    <div class="text-xs sm:text-sm font-black uppercase tracking-wider text-white font-mono leading-tight">L’ÉPREUVE DU JOUR - ÉVEIL DU GÉANT</div>' +
-        '    <div class="text-[10.5px] font-bold text-amber-300 mt-0.5 flex items-center gap-1.5 flex-wrap">' +
-        '      <span>NIVEAU RECOMMANDÉ 11+</span>' +
-        '      <span class="text-slate-500">•</span>' +
-        '      <button onclick="IronPulse.App.openCreateGuildModal()" class="text-cyan-300 underline font-semibold">Club & Escouades</button>' +
+        '<div class="dungeon-combat-card rounded-2xl p-2.5 sm:p-3 flex flex-col gap-2 w-full box-border">' +
+        '  <div class="flex items-center justify-between gap-2 min-w-0">' +
+        '    <div class="min-w-0 flex-1">' +
+        '      <div class="text-[11.5px] sm:text-xs font-black uppercase tracking-wider text-white font-mono leading-tight truncate">' + 'L’ÉPREUVE DU JOUR • ÉVEIL DU GÉANT' + '</div>' +
+        '      <div class="text-[10px] font-bold text-amber-300 mt-0.5 flex items-center gap-1.5 flex-wrap">' +
+        '        <span>' + 'NIVEAU RECOMMANDÉ 11+' + '</span>' +
+        '        <span class="text-slate-500">•</span>' +
+        '        <button onclick="IronPulse.App.openCreateGuildModal()" class="text-cyan-300 underline font-semibold">Club & Escouades</button>' +
+        '      </div>' +
         '    </div>' +
         '  </div>' +
-        '  <button onclick="window.__current_tab=\'workout\'; IronPulse.App.startProgramSession(\'' + activeProg.id + '\', \'' + nextSession.id + '\');" class="combat-cta-pill w-full sm:w-auto px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-cyan-100 hover:text-white shrink-0 active:scale-95 transition text-center whitespace-nowrap shadow-lg">' +
-        '    DÉMARRER LA SÉANCE' +
+        '  <button onclick="window.__current_tab=\'workout\'; IronPulse.App.startProgramSession(\'' + activeProg.id + '\', \'' + nextSession.id + '\');" class="combat-cta-pill w-full py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-cyan-100 hover:text-white shrink-0 active:scale-95 transition text-center shadow-lg">' +
+        '    ' + '⚡ DÉMARRER LA SÉANCE' +
         '  </button>' +
         '</div>' +
         '</div>';
-
       mainEl.innerHTML = html;
       syncFiveTabDock();
       sanitizeDOMAndAssets();

@@ -642,31 +642,34 @@ window.IronPulse = window.IronPulse || {};
       const camera = new THREE.PerspectiveCamera(34, 320 / 272, 0.1, 50);
 
       // Gradient Map 4 tons Cel-Shading Anime (Style Shonen Fighter / Toon Shader)
-      const gradData = new Uint8Array([90, 155, 220, 255]);
+      const gradData = new Uint8Array([120, 180, 230, 255]);
       const toonGradientMap = new THREE.DataTexture(gradData, 4, 1, THREE.LuminanceFormat);
       toonGradientMap.minFilter = THREE.NearestFilter;
       toonGradientMap.magFilter = THREE.NearestFilter;
       toonGradientMap.needsUpdate = true;
 
-      // Éclairage dynamique 3D
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 0.72);
-      hemiLight.position.set(0, 3, 0);
+      // Éclairage dynamique 3D Studio haute clarté (3-Points Lighting Shōnen)
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 1.15);
+      hemiLight.position.set(0, 3.5, 0);
       scene.add(hemiLight);
 
-      const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.05);
+      const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
       dirLight.position.set(2.2, 3.6, 3.2);
       scene.add(dirLight);
 
-      const auraPointLight = new THREE.PointLight(0xf59e0b, 1.4, 6);
+      const ambientLight = new THREE.AmbientLight(0xfff7ed, 0.65);
+      scene.add(ambientLight);
+
+      const auraPointLight = new THREE.PointLight(0x06b6d4, 1.8, 6.5);
       auraPointLight.position.set(0, 0.3, -0.9);
       scene.add(auraPointLight);
 
-      const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.55);
+      const rimLight = new THREE.DirectionalLight(0x22d3ee, 1.35);
       rimLight.position.set(-2.5, 1.5, -2.5);
       scene.add(rimLight);
 
       // Éclairage de visage adouci (Rétro-ingénierie Arc System Works / Guilty Gear)
-      const faceLight = new THREE.DirectionalLight(0xfff8ee, 0.42);
+      const faceLight = new THREE.DirectionalLight(0xfffaed, 0.95);
       faceLight.position.set(0, 0.72, 2.6);
       scene.add(faceLight);
 
@@ -1161,10 +1164,11 @@ window.IronPulse = window.IronPulse || {};
     const isBakiCombat = outfitId === 'outfit-baki-trunks' || morphId === 'ogre-hanma';
     const isBoxerIppo = outfitId === 'outfit-boxer-trunks' || morphId === 'iron-puncher';
     const isZWarrior = outfitId === 'outfit-z-warrior';
-    const isBareChest = isBakiCombat || isBoxerIppo;
+    const isClassicAthlete = !outfitId || outfitId === 'outfit-dogi' || outfitId === 'techwear-dogi' || outfitId === 'outfit-compression';
+    const isBareChest = isBakiCombat || isBoxerIppo || (isClassicAthlete && !isFemale);
 
-    let pantsHex = '#141A26';
-    let pantsDark = '#0B0F17';
+    let pantsHex = '#0F2B36';
+    let pantsDark = '#081A22';
     if (isBakiCombat) {
       pantsHex = '#DC2626';
       pantsDark = '#991B1B';
@@ -1182,21 +1186,25 @@ window.IronPulse = window.IronPulse || {};
       pantsDark = '#020617';
     }
 
-    if (isBakiCombat) {
-      // Short de combat court MMA (Baki style)
-      const midThighL = lerp3(sk.hipL, sk.kneeL, 0.68);
-      const midThighR = lerp3(sk.hipR, sk.kneeR, 0.68);
-      pushCapsule(sk.hipL, midThighL, 0.092 * lScale, 0.080 * lScale, pantsHex, pantsDark, 'legs');
-      pushCapsule(sk.hipR, midThighR, 0.092 * lScale, 0.080 * lScale, pantsHex, pantsDark, 'legs');
+    if (isBakiCombat || isClassicAthlete) {
+      // Short de compression athlétique mi-cuisse (Style Shōnen Pro / Biker Shorts)
+      const midThighL = lerp3(sk.hipL, sk.kneeL, isFemale ? 0.62 : 0.66);
+      const midThighR = lerp3(sk.hipR, sk.kneeR, isFemale ? 0.62 : 0.66);
+      pushCapsule(sk.hipL, midThighL, 0.092 * lScale, 0.082 * lScale, pantsHex, pantsDark, 'legs');
+      pushCapsule(sk.hipR, midThighR, 0.092 * lScale, 0.082 * lScale, pantsHex, pantsDark, 'legs');
+      // Liseré cinétique cyan sur le côté du short
+      pushCapsule(add3(sk.hipL, vec3(-0.088 * lScale, 0, 0)), add3(midThighL, vec3(-0.078 * lScale, 0, 0)), 0.012, 0.010, '#06B6D4', '#22D3EE');
+      pushCapsule(add3(sk.hipR, vec3(0.088 * lScale, 0, 0)), add3(midThighR, vec3(0.078 * lScale, 0, 0)), 0.012, 0.010, '#06B6D4', '#22D3EE');
+
       // Cuisses inférieures et genoux nus ultra-définis
-      pushCapsule(midThighL, sk.kneeL, 0.076 * lScale, 0.070 * lScale, skinBase, skinOutline, 'legs');
-      pushCapsule(midThighR, sk.kneeR, 0.076 * lScale, 0.070 * lScale, skinBase, skinOutline, 'legs');
-      // Mollets nus avec striations
-      pushCapsule(sk.kneeL, sk.ankleL, 0.072 * lScale, 0.052 * lScale, skinBase, skinOutline, 'legs');
-      pushCapsule(sk.kneeR, sk.ankleR, 0.072 * lScale, 0.052 * lScale, skinBase, skinOutline, 'legs');
-      // Chevillères de Muay Thai rouges
-      pushCapsule(lerp3(sk.kneeL, sk.ankleL, 0.85), sk.ankleL, 0.058 * lScale, 0.052 * lScale, '#DC2626', '#991B1B');
-      pushCapsule(lerp3(sk.kneeR, sk.ankleR, 0.85), sk.ankleR, 0.058 * lScale, 0.052 * lScale, '#DC2626', '#991B1B');
+      pushCapsule(midThighL, sk.kneeL, 0.078 * lScale, 0.072 * lScale, skinBase, skinOutline, 'legs');
+      pushCapsule(midThighR, sk.kneeR, 0.078 * lScale, 0.072 * lScale, skinBase, skinOutline, 'legs');
+      // Mollets nus avec striations musculaires
+      pushCapsule(sk.kneeL, sk.ankleL, 0.074 * lScale, 0.054 * lScale, skinBase, skinOutline, 'legs');
+      pushCapsule(sk.kneeR, sk.ankleR, 0.074 * lScale, 0.054 * lScale, skinBase, skinOutline, 'legs');
+      // Chaussettes courtes de sport blanches
+      pushCapsule(lerp3(sk.kneeL, sk.ankleL, 0.88), sk.ankleL, 0.058 * lScale, 0.054 * lScale, '#FFFFFF', '#CBD5E1');
+      pushCapsule(lerp3(sk.kneeR, sk.ankleR, 0.88), sk.ankleR, 0.058 * lScale, 0.054 * lScale, '#FFFFFF', '#CBD5E1');
     } else {
       // Cuisses athlétiques fuselées (Slim-fit athletic joggers ou Dogi)
       pushCapsule(sk.hipL, sk.kneeL, 0.088 * lScale, 0.076 * lScale, pantsHex, pantsDark, 'legs');
@@ -1341,16 +1349,16 @@ window.IronPulse = window.IronPulse || {};
       teeDark = '#0F172A';
     }
 
-    // Buste gainé dans le t-shirt de compression ou torse nu
-    const waistRadius = isFemale ? 0.105 * uScale : 0.118 * uScale;
-    pushCapsule(sk.waist, sk.chest, waistRadius, 0.165 * uScale, teeHex, teeDark, 'core');
+    // Buste gainé dans le t-shirt de compression ou torse nu / brassière athlétique
+    const waistRadius = isFemale ? 0.088 * uScale : 0.118 * uScale;
+    pushCapsule(sk.waist, sk.chest, waistRadius, 0.165 * uScale, isFemale ? skinBase : teeHex, isFemale ? skinMuscle : teeDark, 'core');
 
     // Dorsaux sculptés (V-Taper athlétique ou Cobra Baki)
     const latL = lerp3(sk.waist, sk.shoulderL, 0.68);
-    const latR = lerp3(sk.waist, sk.shoulderR, 0.68);
-    const backWidth = isBakiCombat ? sk.backScale * 1.35 : sk.backScale;
-    pushCapsule(sk.waist, latL, 0.082 * uScale, 0.112 * backWidth, teeHex, teeDark, 'back');
-    pushCapsule(sk.waist, latR, 0.082 * uScale, 0.112 * backWidth, teeHex, teeDark, 'back');
+    const latR = lerp3(sk.waist, sk.shoulderL, 0.68);
+    const backWidth = isBakiCombat ? sk.backScale * 1.35 : (isFemale ? sk.backScale * 0.90 : sk.backScale);
+    pushCapsule(sk.waist, latL, 0.082 * uScale, 0.112 * backWidth, isFemale ? skinBase : teeHex, isFemale ? skinMuscle : teeDark, 'back');
+    pushCapsule(sk.waist, latR, 0.082 * uScale, 0.112 * backWidth, isFemale ? skinBase : teeHex, isFemale ? skinMuscle : teeDark, 'back');
 
     // DOS DU DÉMON (STYLE BAKI HANMA) - SILLONS DORSRAUX & TRAPÈZES COBRA
     const hasDemonBack = isBakiCombat || powerEquipments.includes('equip-demon-back');
@@ -1392,12 +1400,20 @@ window.IronPulse = window.IronPulse || {};
     const pecLPos = add3(pecCenter, vec3(-0.075 * uScale, 0.015, 0));
     const pecRPos = add3(pecCenter, vec3(0.075 * uScale, 0.015, 0));
 
-    // Galbe pectoral (Torse nu strié ou sous t-shirt)
-    pushSphere(pecLPos, 0.088 * uScale, teeHex, teeDark, 'chest', { x: 1.05, y: 0.90, z: 0.76 });
-    pushSphere(pecRPos, 0.088 * uScale, teeHex, teeDark, 'chest', { x: 1.05, y: 0.90, z: 0.76 });
+    // Galbe pectoral (Torse nu strié ou Brassière de sport athlétique pour guerrière)
+    const chestHex = isFemale ? '#0F2B36' : teeHex;
+    const chestDark = isFemale ? '#06B6D4' : teeDark;
+    pushSphere(pecLPos, (isFemale ? 0.082 : 0.088) * uScale, chestHex, chestDark, 'chest', { x: 1.05, y: 0.90, z: 0.82 });
+    pushSphere(pecRPos, (isFemale ? 0.082 : 0.088) * uScale, chestHex, chestDark, 'chest', { x: 1.05, y: 0.90, z: 0.82 });
+    if (isFemale) {
+      // Bande de maintien et bretelles athlétiques de la brassière
+      pushCapsule(pecLPos, pecRPos, 0.032 * uScale, 0.032 * uScale, '#0F2B36', '#06B6D4');
+      pushCapsule(pecLPos, add3(sk.shoulderL, vec3(0.04, -0.02, 0)), 0.022 * uScale, 0.018 * uScale, '#0F2B36', '#06B6D4');
+      pushCapsule(pecRPos, add3(sk.shoulderR, vec3(-0.04, -0.02, 0)), 0.022 * uScale, 0.018 * uScale, '#0F2B36', '#06B6D4');
+    }
 
-    // ABDOMINAUX 8-PACK & DENTELÉS EN DENTS DE REQUIN (BAKI / IPPO)
-    if (isBareChest) {
+    // ABDOMINAUX 8-PACK & DENTELÉS EN DENTS DE REQUIN (BAKI / IPPO / SHŌNEN PRO)
+    if (isBareChest || isFemale) {
       for (let ab = 0; ab < 4; ab++) {
         const abY = -0.045 + ab * 0.052;
         const abL = add3(sk.waist, vec3(-0.036 * uScale, abY, 0.092 * uScale));
@@ -1659,6 +1675,16 @@ window.IronPulse = window.IronPulse || {};
     // Ligne frontale nette (Hairline)
     pushCapsule(add3(sk.head, vec3(-0.052, 0.048, 0.052)), add3(sk.head, vec3(0.052, 0.048, 0.052)), 0.014, 0.014, hairTint, hairStroke);
 
+    // Coiffure féminine Shōnen (Queue de cheval haute de guerrière Valkyrie)
+    if (isFemale || hairstyleId === 'valkyrie-ponytail' || hairstyleId === 'valkyrie-braids') {
+      pushSphere(add3(sk.head, vec3(0, 0.065, -0.04)), 0.088, hairTint, hairStroke);
+      pushSphere(add3(sk.head, vec3(0, 0.088, -0.09)), 0.024, '#06B6D4', '#0891B2');
+      pushCapsule(add3(sk.head, vec3(0, 0.088, -0.09)), add3(sk.head, vec3(0, 0.02, -0.26)), 0.038, 0.014, hairTint, hairStroke);
+      pushCapsule(add3(sk.head, vec3(0, 0.02, -0.26)), add3(sk.head, vec3(0, -0.12, -0.36)), 0.028, 0.008, hairTint, hairStroke);
+      pushCapsule(add3(sk.head, vec3(-0.048, 0.042, 0.065)), add3(sk.head, vec3(-0.062, -0.025, 0.05)), 0.016, 0.006, hairTint, hairStroke);
+      pushCapsule(add3(sk.head, vec3(0.048, 0.042, 0.065)), add3(sk.head, vec3(0.062, -0.025, 0.05)), 0.016, 0.006, hairTint, hairStroke);
+    }
+
     // Mèches volumétriques si coiffures stylisées (Édition Nocturne & Style Urbain)
     if (hairstyleId === 'solo-undercut' || hairstyleId === 'cyber-undercut') {
       pushSphere(add3(sk.head, vec3(0, 0.055, -0.01)), 0.088, hairTint, hairStroke);
@@ -1720,7 +1746,7 @@ window.IronPulse = window.IronPulse || {};
     // RENDU THREE.JS WEBGL (SI DISPONIBLE) OU FALLBACK CEL-SHADING LOGICIEL
     // ========================================================================
     if (gl) {
-      const customGlbUrl = app.customModelGlb || hero?.appearance?.customModelGlb || './src/assets/models/hero-anime.glb';
+      const customGlbUrl = app.customModelGlb || hero?.appearance?.customModelGlb || null;
       if (customGlbUrl && gl.currentGlbUrl !== customGlbUrl) {
         gl.currentGlbUrl = customGlbUrl;
         gl.loadGltfModel(
@@ -2202,6 +2228,8 @@ window.IronPulse = window.IronPulse || {};
     setPreviewMove(moveId) {
       state3D.activePreviewMove = moveId;
       state3D.tempoStartSec = performance.now() / 1000;
+      startLoop();
+      renderAllVisibleCanvases();
       if (ns.App && ns.App.refresh) ns.App.refresh();
     },
     setTempoPreset(presetId) {
@@ -2250,4 +2278,8 @@ window.IronPulse = window.IronPulse || {};
       }
     }
   };
+  // Démarrage automatique de la boucle cinématique dès le chargement du module
+  try {
+    startLoop();
+  } catch (_) {}
 })(window.IronPulse);

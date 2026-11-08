@@ -61,7 +61,7 @@
       border-left: 1px solid #1E293B;
       border-right: 1px solid #1E293B;
     }
-    @media (max-width: 500px) {
+    @media (max-width: 640px) {
       .app-shell-framed {
         max-width: 100% !important;
         width: 100% !important;
@@ -290,7 +290,7 @@
         { id: 'progress', iconSvg: SVG_ICONS.navOracle, label: 'ORACLE IA' }
       ];
 
-      dock.style.cssText = 'display:grid !important; grid-template-columns:repeat(5, minmax(0, 1fr)) !important; width:100% !important; gap:4px !important; padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px)) !important; align-items:end !important; box-sizing:border-box !important;';
+      dock.style.cssText = 'display:grid !important; grid-template-columns:repeat(5, minmax(0, 1fr)) !important; width:100% !important; gap:2px !important; padding:4px 4px calc(6px + env(safe-area-inset-bottom,0px)) !important; align-items:end !important; box-sizing:border-box !important; overflow:hidden !important;';
 
       dock.innerHTML = tabs.map(function(item) {
         var active = (t === item.id) || (item.id === 'programs' && t === 'exercises') || (item.id === 'progress' && t === 'history');
@@ -357,6 +357,10 @@
       if (!hero) return;
       var mainEl = document.querySelector('#app-root main');
       if (!mainEl) return;
+      var rootEl = document.getElementById('app-root');
+      if (rootEl && window.innerWidth <= 640) {
+        rootEl.className = 'app-shell-full';
+      }
 
       var is3D = window.__hero3d_mode !== false;
       var activeProg = (ns.Data && ns.Data.PREDEFINED_PROGRAMS) ? (ns.Data.PREDEFINED_PROGRAMS.find(function(p){ return p.id === state.profile.activeProgramId; }) || ns.Data.PREDEFINED_PROGRAMS[0]) : { id: 'prog-ppl', name: 'Éveil du Géant' };
@@ -375,8 +379,8 @@
         var eq = m && m.equipped;
         var unl = m && m.unlocked;
         var act = unl ? "IronPulse.App.toggleEquipRelic('" + s.id + "'); setTimeout(renderAirFocusHomeScreen, 40);" : "IronPulse.App.openRpgSubTab('relics')";
-        return '<button onclick="' + act + '" class="relic-glow-slot ' + (eq ? 'equipped' : '') + '" title="' + s.label + '">' +
-               '<span class="text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.7)]">' + s.svg + '</span></button>';
+        return '<button onclick="' + act + '" class="relic-glow-slot ' + (eq ? 'equipped' : '') + ' w-full max-w-[42px] aspect-square mx-auto" title="' + s.label + '">' +
+               '<span class="text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.7)] scale-90 sm:scale-100">' + s.svg + '</span></button>';
       }).join('');
 
       var stObj = hero.stats || {};
@@ -391,15 +395,15 @@
       var dialsHtml = stats.map(function(st) {
         var pct = Math.min(100, Math.max(12, st.val));
         var off = 100 - pct;
-        return '<div onclick="IronPulse.App.openRpgSubTab(\'hero\')" class="radial-dial-card cursor-pointer flex flex-col items-center justify-center p-1 sm:p-1.5 rounded-xl bg-[#090F1C]/90 border border-slate-800/80 hover:border-cyan-500/50 shadow-md">' +
-               '<span class="text-[10px] sm:text-[10.5px] font-black tracking-wider text-slate-300 uppercase leading-none mb-0.5">' + st.k + '</span>' +
-               '<div class="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center" style="max-width:44px;max-height:44px;width:100%;aspect-ratio:1/1;">' +
-               '<svg width="48" height="48" style="width:100%;height:100%;max-width:44px;max-height:44px;" class="transform -rotate-90" viewBox="0 0 36 36">' +
+        return '<div onclick="IronPulse.App.openRpgSubTab(\'hero\')" class="radial-dial-card cursor-pointer flex flex-col items-center justify-center p-0.5 sm:p-1.5 rounded-xl bg-[#090F1C]/90 border border-slate-800/80 hover:border-cyan-500/50 shadow-md min-w-0">' +
+               '<span class="text-[9.5px] sm:text-[10.5px] font-black tracking-wider text-slate-300 uppercase leading-none mb-0.5">' + st.k + '</span>' +
+               '<div class="relative w-8 h-8 sm:w-11 sm:h-11 flex items-center justify-center" style="max-width:38px;max-height:38px;width:100%;aspect-ratio:1/1;">' +
+               '<svg width="48" height="48" style="width:100%;height:100%;max-width:38px;max-height:38px;" class="transform -rotate-90" viewBox="0 0 36 36">' +
                '<path class="text-slate-800/80" stroke-width="3" stroke="#1E293B" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />' +
                '<path stroke-dasharray="100, 100" stroke-dashoffset="' + off + '" stroke-width="3" stroke-linecap="round" stroke="' + st.col + '" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />' +
                '</svg>' +
-               '<span class="absolute font-black text-xs font-mono text-white">' + st.val + '</span></div>' +
-               '<span class="text-xs mt-0.5">' + st.icon + '</span></div>';
+               '<span class="absolute font-black text-[11px] sm:text-xs font-mono text-white">' + st.val + '</span></div>' +
+               '<span class="text-[10.5px] mt-0.5">' + st.icon + '</span></div>';
       }).join('');
 
       var stageContent = '';

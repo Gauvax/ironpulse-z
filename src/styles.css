@@ -138,7 +138,7 @@ svg {
   contain: layout paint;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 640px) {
   .app-shell-framed {
     max-width: 100% !important;
     width: 100% !important;

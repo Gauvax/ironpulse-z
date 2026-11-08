@@ -1,4 +1,4 @@
-// IronPulse Z — Moteur 3D WebGL Three.js (Shaders Cel-Shading Anime, Éclairage Dynamique 3D, Métronome de Tempo Biomécanique 3-1-1 & Audio Tactique/Cinétique)
+﻿// IronPulse Z — Moteur 3D WebGL Three.js (Shaders Cel-Shading Anime, Éclairage Dynamique 3D, Métronome de Tempo Biomécanique 3-1-1 & Audio Tactique/Cinétique)
 window.IronPulse = window.IronPulse || {};
 
 (function (ns) {
@@ -1325,7 +1325,7 @@ window.IronPulse = window.IronPulse || {};
       );
     }
 
-    // --- TORSE : T-SHIRT DE PERFORMANCE NOIR FIT OU TORSE NU MARTIAL STRIÉ (BAKI / IPPO / DBZ) ---
+    // --- TORSE : T-SHIRT DE PERFORMANCE NOIR FIT OU TORSE NU MARTIAL STRIÉ (BAKI / IPPO / Pro) ---
     const uScale = isFemale ? sk.upperScale * 0.92 : sk.upperScale;
     let teeHex = outfitId === 'stringer-cargo' ? '#182030' : (outfitId === 'cyber-pulse' ? '#0F172A' : '#141924');
     let teeDark = outfitId === 'stringer-cargo' ? '#0B0F19' : (outfitId === 'cyber-pulse' ? '#020617' : '#0B0E15');
@@ -1422,7 +1422,7 @@ window.IronPulse = window.IronPulse || {};
         );
       }
     } else if (isZWarrior) {
-      // Veste de Dogi orange DBZ croisée sur le torse
+      // Veste de Tenue Athlétique Pro croisée sur le torse
       pushCapsule(
         add3(sk.shoulderL, vec3(0.015, 0.015, 0.02)),
         add3(sk.waist, vec3(0.035, 0, 0.07)),
@@ -1502,7 +1502,7 @@ window.IronPulse = window.IronPulse || {};
       pushCapsule(lerp3(sk.elbowR, sk.wristR, 0.78), sk.wristR, 0.058 * uScale, 0.056 * uScale, '#1E3A8A', '#0F172A');
     }
 
-    // Mains athlétiques avec paume et doigts stylisés (ou Gants Rouges Persona 5)
+    // Mains athlétiques avec paume et doigts stylisés (ou Gants Rouges Style Urbain)
     const isRedGloves = isPhantomThief || powerEquipments.includes('phantom-gloves');
     const handBase = isRedGloves ? '#DC2626' : skinBase;
     const handStroke = isRedGloves ? '#7F1D1D' : skinOutline;
@@ -1589,10 +1589,10 @@ window.IronPulse = window.IronPulse || {};
     pushCapsule(add3(sk.head, vec3(-0.042, 0.026, 0.070)), add3(sk.head, vec3(-0.016, 0.029, 0.074)), 0.006, 0.005, '#0B0F19', '#0B0F19');
     pushCapsule(add3(sk.head, vec3(0.016, 0.029, 0.074)), add3(sk.head, vec3(0.042, 0.026, 0.070)), 0.005, 0.006, '#0B0F19', '#0B0F19');
 
-    // Marquage facial 3D (Cicatrice de guerre, Runes de Mana, Masque Persona 5 ou Yeux Solo Leveling)
+    // Marquage facial 3D (Cicatrice de guerre, Runes de Mana, Masque Style Urbain ou Yeux Édition Nocturne)
     const warMarkingId = hero?.warMarkingObj?.id || app.warMarking;
     if (warMarkingId === 'phantom-mask' || isPhantomThief) {
-      // Masque Persona 5 Voleur Fantôme blanc aux pointes acérées
+      // Masque Style Urbain Voleur Fantôme blanc aux pointes acérées
       const maskCenter = add3(sk.head, vec3(0, 0.012, 0.080));
       pushCapsule(
         add3(maskCenter, vec3(-0.052, 0.008, 0)),
@@ -1619,7 +1619,7 @@ window.IronPulse = window.IronPulse || {};
       pushSphere(add3(sk.head, vec3(0.030, -0.010, 0.076)), 0.006, eyeGlowHex, eyeHex);
     }
 
-    // Volutes de fumée de Mana émanant des yeux 3D (Style Solo Leveling Sung Jin-woo)
+    // Volutes de fumée de Mana émanant des yeux 3D (Style Édition Nocturne Athlète Apex)
     const isMonarchEyes = warMarkingId === 'shadow-monarch-eyes' || isMonarchTrench;
     if (isMonarchEyes || (hero?.manaEyeSmoke !== false && app.manaEyeSmoke !== false && isBurst)) {
       const smokeCount = isMonarchEyes ? 3 : 2;
@@ -1655,10 +1655,10 @@ window.IronPulse = window.IronPulse || {};
     // Ligne frontale nette (Hairline)
     pushCapsule(add3(sk.head, vec3(-0.052, 0.048, 0.052)), add3(sk.head, vec3(0.052, 0.048, 0.052)), 0.014, 0.014, hairTint, hairStroke);
 
-    // Mèches volumétriques si coiffures stylisées (Solo Leveling & Persona 5)
+    // Mèches volumétriques si coiffures stylisées (Édition Nocturne & Style Urbain)
     if (hairstyleId === 'solo-undercut' || hairstyleId === 'cyber-undercut') {
       pushSphere(add3(sk.head, vec3(0, 0.055, -0.01)), 0.088, hairTint, hairStroke);
-      // Mèche acérée tombant sur le front façon Sung Jin-woo
+      // Mèche acérée tombant sur le front façon Athlète Apex
       pushCapsule(add3(sk.head, vec3(0.01, 0.055, 0.03)), add3(sk.head, vec3(-0.035, 0.022, 0.088)), 0.024, 0.006, hairTint, hairStroke);
       pushCapsule(add3(sk.head, vec3(-0.02, 0.058, 0.02)), add3(sk.head, vec3(-0.065, 0.038, 0.072)), 0.022, 0.006, hairTint, hairStroke);
     } else if (hairstyleId === 'persona-joker') {

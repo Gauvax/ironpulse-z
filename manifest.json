@@ -1,7 +1,7 @@
 {
-  "name": "IronPulse Z — MMORPG Musculation 3D & Coach IA",
-  "short_name": "IronPulse Z",
-  "description": "MMORPG de musculation 3D avec Avatar interactif, Donjons de Boss et Coach IA Gemini.",
+  "name": "ALTHER FIT — Forge ton ALTR (Musculation 3D & Coach IA)",
+  "short_name": "ALTHER FIT",
+  "description": "Forge ton ALTR : l'application qui transforme tes séances de musculation en progression d'Alter Ego 3D, Guildes et Coach IA.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#080B11",
@@ -9,7 +9,7 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./src/icon.svg",
+      "src": "./src/icon.svg?v=5.1",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

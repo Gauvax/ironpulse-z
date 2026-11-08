@@ -1,21 +1,22 @@
-// IronPulse — Contrôleur Principal d'Interface Mobile (7 Écrans + Chronomètre + Modales)
+// IronPulse â€” ContrÃ´leur Principal d'Interface Mobile (7 Ã‰crans + ChronomÃ¨tre + Modales)
 window.IronPulse = window.IronPulse || {};
 
 (function (ns) {
   const ui = {
     currentTab: 'home', // 'home' | 'rpg' | 'exercises' | 'programs' | 'workout' | 'history' | 'progress' | 'profile'
     frameMode: 'framed', // 'framed' | 'full'
-    // Assistant Première Utilisation (Questionnaire Biométrique + Avatar 3D + Tutoriel)
+    heroDisplayMode: 'art', // 'art' (Manga HD Plein Pied) | '3d' (Studio 3D 360Â°)
+    // Assistant PremiÃ¨re Utilisation (Questionnaire BiomÃ©trique + Avatar 3D + Tutoriel)
     onboardingOpen: false,
-    onboardingStep: 1, // 1: Biométrie (Âge/Taille/Poids) | 2: Objectif & Niveau | 3: Guerrier 3D | 4: Tutoriel App | 5: Synthèse & Départ
+    onboardingStep: 1, // 1: BiomÃ©trie (Ã‚ge/Taille/Poids) | 2: Objectif & Niveau | 3: Guerrier 3D | 4: Tutoriel App | 5: SynthÃ¨se & DÃ©part
     tutorialSlideIdx: 0,
-    // Visite guidée interactive en direct sur les onglets de l'application
+    // Visite guidÃ©e interactive en direct sur les onglets de l'application
     guidedTourActive: false,
     guidedTourStep: 0,
-    // Sous-onglet RPG Héros
+    // Sous-onglet RPG HÃ©ros
     rpgSubTab: 'hero', // 'hero' | 'customize' | 'quests' | 'relics' | 'guild'
     activeWorkout3DExerciseIdx: 0,
-    // Filtres Répertoire d'exercices
+    // Filtres RÃ©pertoire d'exercices
     exerciseSearch: '',
     selectedMuscle: 'all',
     selectedEquipment: 'Tous',
@@ -46,7 +47,7 @@ window.IronPulse = window.IronPulse || {};
   let workoutElapsedInterval = null;
   let restCountdownInterval = null;
 
-  // Petit synthétiseur Web Audio pour le bip de fin de repos (sans fichier audio externe)
+  // Petit synthÃ©tiseur Web Audio pour le bip de fin de repos (sans fichier audio externe)
   function playTimerBeep() {
     const state = ns.Storage.getState();
     if (!state.profile.soundEnabled) return;
@@ -66,7 +67,7 @@ window.IronPulse = window.IronPulse || {};
       osc.start();
       osc.stop(ctx.currentTime + 0.43);
     } catch (e) {
-      // Ignorer si l'autoplay audio est bloqué
+      // Ignorer si l'autoplay audio est bloquÃ©
     }
   }
 
@@ -147,7 +148,7 @@ window.IronPulse = window.IronPulse || {};
         <div class="flex items-center justify-between gap-2 mb-2">
           <div class="flex items-center gap-2.5 min-w-0">
             <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
-              ⏱
+              â±
             </div>
             <div class="min-w-0">
               <div class="text-[11px] uppercase tracking-wider text-emerald-400 font-semibold">Temps de repos</div>
@@ -169,7 +170,7 @@ window.IronPulse = window.IronPulse || {};
             +15 sec
           </button>
           <button onclick="IronPulse.App.skipRest()" class="py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-bold text-emerald-300 active:scale-95 transition">
-            Passer ⏭
+            Passer â­
           </button>
         </div>
       </div>
@@ -184,7 +185,7 @@ window.IronPulse = window.IronPulse || {};
       .replace(/"/g, '&quot;');
   }
 
-  // Démarrer une séance à partir d'un modèle (programme prédéfini, séance perso, ou séance libre)
+  // DÃ©marrer une sÃ©ance Ã  partir d'un modÃ¨le (programme prÃ©dÃ©fini, sÃ©ance perso, ou sÃ©ance libre)
   function startWorkoutFromTemplate(sessionTemplate, programId) {
     const state = ns.Storage.getState();
 
@@ -218,7 +219,7 @@ window.IronPulse = window.IronPulse || {};
 
     state.activeWorkout = {
       id: 'live-' + Date.now(),
-      name: sessionTemplate.name || 'Séance libre',
+      name: sessionTemplate.name || 'SÃ©ance libre',
       programId: programId || null,
       startedAt: Date.now(),
       notes: '',
@@ -234,7 +235,7 @@ window.IronPulse = window.IronPulse || {};
   function startEmptyWorkout() {
     startWorkoutFromTemplate(
       {
-        name: 'Séance Libre Personnalisée',
+        name: 'SÃ©ance Libre PersonnalisÃ©e',
         exercises: [
           { exerciseId: 'ex-bench-press', targetSets: 3, targetReps: '8-10', restSeconds: 120, note: '' },
           { exerciseId: 'ex-lat-pulldown', targetSets: 3, targetReps: '10-12', restSeconds: 90, note: '' }
@@ -244,7 +245,7 @@ window.IronPulse = window.IronPulse || {};
     );
   }
 
-  // Formatage markdown léger pour les réponses du Coach IA
+  // Formatage markdown lÃ©ger pour les rÃ©ponses du Coach IA
   function renderSimpleMarkdown(mdText) {
     const lines = String(mdText || '').split('\n');
     return lines
@@ -262,7 +263,7 @@ window.IronPulse = window.IronPulse || {};
           return `<h3 class="text-base font-bold text-emerald-400 mt-2 mb-1">${formatted.replace(/^##\s+/, '')}</h3>`;
         }
         if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-          return `<div class="flex items-start gap-2 text-xs text-slate-200 leading-relaxed mb-1.5"><span class="text-emerald-400 font-bold mt-0.5">•</span><span>${formatted.replace(/^[-*]\s+/, '')}</span></div>`;
+          return `<div class="flex items-start gap-2 text-xs text-slate-200 leading-relaxed mb-1.5"><span class="text-emerald-400 font-bold mt-0.5">â€¢</span><span>${formatted.replace(/^[-*]\s+/, '')}</span></div>`;
         }
         if (trimmed.startsWith('> ')) {
           return `<div class="border-l-2 border-amber-500/60 pl-2.5 py-1 my-1.5 text-[11px] text-amber-200/90 bg-amber-500/10 rounded-r-lg">${formatted.replace(/^>\s+/, '')}</div>`;
@@ -273,12 +274,11 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 1 : QG DU HÉROS (INTERFACE FUSIONNÉE JEU RPG : AVATAR + QUÊTES)
+  // RENDU Ã‰CRAN 1 : QG DU HÃ‰ROS â€” AIR & FOCUS (CHARTE GRAPHIQUE Ã‰PURÃ‰E & SHÅŒNEN APEX)
   // ============================================================================
   function renderHomeScreen() {
     const state = ns.Storage.getState();
     const { profile, history, activeWorkout } = state;
-    const analysis = ns.AICoach.analyzeTrainingData();
     const hero = ns.RPG ? ns.RPG.getHeroProfile() : null;
 
     const activeProg =
@@ -288,114 +288,221 @@ window.IronPulse = window.IronPulse || {};
     const nextSession = activeProg.sessions[history.length % activeProg.sessions.length] || activeProg.sessions[0];
 
     if (!hero) {
-      return `<div class="p-4 text-xs text-slate-400">Initialisation du Système RPG...</div>`;
+      return `<div class="p-4 text-xs text-slate-400">Initialisation du SystÃ¨me RPG...</div>`;
     }
 
-    const avatarSvg = ns.RPG.renderHeroAvatarSVG(hero);
     const relics = hero.relicsStatus || [];
+    const is3DMode = ui.heroDisplayMode === '3d';
 
-    const renderRelicBadge = (r) => `
-      <button
-        onclick="${r.unlocked ? `IronPulse.App.toggleEquipRelic('${r.id}')` : `IronPulse.App.openRpgSubTab('relics')`}"
-        class="flex flex-col items-center justify-center p-2 rounded-xl border transition active:scale-95 ${
-          r.equipped
-            ? 'bg-emerald-500/15 border-emerald-400/60 shadow-sm shadow-emerald-500/20'
-            : r.unlocked
-            ? 'bg-slate-900/80 border-slate-700/80 hover:border-slate-500'
-            : 'bg-slate-950/50 border-slate-800/60 opacity-60'
-        }"
-        title="${escapeHtml(r.name)} — ${escapeHtml(r.bonusLabel)}"
-      >
-        <span class="text-base leading-none mb-1">${r.unlocked ? r.icon : '🔒'}</span>
-        <span class="text-[8px] font-black uppercase tracking-wider ${r.equipped ? 'text-emerald-400' : 'text-slate-400'} truncate w-full text-center">${escapeHtml(r.slot)}</span>
-      </button>
-    `;
+    // 6 Emplacements de reliques standardisÃ©s (Design Ã©purÃ© sans troncature)
+    const relicSlotsConfig = [
+      { id: 'relic-crown', defaultIcon: 'ðŸª–', label: 'Casque', fallbackName: 'Casque de MaÃ®tre' },
+      { id: 'relic-gauntlets', defaultIcon: 'ðŸ©¹', label: 'Bandages', fallbackName: 'Bandages de Puissance' },
+      { id: 'relic-belt', defaultIcon: 'ðŸ¥‹', label: 'Ceinture', fallbackName: 'Ceinture de Force' },
+      { id: 'relic-boots', defaultIcon: 'ðŸ¥¾', label: 'Bottes', fallbackName: 'Bottes dâ€™Ancrage' },
+      { id: 'relic-pauldrons', defaultIcon: 'ðŸ“¿', label: 'Amulette', fallbackName: 'Amulette Runique' },
+      { id: 'relic-blade', defaultIcon: 'ðŸ’', label: 'Anneau', fallbackName: 'Anneau de Puissance' }
+    ];
 
-    // Estimations de gain d'XP pour la quête du jour
+    const renderRelicSlot = (slotCfg) => {
+      const matched = relics.find((r) => r.id === slotCfg.id) || relics.find((r) => r.slot === slotCfg.label);
+      const isEquipped = matched ? !!matched.equipped : false;
+      const isUnlocked = matched ? !!matched.unlocked : false;
+      const icon = matched && matched.icon ? matched.icon : slotCfg.defaultIcon;
+      const name = matched ? matched.name : slotCfg.fallbackName;
+      const bonus = matched && matched.bonusLabel ? matched.bonusLabel : '+10% Puissance';
+
+      return `
+        <button
+          onclick="${isUnlocked ? `IronPulse.App.toggleEquipRelic('${matched ? matched.id : slotCfg.id}')` : `IronPulse.App.openRpgSubTab('relics')`}"
+          class="relic-glow-slot group relative ${isEquipped ? 'equipped' : ''}"
+          title="${escapeHtml(name)} â€” ${escapeHtml(bonus)}"
+        >
+          <span class="text-xl sm:text-2xl leading-none filter drop-shadow-[0_0_6px_rgba(6,182,212,0.6)]">${isUnlocked ? icon : 'ðŸ”’'}</span>
+          ${isEquipped ? `<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#06B6D4]"></span>` : ''}
+        </button>
+      `;
+    };
+
+    // 6 Attributs Radiaux BiomÃ©caniques (Dials circulaires SVG - Image 2)
+    const attributesConfig = [
+      { code: 'STR', label: 'Force', val: 78, icon: 'ðŸ’ª', color: '#06B6D4' },
+      { code: 'VIT', label: 'SantÃ©', val: 72, icon: 'â¤ï¸', color: '#10B981' },
+      { code: 'PWR', label: 'Impact', val: 84, icon: 'âš¡', color: '#F59E0B' },
+      { code: 'END', label: 'Endur.', val: 75, icon: 'ðŸ›¡ï¸', color: '#6366F1' },
+      { code: 'AGI', label: 'Vitesse', val: 69, icon: 'âš”ï¸', color: '#EC4899' },
+      { code: 'INT', label: 'Tactique', val: 61, icon: 'ðŸ§ ', color: '#38BDF8' }
+    ];
+
+    // Calcul de l'XP de quÃªte
     const questEstimatedXp = 120 + nextSession.exercises.length * 3 * 18 + 180;
 
     return `
       <div class="space-y-4 pb-6 animate-slide-up">
-        <!-- CARTE CENTRALE STUDIO AAA : AVATAR 3D ÉPURÉ + STATS & ARÈNE SOMBRE -->
-        <div class="relative overflow-hidden bg-[#0A0E17]/95 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl space-y-3.5">
-          <!-- Fond Studio Dark Vignette -->
-          <div class="absolute inset-0 bg-radial-gradient from-transparent via-[#0A0E17]/60 to-[#05070B] pointer-events-none"></div>
+        <!-- CARTE CENTRALE STUDIO AIR & FOCUS (HUD DYNAMIQUE + AVATAR PLEIN PIED + STATS) -->
+        <div class="relative overflow-hidden bg-[#070B14]/95 backdrop-blur-2xl border border-cyan-500/25 rounded-3xl p-4 shadow-[0_12px_40px_rgba(0,0,0,0.85)] space-y-4">
+          <!-- Fond Studio VignetÃ© avec Ligne NÃ©on Cyan -->
+          <div class="absolute inset-0 bg-gradient-to-b from-cyan-950/20 via-transparent to-[#04060A] pointer-events-none"></div>
 
-          <!-- En-tête : Identité de l'Athlète & Niveau Studio -->
-          <div class="relative z-10 flex items-center justify-between gap-3">
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${hero.rankObj.badgeBg} border border-white/15">
-                  RANG ${hero.rankObj.rank}
+          <!-- TOP BARRE DYNAMIQUE : AVATAR CIRCULAIRE + CP + OR & STREAK -->
+          <div class="relative z-10 flex items-center justify-between gap-2 px-1 pt-1">
+            <!-- Profil Gauche : Avatar & Niveau -->
+            <div class="flex items-center gap-2.5">
+              <div class="relative cursor-pointer" onclick="IronPulse.App.openRpgSubTab('hero')">
+                <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-400 shadow-[0_0_14px_rgba(6,182,212,0.6)] bg-slate-900">
+                  <img src="./src/assets/hero-anime-original.svg" alt="Avatar" class="w-full h-full object-cover object-top scale-125" />
+                </div>
+                <span class="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-black font-mono border border-white/50 shadow">
+                  LV.${hero.level}
                 </span>
-                <span class="text-xs font-bold text-amber-300 truncate">« ${escapeHtml(hero.appearance?.battleTitle || hero.appearance?.customTitle || hero.rankObj.title)} »</span>
               </div>
-              <div class="flex items-center gap-2 mt-1.5 flex-wrap">
-                <h1 class="text-xl font-black text-white tracking-tight truncate">${escapeHtml(hero.heroName)}</h1>
-                <button onclick="IronPulse.App.openRpgSubTab('hero')" class="px-2.5 py-1 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-[10px] text-emerald-300 font-bold transition flex items-center gap-1">
-                  ${hero.classObj.icon} ${escapeHtml(hero.classObj.name)} ↻
-                </button>
-                <button onclick="IronPulse.App.openRpgSubTab('customize')" class="px-2.5 py-1 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/40 text-[10px] text-indigo-300 font-extrabold transition">
-                  ⚙️ Studio 3D
-                </button>
+              <div class="min-w-0">
+                <h1 class="text-sm font-black text-white tracking-wide uppercase font-mono truncate">${escapeHtml(hero.heroName)}</h1>
+                <div class="text-[10px] font-extrabold text-cyan-300 flex items-center gap-1">
+                  <span>${hero.classObj.icon}</span>
+                  <span class="truncate">${escapeHtml(hero.classObj.name)}</span>
+                </div>
               </div>
             </div>
-            <div class="text-right shrink-0 bg-slate-950/90 border border-emerald-500/40 rounded-2xl px-3 py-2 shadow-lg">
-              <div class="text-[9px] uppercase tracking-wider text-slate-400 font-extrabold">NIVEAU</div>
-              <div class="text-2xl font-black text-emerald-400 leading-none mt-0.5 font-mono">${hero.level}</div>
+
+            <!-- Centre : Badge Titre & Combat Power NÃ©on Cyan -->
+            <div class="text-center px-1">
+              <div class="text-[9px] font-black uppercase tracking-widest text-slate-400">IRONPULSE Z</div>
+              <div class="px-2.5 py-0.5 rounded-full bg-cyan-950/90 border border-cyan-400/60 shadow-[0_0_15px_rgba(6,182,212,0.35)] text-cyan-300 font-black text-xs font-mono tracking-wider">
+                CP : ${hero.combatPower.toLocaleString('fr-FR')}
+              </div>
+            </div>
+
+            <!-- Droite : Or & Streak Fire 14j -->
+            <div class="text-right flex flex-col items-end shrink-0">
+              <div class="text-xs font-black text-amber-300 flex items-center gap-1 font-mono">
+                <span>ðŸª™</span> ${hero.gold.toLocaleString('fr-FR')}
+              </div>
+              <div class="text-[10px] font-black text-orange-400 flex items-center gap-1 uppercase tracking-wider">
+                <span>ðŸ”¥</span> ${hero.streakDays} JOURS
+              </div>
             </div>
           </div>
 
-          <!-- Barre de Puissance de Combat & Jauges Minimalistes -->
-          <div class="relative z-10 bg-slate-950/70 border border-white/5 rounded-2xl p-3 space-y-2 backdrop-blur-md">
-            <div class="flex items-center justify-between text-xs flex-wrap gap-2">
-              <span class="text-slate-200 font-extrabold flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                COMBAT POWER : <strong class="text-emerald-400 font-mono text-sm">${hero.combatPower}</strong>
+          <!-- JAUGES DOUBLES HORIZONTALES HP & SP (IMAGE 2) -->
+          <div class="relative z-10 grid grid-cols-2 gap-3 px-1">
+            <!-- Jauge HP (Rouge / Rose NÃ©on) -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px] font-black">
+                <span class="text-rose-400 flex items-center gap-1">â¤ï¸ HP</span>
+                <span class="text-slate-200 font-mono">${hero.hpMax} / ${hero.hpMax}</span>
+              </div>
+              <div class="w-full h-2 bg-slate-900/90 rounded-full overflow-hidden border border-rose-500/30 p-[1px]">
+                <div class="h-full rounded-full bg-gradient-to-r from-rose-600 via-rose-500 to-red-400 shadow-[0_0_8px_rgba(244,63,94,0.8)]" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <!-- Jauge SP / Ki (Cyan NÃ©on) -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px] font-black">
+                <span class="text-cyan-400 flex items-center gap-1">âš¡ SP</span>
+                <span class="text-slate-200 font-mono">${hero.mpMax} / ${hero.mpMax}</span>
+              </div>
+              <div class="w-full h-2 bg-slate-900/90 rounded-full overflow-hidden border border-cyan-500/30 p-[1px]">
+                <div class="h-full rounded-full bg-gradient-to-r from-cyan-600 via-teal-400 to-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.8)]" style="width: 95%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCÃˆNE CENTRALE DÃ‰GAGÃ‰E : GUERRIER SHÅŒNEN PLEIN PIED (AIR & FOCUS SANS ENCOMBREMENT) -->
+          <div class="relative w-full rounded-2xl overflow-hidden border border-cyan-500/20 bg-[#050811] shadow-2xl min-h-[410px] flex flex-col justify-between">
+            <!-- Fond d'ambiance avec ligne de lumiÃ¨re cyan horizontale -->
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0A0F1D]/40 via-transparent to-[#04060A] pointer-events-none"></div>
+            <div class="absolute top-1/3 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent pointer-events-none"></div>
+
+            <!-- En-tÃªte de scÃ¨ne : Mode Actif & Switcher HD / 3D -->
+            <div class="relative z-10 flex items-center justify-between p-2.5">
+              <span class="px-2.5 py-0.5 rounded-full bg-slate-950/80 border border-cyan-500/30 text-[9px] font-black uppercase tracking-wider text-cyan-300 backdrop-blur-md">
+                ${is3DMode ? 'âš¡ MOTEUR 3D â€¢ 360Â°' : 'ðŸŽ¨ APEX SHÅŒNEN â€¢ HD'}
               </span>
-              <div class="flex items-center gap-2.5 text-[11px] font-black">
-                <span class="text-rose-400 flex items-center gap-0.5">❤️ ${hero.hpMax}</span>
-                <span class="text-cyan-300 flex items-center gap-0.5">💧 ${hero.mpMax}</span>
-                <span class="text-amber-300 flex items-center gap-0.5">🪙 ${hero.gold}</span>
-                <span class="text-orange-400 flex items-center gap-0.5">🔥 ${hero.streakDays}j</span>
-              </div>
+              <button
+                onclick="IronPulse.App.setHeroDisplayMode('${is3DMode ? 'art' : '3d'}')"
+                class="px-3 py-1 rounded-full text-[10px] font-black border transition backdrop-blur-md shadow-lg ${
+                  is3DMode
+                    ? 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 hover:bg-cyan-500/35'
+                    : 'bg-amber-500/25 text-amber-200 border-amber-400/60 hover:bg-amber-500/35'
+                }"
+                title="Basculer entre Illustration ShÅnen HD et Vue 3D Interactive"
+              >
+                ${is3DMode ? 'ðŸŽ¨ Vue Manga HD' : 'âš¡ Passer en 3D 360Â°'}
+              </button>
             </div>
-            <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-              <div class="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: ${hero.levelProgressPct}%"></div>
-            </div>
-            <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold">
-              <span>Progression Rang</span>
-              <span class="text-indigo-300 font-mono font-bold">${hero.xpInCurrentLevel} / ${hero.xpForNextLevel} XP (${hero.levelProgressPct}%)</span>
+
+            <!-- Contenu Visuel Central : Plein Pied & Auras -->
+            <div class="relative z-0 flex-1 flex items-center justify-center p-1">
+              ${
+                is3DMode
+                  ? `
+                <!-- Vue 3D WebGL Three.js avec contrÃ´les discrets -->
+                <div class="w-full h-[360px] relative">
+                  <canvas
+                    class="ironpulse-3d-canvas w-full h-full block cursor-pointer"
+                    title="Glissez avec la souris ou le doigt pour faire pivoter le hÃ©ros en 3D"
+                  ></canvas>
+                  <div class="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-1.5 pointer-events-auto">
+                    <button onclick="IronPulse.Hero3D.setAngle(0, 0.08)" class="px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-white/10 text-[10px] font-bold text-slate-200 backdrop-blur-md">Face</button>
+                    <button onclick="IronPulse.Hero3D.setAngle(1.25, 0.1)" class="px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-white/10 text-[10px] font-bold text-slate-200 backdrop-blur-md">Profil</button>
+                    <button onclick="IronPulse.Hero3D.setAngle(3.14, 0.08)" class="px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-white/10 text-[10px] font-bold text-slate-200 backdrop-blur-md">Dos</button>
+                    <button onclick="IronPulse.Hero3D.toggleAutoRotate()" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-[10px] font-black text-cyan-300 backdrop-blur-md">â†» 360Â°</button>
+                  </div>
+                </div>
+              `
+                  : `
+                <!-- Illustration ShÅnen Apex Plein Pied avec Aura Vivante -->
+                <div class="relative w-full max-w-[340px] mx-auto flex flex-col items-center select-none py-1">
+                  <!-- Anneau d'Aura Turquoise & Or Respirante -->
+                  <div class="shonen-aura-ring-cyan"></div>
+                  <img
+                    src="./src/assets/hero-anime-original.svg"
+                    alt="Guerrier ShÅnen Apex Plein Pied"
+                    class="relative z-10 w-auto h-[370px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.9)] filter contrast-105"
+                  />
+                  <!-- Indicateur d'Ancrage & Tempo 3-1-1 -->
+                  <div class="relative z-10 -mt-2 px-3 py-1 rounded-full bg-slate-950/85 border border-cyan-500/30 text-[9px] font-black text-cyan-300 backdrop-blur-md flex items-center gap-2 shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>POSTURE MARTIALE â€¢ TEMPO 3-1-1 ACTIF</span>
+                  </div>
+                </div>
+              `
+              }
             </div>
           </div>
 
-          <!-- SCÈNE CENTRALE : AVATAR 3D ATHLÈTE EN PLEINE LARGEUR (PLEIN PIED & ROTATION 360°) -->
-          <div class="relative z-10 w-full py-1">
-            ${avatarSvg}
-          </div>
-
-          <!-- DOCK HORIZONTAL DES 6 RELIQUES D'ÉQUIPEMENT (ACCÈS DIRECT SANS ENCOMBRER L'AVATAR) -->
+          <!-- DOCK HORIZONTAL DES 6 RELIQUES D'Ã‰QUIPEMENT (SANS TEXTE TRONQUÃ‰ - IMAGE 2) -->
           <div class="relative z-10 pt-1">
             <div class="flex items-center justify-between mb-1.5 px-1">
-              <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Équipements & Reliques de Fonte</span>
-              <span class="text-[10px] text-emerald-400 font-extrabold cursor-pointer hover:underline" onclick="IronPulse.App.openRpgSubTab('relics')">Inventaire →</span>
+              <span class="text-[10px] font-black uppercase tracking-wider text-slate-300">Ã‰quipements & Reliques de Fonte</span>
+              <button onclick="IronPulse.App.openRpgSubTab('relics')" class="text-[10px] text-cyan-400 font-extrabold hover:underline">
+                Inventaire â†’
+              </button>
             </div>
-            <div class="grid grid-cols-6 gap-1.5">
-              ${relics.slice(0, 6).map(renderRelicBadge).join('')}
+            <div class="grid grid-cols-6 gap-2">
+              ${relicSlotsConfig.map(renderRelicSlot).join('')}
             </div>
           </div>
 
-          <!-- Barre des 6 Attributs Biomécaniques -->
-          <div class="relative z-10 grid grid-cols-6 gap-1.5 pt-3 border-t border-white/10 text-center">
-            ${hero.attributes
+          <!-- BARRE DES 6 ATTRIBUTS RADIAUX (DIALS CIRCULAIRES SVG - IMAGE 2) -->
+          <div class="relative z-10 grid grid-cols-6 gap-1.5 pt-2 border-t border-cyan-500/20">
+            ${attributesConfig
               .map(
-                (a) => `
-              <div onclick="IronPulse.App.openRpgSubTab('hero')" class="cursor-pointer bg-slate-950/60 hover:bg-slate-900/90 border border-white/5 rounded-xl p-2 transition">
-                <div class="text-[9px] font-black ${a.textColor}">${a.code}</div>
-                <div class="text-xs font-black text-white font-mono mt-0.5">${a.value}</div>
-                <div class="w-full h-1 bg-slate-900 rounded-full overflow-hidden mt-1.5 border border-white/5">
-                  <div class="${a.color} h-full rounded-full" style="width: ${a.value}%"></div>
+                (attr) => `
+              <div onclick="IronPulse.App.openRpgSubTab('hero')" class="radial-dial-card flex flex-col items-center justify-center p-1.5 rounded-2xl bg-[#090D18]/90 border border-white/5 hover:border-cyan-500/40 transition cursor-pointer shadow-md">
+                <div class="relative w-11 h-11 flex items-center justify-center" style="width:44px;height:44px;">
+                  <svg width="44" height="44" style="width:44px;height:44px;" class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path stroke="${attr.color}" stroke-dasharray="${attr.val}, 100" stroke-width="3" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-[11px] font-black font-mono text-white leading-none">${attr.val}</span>
+                  </div>
                 </div>
+                <span class="text-[9px] font-black uppercase tracking-wider text-slate-300 mt-1">${attr.code}</span>
+                <span class="text-[10px] leading-none mt-0.5">${attr.icon}</span>
               </div>
             `
               )
@@ -403,102 +510,56 @@ window.IronPulse = window.IronPulse || {};
           </div>
         </div>
 
-        <!-- QUÊTE PRINCIPALE DU JOUR (LANCER LA SÉANCE = ENTRER DANS LE DONJON) -->
-        ${
-          activeWorkout
-            ? `
-          <div class="bg-emerald-950/60 border-2 border-emerald-500 rounded-2xl p-4 shadow-lg animate-pulse-glow">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                ⚔️ Combat de Donjon en cours
-              </span>
-              <span class="text-xs font-mono text-emerald-200">${escapeHtml(activeWorkout.name)}</span>
+        <!-- BANNIÃˆRE DONJON QUOTIDIEN (IMAGE 2 : LE DONJON QUOTIDIEN - Ã‰VEIL DU GÃ‰ANT) -->
+        <div class="relative overflow-hidden rounded-2xl border border-cyan-500/40 bg-[#090E1A] p-4 shadow-xl">
+          <!-- Fond dÃ©gradÃ© sombre avec lueur cyan & or -->
+          <div class="absolute inset-0 bg-gradient-to-r from-cyan-950/40 via-slate-900/60 to-amber-950/20 pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded bg-cyan-500/20 border border-cyan-400/40 text-[9px] font-black uppercase tracking-wider text-cyan-300">
+                  LE DONJON QUOTIDIEN
+                </span>
+                <span class="text-[10px] font-extrabold text-amber-300">
+                  NIVEAU RECOMMANDÃ‰ 11+
+                </span>
+              </div>
+              <h2 class="text-sm sm:text-base font-black text-white tracking-wide">
+                Ã‰VEIL DU GÃ‰ANT : ${escapeHtml(nextSession.name)}
+              </h2>
+              <p class="text-[11px] text-slate-300 mt-0.5">
+                Campagne active : <span class="text-cyan-300 font-bold">${escapeHtml(activeProg.name)}</span> â€¢ â± ~${nextSession.estimatedMinutes} min â€¢ RÃ©compense : <strong class="text-amber-300">+${questEstimatedXp} XP</strong>
+              </p>
             </div>
-            <p class="text-xs text-slate-300 mb-3">Votre quête physique est active. Validez vos séries pour infliger des dégâts et remporter l'XP.</p>
-            <button onclick="IronPulse.App.navigate('workout')" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm shadow-md active:scale-[0.99] transition">
-              Reprendre le Combat en direct →
+
+            <button
+              onclick="IronPulse.App.startProgramSession('${activeProg.id}', '${nextSession.id}')"
+              class="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(6,182,212,0.5)] active:scale-95 transition flex items-center justify-center gap-2 shrink-0"
+            >
+              <span>ENTRER DANS LE COMBAT</span>
+              <span>âš”ï¸</span>
             </button>
           </div>
-        `
-            : `
-          <div class="bg-[#151C28] border border-emerald-500/40 rounded-2xl p-4 shadow-lg space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-black uppercase tracking-wider">
-                📜 Quête Principale du Jour
-              </span>
-              <span class="text-xs font-extrabold text-amber-300">Récompense : ~+${questEstimatedXp} XP</span>
-            </div>
+        </div>
 
-            <div>
-              <h2 class="text-base font-extrabold text-white">${escapeHtml(nextSession.name)}</h2>
-              <p class="text-xs text-slate-400">Campagne : <span class="text-slate-200 font-semibold">${escapeHtml(activeProg.name)}</span> • ⏱ ~${nextSession.estimatedMinutes} min</p>
-            </div>
-
-            <div class="flex flex-wrap gap-1.5">
-              ${nextSession.exercises
-                .map((item) => {
-                  const ex = ns.Storage.getExerciseById(item.exerciseId);
-                  return `<span class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-200">${escapeHtml(ex.name)} <strong class="text-emerald-400">${item.targetSets}×${item.targetReps}</strong></span>`;
-                })
-                .join('')}
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-              <button onclick="IronPulse.App.startProgramSession('${activeProg.id}', '${nextSession.id}')" class="w-full py-3.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/15 active:scale-[0.98] transition">
-                <span>⚔️ Entrer dans le Donjon (Démarrer)</span>
-              </button>
-              <button onclick="IronPulse.App.startEmptyWorkout()" class="w-full py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 font-semibold text-xs flex items-center justify-center gap-1.5 active:scale-[0.98] transition">
-                <span>＋ Quête Libre Personnalisée</span>
-              </button>
-            </div>
-          </div>
-        `
-        }
-
-        <!-- ACCÈS RAPIDE AUX PORTAILS RPG (DONJONS & BOSS, GUILDE & DÉFIS D'AMIS, ARSENAL) -->
+        <!-- ACCÃˆS RAPIDE AUX PORTAILS RPG (DONJONS & BOSS, GUILDE & DÃ‰FIS D'AMIS, ARSENAL) -->
         <div class="grid grid-cols-3 gap-2">
-          <button onclick="IronPulse.App.openRpgSubTab('quests')" class="bg-[#151C28] hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-3 text-left transition active:scale-[0.98]">
-            <div class="text-base mb-0.5">🐉</div>
-            <div class="text-xs font-extrabold text-white">Boss & Quêtes</div>
-            <div class="text-[10px] text-emerald-400">${hero.bossesStatus.filter((b) => b.defeated).length}/${hero.bossesStatus.length} Boss vaincus</div>
+          <button onclick="IronPulse.App.openRpgSubTab('quests')" class="bg-[#0B101D] hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-3 text-left transition active:scale-[0.98]">
+            <div class="text-base mb-0.5">ðŸ‰</div>
+            <div class="text-xs font-extrabold text-white">Boss & QuÃªtes</div>
+            <div class="text-[10px] text-cyan-400">${hero.bossesStatus.filter((b) => b.defeated).length}/${hero.bossesStatus.length} Boss vaincus</div>
           </button>
-          <button onclick="IronPulse.App.openRpgSubTab('guild')" class="bg-[#151C28] hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-3 text-left transition active:scale-[0.98]">
-            <div class="text-base mb-0.5">🛡️</div>
-            <div class="text-xs font-extrabold text-white">Club & Défis</div>
+          <button onclick="IronPulse.App.openRpgSubTab('guild')" class="bg-[#0B101D] hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-3 text-left transition active:scale-[0.98]">
+            <div class="text-base mb-0.5">ðŸ›¡ï¸</div>
+            <div class="text-xs font-extrabold text-white">Club & DÃ©fis</div>
             <div class="text-[10px] text-amber-300">${hero.evaluatedChallenges.length} duels actifs</div>
           </button>
-          <button onclick="IronPulse.App.openRpgSubTab('relics')" class="bg-[#151C28] hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-3 text-left transition active:scale-[0.98]">
+          <button onclick="IronPulse.App.openRpgSubTab('relics')" class="bg-[#0B101D] hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-3 text-left transition active:scale-[0.98]">
             <div class="text-base mb-0.5">👑</div>
             <div class="text-xs font-extrabold text-white">Reliques</div>
             <div class="text-[10px] text-indigo-300">${hero.relicsStatus.filter((r) => r.unlocked).length}/${hero.relicsStatus.length} éveillées</div>
           </button>
-        </div>
-
-        <!-- ORACLE BIOMÉCANIQUE (COACH IA PRUDENT INTÉGRÉ COMME MENTOR DU HÉROS) -->
-        <div class="bg-gradient-to-br from-indigo-950/50 via-[#151C28] to-[#151C28] border border-indigo-500/30 rounded-2xl p-3.5 shadow-lg space-y-2">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-7 h-7 rounded-lg bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-indigo-300 text-sm">🔮</span>
-              <div>
-                <h3 class="text-xs font-extrabold text-white">Oracle Biomécanique (Coach IA)</h3>
-                <p class="text-[10px] text-indigo-300">${escapeHtml(analysis.summaryTitle)}</p>
-              </div>
-            </div>
-            <button onclick="IronPulse.App.openAICoachTab()" class="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-[11px] font-bold transition">
-              Consulter →
-            </button>
-          </div>
-
-          ${
-            analysis.adjustments.length > 0
-              ? `
-            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 leading-relaxed">
-              <span class="text-amber-400 font-bold">🎯 Conseil de maîtrise :</span> <strong>${escapeHtml(analysis.adjustments[0].title)}</strong> — ${escapeHtml(analysis.adjustments[0].detail)}
-            </div>
-          `
-              : ''
-          }
         </div>
       </div>
     `;
@@ -552,7 +613,7 @@ window.IronPulse = window.IronPulse || {};
       filtered.length === 0
         ? `
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
-          Aucun exercice ne correspond à vos filtres.
+          Aucun exercice ne correspond Ã  vos filtres.
         </div>
       `
         : filtered
@@ -560,7 +621,7 @@ window.IronPulse = window.IronPulse || {};
               const lastPerf = ns.Storage.getLastPerformanceForExercise(ex.id);
               const bestSet =
                 lastPerf && lastPerf.sets && lastPerf.sets.length
-                  ? `${lastPerf.sets[0].weight} kg × ${lastPerf.sets[0].reps}`
+                  ? `${lastPerf.sets[0].weight} kg Ã— ${lastPerf.sets[0].reps}`
                   : null;
               return `
               <div onclick="IronPulse.App.openExerciseModal('${ex.id}')" class="bg-[#151C28] hover:bg-slate-800/80 border border-slate-800 rounded-2xl p-3.5 cursor-pointer transition active:scale-[0.99]">
@@ -579,11 +640,11 @@ window.IronPulse = window.IronPulse || {};
                     </div>
                     <h3 class="text-sm font-bold text-white">${escapeHtml(ex.name)}</h3>
                   </div>
-                  <span class="text-slate-400 text-xs px-2 py-1 rounded-lg bg-slate-800/70 shrink-0">Fiche →</span>
+                  <span class="text-slate-400 text-xs px-2 py-1 rounded-lg bg-slate-800/70 shrink-0">Fiche â†’</span>
                 </div>
                 <p class="text-xs text-slate-400 line-clamp-2 mb-2">${escapeHtml(ex.description)}</p>
                 <div class="flex items-center justify-between text-[11px] pt-2 border-t border-slate-800/80">
-                  <span class="text-slate-300 truncate">🎯 <strong class="font-medium">${escapeHtml((ex.primaryMuscles || []).join(', '))}</strong></span>
+                  <span class="text-slate-300 truncate">ðŸŽ¯ <strong class="font-medium">${escapeHtml((ex.primaryMuscles || []).join(', '))}</strong></span>
                   ${
                     bestSet
                       ? `<span class="text-emerald-400 font-semibold shrink-0 ml-2">Dernier : ${bestSet}</span>`
@@ -599,11 +660,11 @@ window.IronPulse = window.IronPulse || {};
       <div class="space-y-3.5 pb-6 animate-slide-up">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-lg font-extrabold text-white">Répertoire d’exercices</h1>
-            <p class="text-xs text-slate-400">${filtered.length} exercice(s) avec muscles ciblés et consignes</p>
+            <h1 class="text-lg font-extrabold text-white">RÃ©pertoire dâ€™exercices</h1>
+            <p class="text-xs text-slate-400">${filtered.length} exercice(s) avec muscles ciblÃ©s et consignes</p>
           </div>
           <button onclick="IronPulse.App.openCreateExerciseModal()" class="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition">
-            ＋ Créer
+            ï¼‹ CrÃ©er
           </button>
         </div>
 
@@ -613,12 +674,12 @@ window.IronPulse = window.IronPulse || {};
             type="text"
             value="${escapeHtml(ui.exerciseSearch)}"
             oninput="IronPulse.App.onExerciseSearch(this.value)"
-            placeholder="Rechercher un exercice ou un muscle (ex: développé, dos, fessiers)..."
+            placeholder="Rechercher un exercice ou un muscle (ex: dÃ©veloppÃ©, dos, fessiers)..."
             class="w-full bg-[#151C28] border border-slate-700/80 focus:border-emerald-500 rounded-xl pl-3.5 pr-9 py-2.5 text-xs text-white placeholder-slate-500 outline-none transition"
           />
           ${
             ui.exerciseSearch
-              ? `<button onclick="IronPulse.App.onExerciseSearch('')" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-white text-xs">✕</button>`
+              ? `<button onclick="IronPulse.App.onExerciseSearch('')" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-white text-xs">âœ•</button>`
               : ''
           }
         </div>
@@ -628,7 +689,7 @@ window.IronPulse = window.IronPulse || {};
           ${musclePills}
         </div>
 
-        <!-- Filtres Équipement -->
+        <!-- Filtres Ã‰quipement -->
         <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
           ${equipPills}
         </div>
@@ -642,7 +703,7 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 3 : PROGRAMMES PRÉDÉFINIS & SÉANCES PERSONNALISÉES
+  // RENDU Ã‰CRAN 3 : PROGRAMMES PRÃ‰DÃ‰FINIS & SÃ‰ANCES PERSONNALISÃ‰ES
   // ============================================================================
   function renderProgramsScreen() {
     const state = ns.Storage.getState();
@@ -653,17 +714,17 @@ window.IronPulse = window.IronPulse || {};
         <button onclick="IronPulse.App.setProgramSubTab('predefined')" class="py-2 rounded-lg text-[11px] font-bold transition ${
           ui.programSubTab === 'predefined' ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
         }">
-          📜 Campagnes
+          ðŸ“œ Campagnes
         </button>
         <button onclick="IronPulse.App.setProgramSubTab('custom')" class="py-2 rounded-lg text-[11px] font-bold transition ${
           ui.programSubTab === 'custom' ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
         }">
-          ⚡ Mes Séances (${customSessions.length})
+          âš¡ Mes SÃ©ances (${customSessions.length})
         </button>
         <button onclick="IronPulse.App.setProgramSubTab('periodization')" class="py-2 rounded-lg text-[11px] font-bold transition ${
           ui.programSubTab === 'periodization' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
         }">
-          📅 Périodisation
+          ðŸ“… PÃ©riodisation
         </button>
       </div>
     `;
@@ -677,24 +738,24 @@ window.IronPulse = window.IronPulse || {};
       return `
         <div class="space-y-3.5 pb-6 animate-slide-up">
           <div>
-            <h1 class="text-lg font-extrabold text-white">Planificateur de Périodisation</h1>
-            <p class="text-xs text-slate-400">Structurez votre mésocycle en 4 phases scientifiques (AURA FIT)</p>
+            <h1 class="text-lg font-extrabold text-white">Planificateur de PÃ©riodisation</h1>
+            <p class="text-xs text-slate-400">Structurez votre mÃ©socycle en 4 phases scientifiques (AURA FIT)</p>
           </div>
 
           ${subTabBar}
 
-          <!-- Carte Phase Active du Mésocycle -->
+          <!-- Carte Phase Active du MÃ©socycle -->
           <div class="bg-gradient-to-br from-amber-950/40 via-[#151C28] to-slate-900 border border-amber-500/40 rounded-2xl p-4 space-y-3 shadow-lg">
             <div class="flex items-start justify-between gap-2">
               <div>
                 <span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-black uppercase tracking-wider">
-                  Mésocycle Actif • Semaine ${activeWeek}
+                  MÃ©socycle Actif â€¢ Semaine ${activeWeek}
                 </span>
                 <h2 class="text-base font-extrabold text-white mt-1">${activePhase.icon} ${escapeHtml(activePhase.name)}</h2>
                 <p class="text-xs text-emerald-300 font-semibold">${escapeHtml(activePhase.subtitle)} (${escapeHtml(activePhase.weeksRange)})</p>
               </div>
               <div class="text-right shrink-0 bg-slate-950/90 border border-slate-800 rounded-xl px-2.5 py-1.5">
-                <div class="text-[9px] uppercase text-slate-400 font-bold">Intensité</div>
+                <div class="text-[9px] uppercase text-slate-400 font-bold">IntensitÃ©</div>
                 <div class="text-xs font-black text-amber-300">${escapeHtml(activePhase.intensityPct)}</div>
               </div>
             </div>
@@ -707,16 +768,16 @@ window.IronPulse = window.IronPulse || {};
                 <div class="text-xs font-black text-white">${escapeHtml(activePhase.targetRpe)}</div>
               </div>
               <div>
-                <div class="text-[9px] uppercase text-slate-400 font-bold">Séries / Muscle</div>
+                <div class="text-[9px] uppercase text-slate-400 font-bold">SÃ©ries / Muscle</div>
                 <div class="text-xs font-black text-emerald-400">${escapeHtml(activePhase.setsPerMuscle)}</div>
               </div>
               <div>
-                <div class="text-[9px] uppercase text-slate-400 font-bold">Répétitions</div>
+                <div class="text-[9px] uppercase text-slate-400 font-bold">RÃ©pÃ©titions</div>
                 <div class="text-xs font-black text-amber-300">${escapeHtml(activePhase.repRange)}</div>
               </div>
             </div>
 
-            <!-- Sélecteur de Semaine du Mésocycle (1 à 7) -->
+            <!-- SÃ©lecteur de Semaine du MÃ©socycle (1 Ã  7) -->
             <div>
               <div class="flex items-center justify-between text-[11px] mb-1.5">
                 <span class="text-slate-300 font-bold">Semaine actuelle du cycle :</span>
@@ -743,7 +804,7 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- Les 4 Phases du Mésocycle -->
+          <!-- Les 4 Phases du MÃ©socycle -->
           <div class="space-y-2.5">
             ${phases
               .map((ph) => {
@@ -760,13 +821,13 @@ window.IronPulse = window.IronPulse || {};
                         <span class="text-xl">${ph.icon}</span>
                         <div>
                           <div class="text-xs font-extrabold text-white">${escapeHtml(ph.name)}</div>
-                          <div class="text-[10px] text-slate-400">${escapeHtml(ph.weeksRange)} • ${escapeHtml(ph.intensityPct)}</div>
+                          <div class="text-[10px] text-slate-400">${escapeHtml(ph.weeksRange)} â€¢ ${escapeHtml(ph.intensityPct)}</div>
                         </div>
                       </div>
                       <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold ${
                         isSelected ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-300'
                       }">
-                        ${isSelected ? '✓ Phase Active' : 'Activer'}
+                        ${isSelected ? 'âœ“ Phase Active' : 'Activer'}
                       </span>
                     </div>
                     <p class="text-[11px] text-slate-300 leading-relaxed">${escapeHtml(ph.desc)}</p>
@@ -784,10 +845,10 @@ window.IronPulse = window.IronPulse || {};
         customSessions.length === 0
           ? `
           <div class="bg-[#151C28] border border-dashed border-slate-700 rounded-2xl p-6 text-center">
-            <p class="text-sm font-bold text-white mb-1">Aucune séance personnalisée</p>
-            <p class="text-xs text-slate-400 mb-4">Composez votre propre séance en choisissant vos exercices, séries, répétitions et temps de repos.</p>
+            <p class="text-sm font-bold text-white mb-1">Aucune sÃ©ance personnalisÃ©e</p>
+            <p class="text-xs text-slate-400 mb-4">Composez votre propre sÃ©ance en choisissant vos exercices, sÃ©ries, rÃ©pÃ©titions et temps de repos.</p>
             <button onclick="IronPulse.App.openCreateSessionModal()" class="px-4 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs">
-              ＋ Créer ma première séance
+              ï¼‹ CrÃ©er ma premiÃ¨re sÃ©ance
             </button>
           </div>
         `
@@ -797,11 +858,11 @@ window.IronPulse = window.IronPulse || {};
                 <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3">
                   <div class="flex items-start justify-between gap-2">
                     <div>
-                      <span class="px-2 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/30 text-blue-300 text-[10px] font-bold uppercase">Séance Personnalisée</span>
+                      <span class="px-2 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/30 text-blue-300 text-[10px] font-bold uppercase">SÃ©ance PersonnalisÃ©e</span>
                       <h3 class="text-base font-bold text-white mt-1">${escapeHtml(sess.name)}</h3>
-                      <p class="text-xs text-slate-400">${sess.exercises.length} exercices • ~${sess.estimatedMinutes || 45} min</p>
+                      <p class="text-xs text-slate-400">${sess.exercises.length} exercices â€¢ ~${sess.estimatedMinutes || 45} min</p>
                     </div>
-                    <button onclick="IronPulse.App.deleteCustomSession('${sess.id}')" class="text-slate-500 hover:text-rose-400 text-xs px-2 py-1" title="Supprimer">🗑</button>
+                    <button onclick="IronPulse.App.deleteCustomSession('${sess.id}')" class="text-slate-500 hover:text-rose-400 text-xs px-2 py-1" title="Supprimer">ðŸ—‘</button>
                   </div>
 
                   <div class="space-y-1.5 bg-slate-900/70 rounded-xl p-2.5 border border-slate-800/80">
@@ -811,7 +872,7 @@ window.IronPulse = window.IronPulse || {};
                         return `
                         <div class="flex items-center justify-between text-xs">
                           <span class="text-slate-200 truncate"><span class="text-slate-500 mr-1">${idx + 1}.</span>${escapeHtml(ex.name)}</span>
-                          <span class="text-emerald-400 font-semibold shrink-0 ml-2">${item.targetSets} × ${item.targetReps} (${item.restSeconds}s)</span>
+                          <span class="text-emerald-400 font-semibold shrink-0 ml-2">${item.targetSets} Ã— ${item.targetReps} (${item.restSeconds}s)</span>
                         </div>
                       `;
                       })
@@ -819,7 +880,7 @@ window.IronPulse = window.IronPulse || {};
                   </div>
 
                   <button onclick="IronPulse.App.startCustomSession('${sess.id}')" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow active:scale-[0.99] transition">
-                    ▶ Lancer cette séance maintenant
+                    â–¶ Lancer cette sÃ©ance maintenant
                   </button>
                 </div>
               `;
@@ -830,11 +891,11 @@ window.IronPulse = window.IronPulse || {};
         <div class="space-y-3.5 pb-6 animate-slide-up">
           <div class="flex items-center justify-between">
             <div>
-              <h1 class="text-lg font-extrabold text-white">Programmes & Séances</h1>
-              <p class="text-xs text-slate-400">Créez et personnalisez vos propres entraînements</p>
+              <h1 class="text-lg font-extrabold text-white">Programmes & SÃ©ances</h1>
+              <p class="text-xs text-slate-400">CrÃ©ez et personnalisez vos propres entraÃ®nements</p>
             </div>
             <button onclick="IronPulse.App.openCreateSessionModal()" class="px-3 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs shadow">
-              ＋ Nouvelle séance
+              ï¼‹ Nouvelle sÃ©ance
             </button>
           </div>
           ${subTabBar}
@@ -845,7 +906,7 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // Programmes prédéfinis filtrés par Objectif et Niveau
+    // Programmes prÃ©dÃ©finis filtrÃ©s par Objectif et Niveau
     const filteredProgs = ns.Data.PREDEFINED_PROGRAMS.filter((p) => {
       const matchGoal = ui.filterGoal === 'all' || p.goal === ui.filterGoal;
       const matchLevel = ui.filterLevel === 'all' || p.level === ui.filterLevel;
@@ -865,20 +926,20 @@ window.IronPulse = window.IronPulse || {};
               <div class="flex items-center gap-1.5 flex-wrap mb-1">
                 <span class="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold uppercase">${escapeHtml(goalLabel)}</span>
                 <span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[10px] font-semibold">${escapeHtml(levelLabel)}</span>
-                <span class="text-[11px] text-slate-400">• ${escapeHtml(prog.frequency)}</span>
+                <span class="text-[11px] text-slate-400">â€¢ ${escapeHtml(prog.frequency)}</span>
               </div>
               <h3 class="text-base font-extrabold text-white">${escapeHtml(prog.name)}</h3>
             </div>
             ${
               isActive
-                ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold shrink-0">✓ Actif</span>`
+                ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold shrink-0">âœ“ Actif</span>`
                 : `<button onclick="IronPulse.App.selectActiveProgram('${prog.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-semibold shrink-0 transition">Choisir</button>`
             }
           </div>
 
           <p class="text-xs text-slate-300 leading-relaxed">${escapeHtml(prog.description)}</p>
 
-          <!-- Séances incluses dans ce programme -->
+          <!-- SÃ©ances incluses dans ce programme -->
           <div class="space-y-2 pt-1">
             ${prog.sessions
               .map(
@@ -887,17 +948,17 @@ window.IronPulse = window.IronPulse || {};
                 <div class="flex items-center justify-between gap-2 mb-2">
                   <div>
                     <div class="text-xs font-bold text-white">${escapeHtml(s.name)}</div>
-                    <div class="text-[11px] text-slate-400">${s.exercises.length} exercices • ~${s.estimatedMinutes} min</div>
+                    <div class="text-[11px] text-slate-400">${s.exercises.length} exercices â€¢ ~${s.estimatedMinutes} min</div>
                   </div>
                   <button onclick="IronPulse.App.startProgramSession('${prog.id}', '${s.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shrink-0 active:scale-95 transition">
-                    ▶ Démarrer
+                    â–¶ DÃ©marrer
                   </button>
                 </div>
                 <div class="flex flex-wrap gap-1">
                   ${s.exercises
                     .map((item) => {
                       const ex = ns.Storage.getExerciseById(item.exerciseId);
-                      return `<span onclick="IronPulse.App.openExerciseModal('${ex.id}')" class="cursor-pointer px-2 py-0.5 rounded bg-slate-800/90 hover:bg-slate-700 text-[10px] text-slate-300">${escapeHtml(ex.name)} (${item.targetSets}×${item.targetReps})</span>`;
+                      return `<span onclick="IronPulse.App.openExerciseModal('${ex.id}')" class="cursor-pointer px-2 py-0.5 rounded bg-slate-800/90 hover:bg-slate-700 text-[10px] text-slate-300">${escapeHtml(ex.name)} (${item.targetSets}Ã—${item.targetReps})</span>`;
                     })
                     .join('')}
                 </div>
@@ -914,7 +975,7 @@ window.IronPulse = window.IronPulse || {};
     return `
       <div class="space-y-3.5 pb-6 animate-slide-up">
         <div>
-          <h1 class="text-lg font-extrabold text-white">Programmes & Séances</h1>
+          <h1 class="text-lg font-extrabold text-white">Programmes & SÃ©ances</h1>
           <p class="text-xs text-slate-400">Choisissez un programme selon votre objectif et votre niveau</p>
         </div>
 
@@ -946,7 +1007,7 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 4 : SÉANCE EN COURS (LIVE WORKOUT TRACKER)
+  // RENDU Ã‰CRAN 4 : SÃ‰ANCE EN COURS (LIVE WORKOUT TRACKER)
   // ============================================================================
   function renderWorkoutScreen() {
     const state = ns.Storage.getState();
@@ -958,23 +1019,23 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-amber-500/40 rounded-2xl p-4 space-y-2.5 shadow-xl text-left">
             <div class="flex items-center justify-between">
               <div>
-                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">🧊 Salle de Gravité 3D — Échauffement</span>
-                <h2 class="text-sm font-extrabold text-white">Votre Héros 3D est prêt pour le Donjon</h2>
+                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">ðŸ§Š Salle de GravitÃ© 3D â€” Ã‰chauffement</span>
+                <h2 class="text-sm font-extrabold text-white">Votre HÃ©ros 3D est prÃªt pour le Donjon</h2>
               </div>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">Temps Réel</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">Temps RÃ©el</span>
             </div>
             ${ns.Hero3D ? ns.Hero3D.renderHero3DStageHTML({ showMoveSelector: true, compact: true }) : ''}
           </div>
           <div>
-            <h1 class="text-lg font-extrabold text-white">Aucune séance active</h1>
-            <p class="text-xs text-slate-400 max-w-xs mx-auto mt-1">Lancez une séance pour que votre Guerrier 3D exécute chaque exercice avec vous en direct.</p>
+            <h1 class="text-lg font-extrabold text-white">Aucune sÃ©ance active</h1>
+            <p class="text-xs text-slate-400 max-w-xs mx-auto mt-1">Lancez une sÃ©ance pour que votre Guerrier 3D exÃ©cute chaque exercice avec vous en direct.</p>
           </div>
           <div class="space-y-2.5 max-w-xs mx-auto pt-1">
             <button onclick="IronPulse.App.navigate('programs')" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition">
-              ⚔️ Choisir une séance de Campagne
+              âš”ï¸ Choisir une sÃ©ance de Campagne
             </button>
             <button onclick="IronPulse.App.startEmptyWorkout()" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs transition">
-              ＋ Démarrer une Quête Libre (avec Coach 3D)
+              ï¼‹ DÃ©marrer une QuÃªte Libre (avec Coach 3D)
             </button>
           </div>
         </div>
@@ -1000,8 +1061,8 @@ window.IronPulse = window.IronPulse || {};
         const lastPerf = ns.Storage.getLastPerformanceForExercise(exBlock.exerciseId);
         const lastPerfLabel =
           lastPerf && lastPerf.sets && lastPerf.sets.length
-            ? `Dernière séance : ${lastPerf.sets.map((s) => `${s.weight}×${s.reps}`).slice(0, 3).join(', ')} kg`
-            : 'Première saisie sur cet exercice';
+            ? `DerniÃ¨re sÃ©ance : ${lastPerf.sets.map((s) => `${s.weight}Ã—${s.reps}`).slice(0, 3).join(', ')} kg`
+            : 'PremiÃ¨re saisie sur cet exercice';
 
         const setsRowsHtml = exBlock.sets
           .map((set, setIdx) => {
@@ -1012,7 +1073,7 @@ window.IronPulse = window.IronPulse || {};
                 done ? 'bg-emerald-500/15 border border-emerald-500/40' : 'bg-slate-900/90 border border-slate-800/80'
               }">
                 <div class="grid grid-cols-12 gap-1 sm:gap-1.5 items-center">
-                  <!-- Numéro Série -->
+                  <!-- NumÃ©ro SÃ©rie -->
                   <div class="col-span-1 text-center text-xs font-extrabold ${done ? 'text-emerald-400' : 'text-slate-400'}">
                     ${setIdx + 1}
                   </div>
@@ -1022,29 +1083,29 @@ window.IronPulse = window.IronPulse || {};
                     <input
                       type="number"
                       step="0.5"
-                      aria-label="Charge série ${setIdx + 1}"
+                      aria-label="Charge sÃ©rie ${setIdx + 1}"
                       value="${set.weight}"
                       onchange="IronPulse.App.updateWorkoutSet(${exIdx}, ${setIdx}, 'weight', this.value)"
                       class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-emerald-500 rounded-lg py-1.5 px-1 text-center text-base sm:text-sm font-bold text-white outline-none"
                     />
                   </div>
 
-                  <!-- Répétitions -->
+                  <!-- RÃ©pÃ©titions -->
                   <div class="col-span-2">
                     <input
                       type="number"
                       step="1"
-                      aria-label="Répétitions série ${setIdx + 1}"
+                      aria-label="RÃ©pÃ©titions sÃ©rie ${setIdx + 1}"
                       value="${set.reps}"
                       onchange="IronPulse.App.updateWorkoutSet(${exIdx}, ${setIdx}, 'reps', this.value)"
                       class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-emerald-500 rounded-lg py-1.5 px-1 text-center text-base sm:text-sm font-bold text-white outline-none"
                     />
                   </div>
 
-                  <!-- RPE (Effort perçu 6-10) -->
+                  <!-- RPE (Effort perÃ§u 6-10) -->
                   <div class="col-span-2">
                     <select
-                      aria-label="RPE série ${setIdx + 1}"
+                      aria-label="RPE sÃ©rie ${setIdx + 1}"
                       onchange="IronPulse.App.updateWorkoutSet(${exIdx}, ${setIdx}, 'rpe', this.value)"
                       class="w-full bg-slate-950/60 border border-slate-800 focus:border-emerald-500 rounded-lg py-1.5 px-0.5 text-center text-base sm:text-xs font-semibold text-amber-300 outline-none"
                     >
@@ -1059,14 +1120,14 @@ window.IronPulse = window.IronPulse || {};
                     <input
                       type="number"
                       step="15"
-                      aria-label="Repos série ${setIdx + 1}"
+                      aria-label="Repos sÃ©rie ${setIdx + 1}"
                       value="${set.restSeconds || exBlock.restSeconds || 90}"
                       onchange="IronPulse.App.updateWorkoutSet(${exIdx}, ${setIdx}, 'restSeconds', this.value)"
                       class="w-full bg-slate-950/60 border border-slate-800 focus:border-emerald-500 rounded-lg py-1.5 px-0.5 text-center text-base sm:text-xs font-medium text-slate-300 outline-none"
                     />
                   </div>
 
-                  <!-- Bouton Valider Série + Supprimer -->
+                  <!-- Bouton Valider SÃ©rie + Supprimer -->
                   <div class="col-span-2 flex items-center justify-end gap-0.5">
                     <button
                       onclick="IronPulse.App.toggleSetCompleted(${exIdx}, ${setIdx})"
@@ -1075,19 +1136,19 @@ window.IronPulse = window.IronPulse || {};
                           ? 'bg-emerald-500 text-slate-950 shadow-sm'
                           : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
                       }"
-                      title="Valider la série et lancer le repos"
+                      title="Valider la sÃ©rie et lancer le repos"
                     >
-                      ${done ? '✓' : 'OK'}
+                      ${done ? 'âœ“' : 'OK'}
                     </button>
                     ${
                       exBlock.sets.length > 1
-                        ? `<button onclick="IronPulse.App.removeWorkoutSet(${exIdx}, ${setIdx})" class="px-1 py-1.5 text-slate-500 hover:text-rose-400 text-xs" title="Supprimer série">✕</button>`
+                        ? `<button onclick="IronPulse.App.removeWorkoutSet(${exIdx}, ${setIdx})" class="px-1 py-1.5 text-slate-500 hover:text-rose-400 text-xs" title="Supprimer sÃ©rie">âœ•</button>`
                         : ''
                     }
                   </div>
                 </div>
 
-                <!-- Boutons rapides ergonomiques à une main (-2.5/+2.5 kg & -1/+1 rep) façon AURA FIT -->
+                <!-- Boutons rapides ergonomiques Ã  une main (-2.5/+2.5 kg & -1/+1 rep) faÃ§on AURA FIT -->
                 <div class="flex items-center justify-between gap-1 pt-0.5 border-t border-slate-800/50 text-[10px]">
                   <div class="flex items-center gap-1">
                     <button onclick="IronPulse.App.nudgeWorkoutSet(${exIdx}, ${setIdx}, 'weight', -2.5)" class="px-2 py-0.5 rounded bg-slate-800/90 hover:bg-slate-700 text-slate-300 font-bold active:scale-95 transition">-2.5 kg</button>
@@ -1110,7 +1171,7 @@ window.IronPulse = window.IronPulse || {};
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[10px] font-bold uppercase">${escapeHtml(ex.muscleGroup)}</span>
-                  <span class="text-[11px] text-slate-400">Cible : ${escapeHtml(exBlock.targetReps || '8-12')} rép.</span>
+                  <span class="text-[11px] text-slate-400">Cible : ${escapeHtml(exBlock.targetReps || '8-12')} rÃ©p.</span>
                   <button
                     onclick="IronPulse.App.setWorkout3DExercise(${exIdx})"
                     class="px-2 py-0.5 rounded-lg border text-[10px] font-extrabold transition ${
@@ -1119,39 +1180,39 @@ window.IronPulse = window.IronPulse || {};
                         : 'bg-slate-800/90 text-amber-300 border-amber-500/40 hover:bg-slate-700'
                     }"
                   >
-                    🧊 ${ui.activeWorkout3DExerciseIdx === exIdx ? 'En cours en 3D' : 'Voir en 3D'}
+                    ðŸ§Š ${ui.activeWorkout3DExerciseIdx === exIdx ? 'En cours en 3D' : 'Voir en 3D'}
                   </button>
                 </div>
                 <h3 onclick="IronPulse.App.openExerciseModal('${ex.id}')" class="text-sm font-extrabold text-white mt-0.5 cursor-pointer hover:text-emerald-400 transition truncate">
-                  ${escapeHtml(ex.name)} <span class="text-xs font-normal text-slate-400">ⓘ</span>
+                  ${escapeHtml(ex.name)} <span class="text-xs font-normal text-slate-400">â“˜</span>
                 </h3>
                 <div class="text-[11px] text-emerald-400/90 font-medium">${escapeHtml(lastPerfLabel)}</div>
               </div>
-              <button onclick="IronPulse.App.removeWorkoutExercise(${exIdx})" class="text-slate-500 hover:text-rose-400 text-xs px-2 py-1" title="Retirer l'exercice">🗑</button>
+              <button onclick="IronPulse.App.removeWorkoutExercise(${exIdx})" class="text-slate-500 hover:text-rose-400 text-xs px-2 py-1" title="Retirer l'exercice">ðŸ—‘</button>
             </div>
 
-            <!-- En-tête des colonnes -->
+            <!-- En-tÃªte des colonnes -->
             <div class="grid grid-cols-12 gap-1 sm:gap-1.5 px-1.5 sm:px-2 text-[10px] uppercase tracking-wider text-slate-400 font-bold">
               <div class="col-span-1 text-center">#</div>
               <div class="col-span-3 text-center">Charge</div>
-              <div class="col-span-2 text-center">Rép.</div>
+              <div class="col-span-2 text-center">RÃ©p.</div>
               <div class="col-span-2 text-center">RPE</div>
               <div class="col-span-2 text-center">Repos</div>
               <div class="col-span-2 text-right pr-1">Statut</div>
             </div>
 
-            <!-- Liste des séries -->
+            <!-- Liste des sÃ©ries -->
             <div class="space-y-1.5">
               ${setsRowsHtml}
             </div>
 
-            <!-- Ajouter une série / Lancer repos manuel -->
+            <!-- Ajouter une sÃ©rie / Lancer repos manuel -->
             <div class="flex items-center justify-between gap-2 pt-1">
               <button onclick="IronPulse.App.addWorkoutSet(${exIdx})" class="flex-1 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700/80 text-xs font-bold text-slate-200 active:scale-[0.99] transition">
-                ＋ Ajouter une série
+                ï¼‹ Ajouter une sÃ©rie
               </button>
               <button onclick="IronPulse.App.triggerManualRest(${exBlock.restSeconds || 90}, '${escapeHtml(ex.name)}')" class="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700/80 text-xs font-semibold text-emerald-300 active:scale-95 transition">
-                ⏱ Repos ${exBlock.restSeconds || 90}s
+                â± Repos ${exBlock.restSeconds || 90}s
               </button>
             </div>
           </div>
@@ -1188,11 +1249,11 @@ window.IronPulse = window.IronPulse || {};
 
     return `
       <div class="space-y-3.5 pb-8 animate-slide-up">
-        <!-- Barre supérieure de séance en direct -->
+        <!-- Barre supÃ©rieure de sÃ©ance en direct -->
         <div class="bg-gradient-to-r from-emerald-950/90 via-slate-900 to-slate-900 border border-emerald-500/40 rounded-2xl p-3.5 shadow-lg">
           <div class="flex items-center justify-between gap-2 mb-2">
             <div class="min-w-0">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Entraînement en direct</span>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">EntraÃ®nement en direct</span>
               <input
                 type="text"
                 value="${escapeHtml(workout.name)}"
@@ -1202,13 +1263,13 @@ window.IronPulse = window.IronPulse || {};
             </div>
             <div class="text-right shrink-0">
               <div id="live-workout-clock" class="text-lg font-extrabold font-mono text-emerald-400 tabular-nums">${formatDurationClock(elapsedSec)}</div>
-              <div class="text-[10px] text-slate-400">Durée</div>
+              <div class="text-[10px] text-slate-400">DurÃ©e</div>
             </div>
           </div>
 
           <div class="grid grid-cols-3 gap-2 py-2 px-2.5 bg-slate-950/60 rounded-xl border border-slate-800/80 text-center mb-3">
             <div>
-              <div class="text-[10px] text-slate-400">Séries validées</div>
+              <div class="text-[10px] text-slate-400">SÃ©ries validÃ©es</div>
               <div class="text-sm font-bold text-white">${totalCompletedSets}</div>
             </div>
             <div>
@@ -1223,9 +1284,9 @@ window.IronPulse = window.IronPulse || {};
 
           <div class="flex gap-2">
             <button onclick="IronPulse.App.finishActiveWorkout()" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg active:scale-[0.98] transition">
-              ✓ Terminer & Enregistrer la séance
+              âœ“ Terminer & Enregistrer la sÃ©ance
             </button>
-            <button onclick="IronPulse.App.cancelActiveWorkout()" class="px-3 py-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 font-bold text-xs transition" title="Annuler la séance">
+            <button onclick="IronPulse.App.cancelActiveWorkout()" class="px-3 py-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 font-bold text-xs transition" title="Annuler la sÃ©ance">
               Abandonner
             </button>
           </div>
@@ -1239,34 +1300,34 @@ window.IronPulse = window.IronPulse || {};
                   : 'bg-amber-500/15 hover:bg-amber-500/25 border-amber-500/40 text-amber-300'
               }"
             >
-              <span>${workout.warmupCompleted ? '✓ Échauffement Dynamique Validé' : '🔥 Échauffement Dynamique & Montée en Charge'}</span>
-              <span class="text-[10px] font-black">${workout.warmupCompleted ? '+35 XP & +15 🪙 acquis' : '+35 XP & +15 🪙'}</span>
+              <span>${workout.warmupCompleted ? 'âœ“ Ã‰chauffement Dynamique ValidÃ©' : 'ðŸ”¥ Ã‰chauffement Dynamique & MontÃ©e en Charge'}</span>
+              <span class="text-[10px] font-black">${workout.warmupCompleted ? '+35 XP & +15 ðŸª™ acquis' : '+35 XP & +15 ðŸª™'}</span>
             </button>
           </div>
         </div>
 
-        <!-- SCÈNE HOLOGRAPHIQUE 3D EN DIRECT : LE HÉROS EFFECTUE LE MÊME MOUVEMENT QUE L'EXERCICE ACTIF -->
+        <!-- SCÃˆNE HOLOGRAPHIQUE 3D EN DIRECT : LE HÃ‰ROS EFFECTUE LE MÃŠME MOUVEMENT QUE L'EXERCICE ACTIF -->
         ${
           activeEx3D && ns.Hero3D
             ? `
           <div class="shonen-arena-card relative overflow-hidden bg-[#151C28] border border-amber-500/40 rounded-2xl p-3.5 shadow-2xl space-y-2.5">
             <div class="relative z-10 flex items-center justify-between gap-2">
               <div class="min-w-0">
-                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">🧊 Synchronisation 3D en Direct</span>
-                <h2 class="text-sm font-extrabold text-white truncate">🏋️ ${escapeHtml(activeEx3D.name)}</h2>
-                <p class="text-[10px] text-emerald-400 truncate">🎯 ${escapeHtml(activeMoveMeta ? activeMoveMeta.focus : (activeEx3D.primaryMuscles || []).join(', '))}</p>
+                <span class="text-[10px] font-black uppercase tracking-wider text-amber-300">ðŸ§Š Synchronisation 3D en Direct</span>
+                <h2 class="text-sm font-extrabold text-white truncate">ðŸ‹ï¸ ${escapeHtml(activeEx3D.name)}</h2>
+                <p class="text-[10px] text-emerald-400 truncate">ðŸŽ¯ ${escapeHtml(activeMoveMeta ? activeMoveMeta.focus : (activeEx3D.primaryMuscles || []).join(', '))}</p>
               </div>
               <span class="px-2 py-1 rounded-xl bg-slate-950/90 border border-amber-400/40 text-[10px] font-extrabold text-amber-300 shrink-0">
-                ${escapeHtml(activeExBlock3D.targetReps || '8-12')} rép.
+                ${escapeHtml(activeExBlock3D.targetReps || '8-12')} rÃ©p.
               </span>
             </div>
 
-            <!-- Sélecteur d'exercice synchronisé en 3D -->
+            <!-- SÃ©lecteur d'exercice synchronisÃ© en 3D -->
             <div class="relative z-10 flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
               ${workout3DPills}
             </div>
 
-            <!-- Canvas 3D exécutant le mouvement biomécanique de l'exercice -->
+            <!-- Canvas 3D exÃ©cutant le mouvement biomÃ©canique de l'exercice -->
             <div class="relative z-10">
               ${ns.Hero3D.renderHero3DStageHTML({ exerciseId: activeEx3D.id, compact: true })}
             </div>
@@ -1280,17 +1341,17 @@ window.IronPulse = window.IronPulse || {};
           ${exercisesCardsHtml}
         </div>
 
-        <!-- Ajouter un exercice à la séance -->
+        <!-- Ajouter un exercice Ã  la sÃ©ance -->
         <button onclick="IronPulse.App.openAddExerciseToWorkoutModal()" class="w-full py-3.5 rounded-2xl bg-[#151C28] hover:bg-slate-800 border border-dashed border-emerald-500/50 text-emerald-400 font-bold text-xs transition">
-          ＋ Ajouter un exercice à la séance
+          ï¼‹ Ajouter un exercice Ã  la sÃ©ance
         </button>
 
-        <!-- Notes de séance -->
+        <!-- Notes de sÃ©ance -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-3.5">
-          <label class="block text-xs font-bold text-slate-300 mb-1.5">Notes & Ressenti de la séance</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1.5">Notes & Ressenti de la sÃ©ance</label>
           <textarea
             rows="2"
-            placeholder="Ex: Très bonnes sensations aux pectoraux, penser à monter à 72.5 kg la semaine prochaine..."
+            placeholder="Ex: TrÃ¨s bonnes sensations aux pectoraux, penser Ã  monter Ã  72.5 kg la semaine prochaine..."
             onchange="IronPulse.App.updateWorkoutNotes(this.value)"
             class="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-emerald-500"
           >${escapeHtml(workout.notes || '')}</textarea>
@@ -1300,7 +1361,7 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 5 : HISTORIQUE DES SÉANCES
+  // RENDU Ã‰CRAN 5 : HISTORIQUE DES SÃ‰ANCES
   // ============================================================================
   function renderHistoryScreen() {
     const state = ns.Storage.getState();
@@ -1310,7 +1371,7 @@ window.IronPulse = window.IronPulse || {};
       sorted.length === 0
         ? `
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-400">
-          Aucune séance terminée dans l'historique.
+          Aucune sÃ©ance terminÃ©e dans l'historique.
         </div>
       `
         : sorted
@@ -1321,7 +1382,7 @@ window.IronPulse = window.IronPulse || {};
                   const ex = ns.Storage.getExerciseById(eb.exerciseId);
                   const setsBadges = (eb.sets || [])
                     .filter((s) => s.completed !== false)
-                    .map((s) => `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 text-[11px] font-mono">${s.weight}kg × ${s.reps}</span>`)
+                    .map((s) => `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 text-[11px] font-mono">${s.weight}kg Ã— ${s.reps}</span>`)
                     .join(' ');
                   return `
                   <div class="py-1.5 border-b border-slate-800/60 last:border-none">
@@ -1336,14 +1397,14 @@ window.IronPulse = window.IronPulse || {};
               <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
                 <div class="flex items-start justify-between gap-2">
                   <div>
-                    <div class="text-[11px] text-emerald-400 font-semibold">${formatFullDate(w.date)} • ⏱ ${w.durationMinutes || 50} min</div>
+                    <div class="text-[11px] text-emerald-400 font-semibold">${formatFullDate(w.date)} â€¢ â± ${w.durationMinutes || 50} min</div>
                     <h3 class="text-sm font-extrabold text-white">${escapeHtml(w.name)}</h3>
                   </div>
                   <div class="flex items-center gap-1">
                     <button onclick="IronPulse.App.repeatHistoryWorkout('${w.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold transition">
-                      ↻ Refaire
+                      â†» Refaire
                     </button>
-                    <button onclick="IronPulse.App.deleteHistoryWorkout('${w.id}')" class="px-2 py-1 text-slate-500 hover:text-rose-400 text-xs" title="Supprimer">🗑</button>
+                    <button onclick="IronPulse.App.deleteHistoryWorkout('${w.id}')" class="px-2 py-1 text-slate-500 hover:text-rose-400 text-xs" title="Supprimer">ðŸ—‘</button>
                   </div>
                 </div>
 
@@ -1353,11 +1414,11 @@ window.IronPulse = window.IronPulse || {};
                     <div class="text-xs font-bold text-white">${stats.totalVolume} kg</div>
                   </div>
                   <div>
-                    <div class="text-[10px] text-slate-400">Séries</div>
+                    <div class="text-[10px] text-slate-400">SÃ©ries</div>
                     <div class="text-xs font-bold text-white">${stats.completedSets}</div>
                   </div>
                   <div>
-                    <div class="text-[10px] text-slate-400">Répétitions</div>
+                    <div class="text-[10px] text-slate-400">RÃ©pÃ©titions</div>
                     <div class="text-xs font-bold text-emerald-400">${stats.totalReps}</div>
                   </div>
                 </div>
@@ -1368,7 +1429,7 @@ window.IronPulse = window.IronPulse || {};
 
                 ${
                   w.notes
-                    ? `<div class="text-xs text-slate-300 italic bg-slate-900/50 p-2.5 rounded-xl border border-slate-800/70">💬 « ${escapeHtml(w.notes)} »</div>`
+                    ? `<div class="text-xs text-slate-300 italic bg-slate-900/50 p-2.5 rounded-xl border border-slate-800/70">ðŸ’¬ Â« ${escapeHtml(w.notes)} Â»</div>`
                     : ''
                 }
               </div>
@@ -1380,11 +1441,11 @@ window.IronPulse = window.IronPulse || {};
       <div class="space-y-3.5 pb-6 animate-slide-up">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-lg font-extrabold text-white">Historique des séances</h1>
-            <p class="text-xs text-slate-400">${sorted.length} entraînement(s) enregistré(s)</p>
+            <h1 class="text-lg font-extrabold text-white">Historique des sÃ©ances</h1>
+            <p class="text-xs text-slate-400">${sorted.length} entraÃ®nement(s) enregistrÃ©(s)</p>
           </div>
           <button onclick="IronPulse.App.navigate('progress')" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-semibold text-emerald-400">
-            Voir Graphiques →
+            Voir Graphiques â†’
           </button>
         </div>
 
@@ -1396,7 +1457,7 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 6 : PROGRESSION & ACCOMPAGNEMENT COACH IA
+  // RENDU Ã‰CRAN 6 : PROGRESSION & ACCOMPAGNEMENT COACH IA
   // ============================================================================
   function renderProgressAndAIScreen() {
     const state = ns.Storage.getState();
@@ -1407,17 +1468,17 @@ window.IronPulse = window.IronPulse || {};
         <button onclick="IronPulse.App.setProgressSubTab('charts')" class="py-2 rounded-lg text-[11px] font-bold transition ${
           ui.progressSubTab === 'charts' ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
         }">
-          📊 Graphiques & 1RM
+          ðŸ“Š Graphiques & 1RM
         </button>
         <button onclick="IronPulse.App.setProgressSubTab('ai')" class="py-2 rounded-lg text-[11px] font-bold transition ${
           ui.progressSubTab === 'ai' ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
         }">
-          ✨ Coach IA
+          âœ¨ Coach IA
         </button>
         <button onclick="IronPulse.App.setProgressSubTab('nutrition')" class="py-2 rounded-lg text-[11px] font-bold transition ${
           ui.progressSubTab === 'nutrition' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
         }">
-          🥩 Nutrition
+          ðŸ¥© Nutrition
         </button>
       </div>
     `;
@@ -1436,11 +1497,11 @@ window.IronPulse = window.IronPulse || {};
 
           ${subTabBar}
 
-          <!-- Paramètres rapides Genre / Poids / Objectif -->
+          <!-- ParamÃ¨tres rapides Genre / Poids / Objectif -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold text-white">⚡ Paramètres Métaboliques</span>
-              <span class="text-[11px] font-bold ${bio.bmiColor}">IMC ${bio.bmi} • ${bio.bmiLabel}</span>
+              <span class="text-xs font-extrabold text-white">âš¡ ParamÃ¨tres MÃ©taboliques</span>
+              <span class="text-[11px] font-bold ${bio.bmiColor}">IMC ${bio.bmi} â€¢ ${bio.bmiLabel}</span>
             </div>
 
             <div class="grid grid-cols-2 gap-2">
@@ -1452,7 +1513,7 @@ window.IronPulse = window.IronPulse || {};
                     : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                 }"
               >
-                ♂ Homme (Mifflin +5)
+                â™‚ Homme (Mifflin +5)
               </button>
               <button
                 onclick="IronPulse.App.updateProfileField('gender', 'female')"
@@ -1462,7 +1523,7 @@ window.IronPulse = window.IronPulse || {};
                     : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                 }"
               >
-                ♀ Femme (Mifflin -161)
+                â™€ Femme (Mifflin -161)
               </button>
             </div>
 
@@ -1482,22 +1543,22 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- Répartition des Macronutriments -->
+          <!-- RÃ©partition des Macronutriments -->
           <div class="bg-[#151C28] border border-emerald-500/30 rounded-2xl p-4 space-y-3.5 shadow-md">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-sm font-extrabold text-white">🥩 Répartition Quotidienne des Macros</h2>
-                <p class="text-[11px] text-slate-400">Calibré pour ${bio.weightKg} kg (${escapeHtml(bio.goalNutritionLabel)})</p>
+                <h2 class="text-sm font-extrabold text-white">ðŸ¥© RÃ©partition Quotidienne des Macros</h2>
+                <p class="text-[11px] text-slate-400">CalibrÃ© pour ${bio.weightKg} kg (${escapeHtml(bio.goalNutritionLabel)})</p>
               </div>
               <span class="px-2.5 py-1 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-extrabold">
-                💧 ${bio.hydrationL} L d'eau/j
+                ðŸ’§ ${bio.hydrationL} L d'eau/j
               </span>
             </div>
 
-            <!-- Protéines -->
+            <!-- ProtÃ©ines -->
             <div class="space-y-1">
               <div class="flex justify-between text-xs">
-                <span class="font-bold text-rose-300">🥩 Protéines (Construction musculaire · 2.0g/kg)</span>
+                <span class="font-bold text-rose-300">ðŸ¥© ProtÃ©ines (Construction musculaire Â· 2.0g/kg)</span>
                 <span class="font-black text-white">${bio.proteinTargetG} g <span class="text-[10px] text-slate-400">(${bio.proteinKcal} kcal)</span></span>
               </div>
               <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -1508,7 +1569,7 @@ window.IronPulse = window.IronPulse || {};
             <!-- Glucides -->
             <div class="space-y-1">
               <div class="flex justify-between text-xs">
-                <span class="font-bold text-amber-300">🍚 Glucides (Énergie & Glycogène Ki)</span>
+                <span class="font-bold text-amber-300">ðŸš Glucides (Ã‰nergie & GlycogÃ¨ne Ki)</span>
                 <span class="font-black text-white">${bio.carbsTargetG} g <span class="text-[10px] text-slate-400">(${bio.carbsKcal} kcal)</span></span>
               </div>
               <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -1519,7 +1580,7 @@ window.IronPulse = window.IronPulse || {};
             <!-- Lipides -->
             <div class="space-y-1">
               <div class="flex justify-between text-xs">
-                <span class="font-bold text-emerald-300">🥑 Lipides (Système hormonal · 1.0g/kg)</span>
+                <span class="font-bold text-emerald-300">ðŸ¥‘ Lipides (SystÃ¨me hormonal Â· 1.0g/kg)</span>
                 <span class="font-black text-white">${bio.fatTargetG} g <span class="text-[10px] text-slate-400">(${bio.fatKcal} kcal)</span></span>
               </div>
               <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -1527,15 +1588,15 @@ window.IronPulse = window.IronPulse || {};
               </div>
             </div>
 
-            <!-- Timing péri-entraînement -->
+            <!-- Timing pÃ©ri-entraÃ®nement -->
             <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80 text-[11px]">
               <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
-                <div class="font-extrabold text-amber-300 mb-0.5">⚡ Pré-Séance (-1h30)</div>
-                <div class="text-slate-300">~${Math.round(bio.carbsTargetG * 0.25)}g glucides digestes + ~${Math.round(bio.proteinTargetG * 0.2)}g protéines.</div>
+                <div class="font-extrabold text-amber-300 mb-0.5">âš¡ PrÃ©-SÃ©ance (-1h30)</div>
+                <div class="text-slate-300">~${Math.round(bio.carbsTargetG * 0.25)}g glucides digestes + ~${Math.round(bio.proteinTargetG * 0.2)}g protÃ©ines.</div>
               </div>
               <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
-                <div class="font-extrabold text-emerald-300 mb-0.5">🏆 Post-Séance (+1h)</div>
-                <div class="text-slate-300">~${Math.round(bio.proteinTargetG * 0.3)}g protéines + ~${Math.round(bio.carbsTargetG * 0.35)}g glucides.</div>
+                <div class="font-extrabold text-emerald-300 mb-0.5">ðŸ† Post-SÃ©ance (+1h)</div>
+                <div class="text-slate-300">~${Math.round(bio.proteinTargetG * 0.3)}g protÃ©ines + ~${Math.round(bio.carbsTargetG * 0.35)}g glucides.</div>
               </div>
             </div>
           </div>
@@ -1547,8 +1608,8 @@ window.IronPulse = window.IronPulse || {};
       const timeline = ns.Storage.getExerciseTimeline(ui.selectedChartExerciseId);
       const selectedEx = ns.Storage.getExerciseById(ui.selectedChartExerciseId);
 
-      let latestStat = '—';
-      let deltaStat = '—';
+      let latestStat = 'â€”';
+      let deltaStat = 'â€”';
       if (timeline.length > 0) {
         const first = timeline[0];
         const last = timeline[timeline.length - 1];
@@ -1558,7 +1619,7 @@ window.IronPulse = window.IronPulse || {};
           const diff = Math.round((last[ui.selectedChartMetric] - first[ui.selectedChartMetric]) * 10) / 10;
           deltaStat = `${diff >= 0 ? '+' : ''}${diff} ${unit}`;
         } else {
-          deltaStat = '1 séance';
+          deltaStat = '1 sÃ©ance';
         }
       }
 
@@ -1567,10 +1628,10 @@ window.IronPulse = window.IronPulse || {};
           <div class="flex items-center justify-between">
             <div>
               <h1 class="text-lg font-extrabold text-white">Progression & Analyse</h1>
-              <p class="text-xs text-slate-400">Suivez l’évolution de vos charges et volumes</p>
+              <p class="text-xs text-slate-400">Suivez lâ€™Ã©volution de vos charges et volumes</p>
             </div>
             <button onclick="IronPulse.App.navigate('history')" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-200">
-              🗓 Historique
+              ðŸ—“ Historique
             </button>
           </div>
 
@@ -1579,7 +1640,7 @@ window.IronPulse = window.IronPulse || {};
           <!-- Carte Graphique par Exercice -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md">
             <div class="flex items-center justify-between gap-2">
-              <label class="text-xs font-bold text-slate-300">Exercice analysé :</label>
+              <label class="text-xs font-bold text-slate-300">Exercice analysÃ© :</label>
               <select onchange="IronPulse.App.setChartExercise(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white font-semibold outline-none max-w-[210px]">
                 ${state.exercises
                   .map((ex) => `<option value="${ex.id}" ${ex.id === ui.selectedChartExerciseId ? 'selected' : ''}>${escapeHtml(ex.name)}</option>`)
@@ -1587,14 +1648,14 @@ window.IronPulse = window.IronPulse || {};
               </select>
             </div>
 
-            <!-- Choix de la métrique -->
+            <!-- Choix de la mÃ©trique -->
             <div class="grid grid-cols-3 gap-1.5">
               <button onclick="IronPulse.App.setChartMetric('best1RM')" class="py-1.5 rounded-lg text-[11px] font-bold transition ${
                 ui.selectedChartMetric === 'best1RM'
                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                   : 'bg-slate-900 text-slate-400 border border-slate-800'
               }">
-                1RM Estimé (kg)
+                1RM EstimÃ© (kg)
               </button>
               <button onclick="IronPulse.App.setChartMetric('maxWeight')" class="py-1.5 rounded-lg text-[11px] font-bold transition ${
                 ui.selectedChartMetric === 'maxWeight'
@@ -1612,23 +1673,23 @@ window.IronPulse = window.IronPulse || {};
               </button>
             </div>
 
-            <!-- Résumé Chiffré (Epley + Brzycki + Meilleure Série) -->
+            <!-- RÃ©sumÃ© ChiffrÃ© (Epley + Brzycki + Meilleure SÃ©rie) -->
             <div class="grid grid-cols-4 gap-1.5 bg-slate-900/70 rounded-xl p-2.5 border border-slate-800/80 text-center">
               <div>
                 <div class="text-[9px] text-slate-400">1RM Epley</div>
-                <div class="text-xs font-extrabold text-white">${timeline.length ? `${timeline[timeline.length - 1].best1RM} kg` : '—'}</div>
+                <div class="text-xs font-extrabold text-white">${timeline.length ? `${timeline[timeline.length - 1].best1RM} kg` : 'â€”'}</div>
               </div>
               <div>
                 <div class="text-[9px] text-amber-300">1RM Brzycki</div>
-                <div class="text-xs font-extrabold text-amber-300">${timeline.length ? `${timeline[timeline.length - 1].best1RMBrzycki || timeline[timeline.length - 1].best1RM} kg` : '—'}</div>
+                <div class="text-xs font-extrabold text-amber-300">${timeline.length ? `${timeline[timeline.length - 1].best1RMBrzycki || timeline[timeline.length - 1].best1RM} kg` : 'â€”'}</div>
               </div>
               <div>
-                <div class="text-[9px] text-slate-400">Évolution</div>
+                <div class="text-[9px] text-slate-400">Ã‰volution</div>
                 <div class="text-xs font-extrabold text-emerald-400">${deltaStat}</div>
               </div>
               <div>
                 <div class="text-[9px] text-slate-400">Meilleure</div>
-                <div class="text-[11px] font-bold text-slate-200 truncate">${timeline.length ? timeline[timeline.length - 1].bestSetStr : '—'}</div>
+                <div class="text-[11px] font-bold text-slate-200 truncate">${timeline.length ? timeline[timeline.length - 1].bestSetStr : 'â€”'}</div>
               </div>
             </div>
 
@@ -1636,20 +1697,20 @@ window.IronPulse = window.IronPulse || {};
             ${ns.Charts.renderExerciseChart(timeline, ui.selectedChartMetric)}
           </div>
 
-          <!-- Graphique Tonnage des dernières séances -->
+          <!-- Graphique Tonnage des derniÃ¨res sÃ©ances -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2 shadow-md">
             <div class="flex items-center justify-between">
-              <h3 class="text-sm font-bold text-white">Tonnage par séance (7 dernières)</h3>
-              <span class="text-[11px] text-slate-400">Volume total déplacé</span>
+              <h3 class="text-sm font-bold text-white">Tonnage par sÃ©ance (7 derniÃ¨res)</h3>
+              <span class="text-[11px] text-slate-400">Volume total dÃ©placÃ©</span>
             </div>
             ${ns.Charts.renderWorkoutVolumeBars(state.history)}
           </div>
 
-          <!-- Répartition par Groupe Musculaire -->
+          <!-- RÃ©partition par Groupe Musculaire -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md">
             <div>
-              <h3 class="text-sm font-bold text-white">Équilibre des groupes musculaires</h3>
-              <p class="text-[11px] text-slate-400">Nombre de séries effectives enregistrées</p>
+              <h3 class="text-sm font-bold text-white">Ã‰quilibre des groupes musculaires</h3>
+              <p class="text-[11px] text-slate-400">Nombre de sÃ©ries effectives enregistrÃ©es</p>
             </div>
             <div>
               ${ns.Charts.renderMuscleBalanceBars(analysis.muscleBalance)}
@@ -1662,7 +1723,7 @@ window.IronPulse = window.IronPulse || {};
     // Sous-onglet Coach IA
     const highlightsHtml =
       analysis.highlights.length === 0
-        ? `<div class="text-xs text-slate-400">Continuez à enregistrer vos séances pour dégager des tendances de progression.</div>`
+        ? `<div class="text-xs text-slate-400">Continuez Ã  enregistrer vos sÃ©ances pour dÃ©gager des tendances de progression.</div>`
         : analysis.highlights
             .map(
               (h) => `
@@ -1670,7 +1731,7 @@ window.IronPulse = window.IronPulse || {};
             <div>
               <div class="text-xs font-bold text-white">${escapeHtml(h.exerciseName)}</div>
               <div class="text-[11px] text-slate-300 mt-0.5">${escapeHtml(h.comment)}</div>
-              <div class="text-[10px] text-slate-400 mt-0.5">Dernière perf : ${escapeHtml(h.latestPerf)}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">DerniÃ¨re perf : ${escapeHtml(h.latestPerf)}</div>
             </div>
             <div class="text-right shrink-0">
               <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-extrabold">${escapeHtml(h.pct)}</span>
@@ -1707,23 +1768,23 @@ window.IronPulse = window.IronPulse || {};
       <div class="space-y-4 pb-6 animate-slide-up">
         <div>
           <h1 class="text-lg font-extrabold text-white">Accompagnement Coach IA</h1>
-          <p class="text-xs text-slate-400">Analyse des progrès & ajustements prudents personnalisés</p>
+          <p class="text-xs text-slate-400">Analyse des progrÃ¨s & ajustements prudents personnalisÃ©s</p>
         </div>
 
         ${subTabBar}
 
-        <!-- Bandeau Prudence Médicale Obligatoire -->
+        <!-- Bandeau Prudence MÃ©dicale Obligatoire -->
         <div class="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-3 flex items-start gap-2.5">
-          <span class="text-amber-400 text-base shrink-0 mt-0.5">⚕️</span>
+          <span class="text-amber-400 text-base shrink-0 mt-0.5">âš•ï¸</span>
           <div class="text-[11px] text-amber-100/90 leading-relaxed">
-            <strong class="text-amber-300 font-bold">Prudence & Santé :</strong> ${escapeHtml(ns.AICoach.MEDICAL_DISCLAIMER)}
+            <strong class="text-amber-300 font-bold">Prudence & SantÃ© :</strong> ${escapeHtml(ns.AICoach.MEDICAL_DISCLAIMER)}
           </div>
         </div>
 
-        <!-- Synthèse des Progrès Détectés -->
+        <!-- SynthÃ¨se des ProgrÃ¨s DÃ©tectÃ©s -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-extrabold text-white">📈 Progrès mis en évidence</h3>
+            <h3 class="text-sm font-extrabold text-white">ðŸ“ˆ ProgrÃ¨s mis en Ã©vidence</h3>
             <span class="text-[11px] text-emerald-400 font-semibold">RPE moyen : ${analysis.avgGlobalRpe}/10</span>
           </div>
           <div class="space-y-2">
@@ -1731,11 +1792,11 @@ window.IronPulse = window.IronPulse || {};
           </div>
         </div>
 
-        <!-- Ajustements Prudents Proposés -->
+        <!-- Ajustements Prudents ProposÃ©s -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
           <div>
-            <h3 class="text-sm font-extrabold text-white">🎯 Ajustements adaptés à votre profil</h3>
-            <p class="text-[11px] text-slate-400">Basés sur votre objectif, votre niveau et la gestion de la fatigue</p>
+            <h3 class="text-sm font-extrabold text-white">ðŸŽ¯ Ajustements adaptÃ©s Ã  votre profil</h3>
+            <p class="text-[11px] text-slate-400">BasÃ©s sur votre objectif, votre niveau et la gestion de la fatigue</p>
           </div>
           <div class="space-y-2">
             ${adjustmentsHtml}
@@ -1746,12 +1807,12 @@ window.IronPulse = window.IronPulse || {};
         <div class="bg-gradient-to-b from-indigo-950/40 to-[#151C28] border border-indigo-500/30 rounded-2xl p-4 space-y-3 shadow-md">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-sm font-extrabold text-white">💬 Interroger le Coach IA</h3>
+              <h3 class="text-sm font-extrabold text-white">ðŸ’¬ Interroger le Coach IA</h3>
               <p class="text-[11px] text-slate-400">
                 ${
                   state.profile.geminiApiKey
-                    ? 'Connecté à Google AI Studio (' + (state.profile.geminiModel || 'gemini-2.5-flash') + ')'
-                    : 'Moteur biomécanique local actif (Clé Google AI Studio configurable dans Profil)'
+                    ? 'ConnectÃ© Ã  Google AI Studio (' + (state.profile.geminiModel || 'gemini-2.5-flash') + ')'
+                    : 'Moteur biomÃ©canique local actif (ClÃ© Google AI Studio configurable dans Profil)'
                 }
               </p>
             </div>
@@ -1759,14 +1820,14 @@ window.IronPulse = window.IronPulse || {};
 
           <!-- Questions rapides -->
           <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
-            <button onclick="IronPulse.App.askAI('Analyse mes dernières séances et propose un plan pour ma prochaine semaine.')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 whitespace-nowrap">
-              📋 Bilan de ma semaine
+            <button onclick="IronPulse.App.askAI('Analyse mes derniÃ¨res sÃ©ances et propose un plan pour ma prochaine semaine.')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 whitespace-nowrap">
+              ðŸ“‹ Bilan de ma semaine
             </button>
-            <button onclick="IronPulse.App.askAI('Je stagne au développé militaire, quel ajustement prudent conseilles-tu ?')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 whitespace-nowrap">
-              🏋️ Débloquer un plateau
+            <button onclick="IronPulse.App.askAI('Je stagne au dÃ©veloppÃ© militaire, quel ajustement prudent conseilles-tu ?')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 whitespace-nowrap">
+              ðŸ‹ï¸ DÃ©bloquer un plateau
             </button>
-            <button onclick="IronPulse.App.askAI('Je ressens une légère fatigue aux épaules, comment adapter ma séance avec prudence ?')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 whitespace-nowrap">
-              🛡️ Fatigue aux épaules
+            <button onclick="IronPulse.App.askAI('Je ressens une lÃ©gÃ¨re fatigue aux Ã©paules, comment adapter ma sÃ©ance avec prudence ?')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 whitespace-nowrap">
+              ðŸ›¡ï¸ Fatigue aux Ã©paules
             </button>
           </div>
 
@@ -1777,7 +1838,7 @@ window.IronPulse = window.IronPulse || {};
               type="text"
               value="${escapeHtml(ui.aiCustomQuestion)}"
               oninput="IronPulse.App.setAICustomQuestion(this.value)"
-              placeholder="Posez une question sur votre entraînement ou récupération..."
+              placeholder="Posez une question sur votre entraÃ®nement ou rÃ©cupÃ©ration..."
               class="flex-1 bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 outline-none"
             />
             <button
@@ -1789,7 +1850,7 @@ window.IronPulse = window.IronPulse || {};
             </button>
           </div>
 
-          <!-- Réponses du Coach -->
+          <!-- RÃ©ponses du Coach -->
           <div class="space-y-2.5 pt-1">
             ${
               ui.aiLoading
@@ -1810,15 +1871,15 @@ window.IronPulse = window.IronPulse || {};
             }
             ${
               chatLogs.length === 0 && !ui.aiLoading
-                ? `<div class="text-[11px] text-slate-400 text-center py-2">Touchez un bouton rapide ci-dessus pour générer un bilan détaillé.</div>`
+                ? `<div class="text-[11px] text-slate-400 text-center py-2">Touchez un bouton rapide ci-dessus pour gÃ©nÃ©rer un bilan dÃ©taillÃ©.</div>`
                 : chatLogs
                     .slice(0, 3)
                     .map(
                       (entry) => `
                   <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-2">
                     <div class="flex items-center justify-between text-[10px] text-indigo-300 font-semibold">
-                      <span>Demande : « ${escapeHtml(entry.question)} »</span>
-                      <span>${entry.source && entry.source.startsWith('gemini') ? '✨ Google AI Studio (' + entry.source + ')' : '⚙️ Analyse Locale'}</span>
+                      <span>Demande : Â« ${escapeHtml(entry.question)} Â»</span>
+                      <span>${entry.source && entry.source.startsWith('gemini') ? 'âœ¨ Google AI Studio (' + entry.source + ')' : 'âš™ï¸ Analyse Locale'}</span>
                     </div>
                     ${entry.errorNote ? `<div class="text-[10px] text-amber-400">${escapeHtml(entry.errorNote)}</div>` : ''}
                     <div class="pt-1 border-t border-slate-800/80">
@@ -1836,7 +1897,7 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 7 : PROFIL & PARAMÈTRES
+  // RENDU Ã‰CRAN 7 : PROFIL & PARAMÃˆTRES
   // ============================================================================
   function computeBiometricSummary(profile) {
     const age = Number(profile.age) || 25;
@@ -1846,19 +1907,19 @@ window.IronPulse = window.IronPulse || {};
     const gender = profile.gender === 'female' ? 'female' : 'male';
     const heightM = heightCm / 100;
     const bmi = heightM > 0 ? +(weightKg / (heightM * heightM)).toFixed(1) : 22.5;
-    let bmiLabel = 'Athlétique / Normal';
+    let bmiLabel = 'AthlÃ©tique / Normal';
     let bmiColor = 'text-emerald-400';
     if (bmi < 18.5) {
-      bmiLabel = 'Gabarit Léger (Surplus conseillé)';
+      bmiLabel = 'Gabarit LÃ©ger (Surplus conseillÃ©)';
       bmiColor = 'text-sky-400';
     } else if (bmi >= 25 && bmi < 30) {
       bmiLabel = 'Gabarit Puissant / Massif';
       bmiColor = 'text-amber-400';
     } else if (bmi >= 30) {
-      bmiLabel = 'Gabarit Titan (Priorité Recomposition)';
+      bmiLabel = 'Gabarit Titan (PrioritÃ© Recomposition)';
       bmiColor = 'text-rose-400';
     }
-    // Mifflin-St Jeor (Homme: +5 | Femme: -161) + multiplicateur selon fréquence
+    // Mifflin-St Jeor (Homme: +5 | Femme: -161) + multiplicateur selon frÃ©quence
     const genderOffset = gender === 'female' ? -161 : 5;
     const bmr = Math.round(10 * weightKg + 6.25 * heightCm - 5 * age + genderOffset);
     const activityMult = freq <= 2 ? 1.375 : freq <= 4 ? 1.55 : 1.725;
@@ -1869,7 +1930,7 @@ window.IronPulse = window.IronPulse || {};
     let goalNutritionLabel = 'Surplus Hypertrophie (+280 kcal)';
     if (goal === 'fatloss') {
       calorieDelta = -400;
-      goalNutritionLabel = 'Déficit Sèche (-400 kcal)';
+      goalNutritionLabel = 'DÃ©ficit SÃ¨che (-400 kcal)';
     } else if (goal === 'strength') {
       calorieDelta = 200;
       goalNutritionLabel = 'Surplus Force (+200 kcal)';
@@ -1924,7 +1985,7 @@ window.IronPulse = window.IronPulse || {};
 
     if (goal === 'fatloss' || goal.includes('perte')) return 'prog-metabolic-fatloss';
     if (goal === 'strength' || goal.includes('force')) return 'prog-upper-lower-strength';
-    if (level === 'beginner' || level.includes('débutant') || goal === 'fitness' || freq <= 3) {
+    if (level === 'beginner' || level.includes('dÃ©butant') || goal === 'fitness' || freq <= 3) {
       return 'prog-fullbody-beginner';
     }
     return 'prog-ppl-hypertrophy';
@@ -1940,20 +2001,20 @@ window.IronPulse = window.IronPulse || {};
         <div class="flex items-center justify-between gap-2">
           <div>
             <h1 class="text-lg font-extrabold text-white">Profil & Calibration Tactique</h1>
-            <p class="text-xs text-slate-400">Biométrie (âge, taille, poids), objectifs, Coach IA et Tutoriel</p>
+            <p class="text-xs text-slate-400">BiomÃ©trie (Ã¢ge, taille, poids), objectifs, Coach IA et Tutoriel</p>
           </div>
           <button
             onclick="IronPulse.App.openOnboardingWizard(1)"
             class="px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[11px] font-black text-amber-300 transition shrink-0"
           >
-            🎓 Assistant & Tuto
+            ðŸŽ“ Assistant & Tuto
           </button>
         </div>
 
-        <!-- Carte Tactique Biométrique (IMC + Kcal + Protéines) -->
+        <!-- Carte Tactique BiomÃ©trique (IMC + Kcal + ProtÃ©ines) -->
         <div class="shonen-card rounded-2xl p-3.5 border border-emerald-500/30 bg-gradient-to-br from-emerald-950/30 via-[#151C28] to-[#0B0F17]">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400">📡 Bilan Biométrique Tactique</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400">ðŸ“¡ Bilan BiomÃ©trique Tactique</span>
             <span class="text-[10px] font-bold ${bio.bmiColor}">${bio.bmiLabel}</span>
           </div>
           <div class="grid grid-cols-4 gap-2 text-center">
@@ -1966,19 +2027,19 @@ window.IronPulse = window.IronPulse || {};
               <div class="text-sm font-black text-amber-300">${bio.tdee} <span class="text-[9px] font-normal">kcal</span></div>
             </div>
             <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] text-slate-400 uppercase font-bold">Protéines</div>
+              <div class="text-[9px] text-slate-400 uppercase font-bold">ProtÃ©ines</div>
               <div class="text-sm font-black text-emerald-300">${bio.proteinTargetG} <span class="text-[9px] font-normal">g/j</span></div>
             </div>
             <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2">
               <div class="text-[9px] text-slate-400 uppercase font-bold">Gabarit</div>
-              <div class="text-xs font-black text-indigo-300">${bio.heightCm}cm · ${bio.age}a</div>
+              <div class="text-xs font-black text-indigo-300">${bio.heightCm}cm Â· ${bio.age}a</div>
             </div>
           </div>
         </div>
 
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3.5 shadow-md">
           <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Prénom / Pseudo de Chasseur</label>
+            <label class="block text-xs font-bold text-slate-300 mb-1">PrÃ©nom / Pseudo de Chasseur</label>
             <input
               type="text"
               value="${escapeHtml(profile.name)}"
@@ -1989,7 +2050,7 @@ window.IronPulse = window.IronPulse || {};
 
           <div class="grid grid-cols-3 gap-2.5">
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Âge (ans)</label>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Ã‚ge (ans)</label>
               <input
                 type="number"
                 min="14"
@@ -2045,7 +2106,7 @@ window.IronPulse = window.IronPulse || {};
 
           <div class="grid grid-cols-2 gap-2.5">
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Séances cibles / sem.</label>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">SÃ©ances cibles / sem.</label>
               <input
                 type="number"
                 min="1"
@@ -2056,7 +2117,7 @@ window.IronPulse = window.IronPulse || {};
               />
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Repos par défaut (s)</label>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Repos par dÃ©faut (s)</label>
               <input
                 type="number"
                 step="15"
@@ -2081,37 +2142,37 @@ window.IronPulse = window.IronPulse || {};
           </div>
         </div>
 
-        <!-- Tutoriel Interactif & Visite Guidée -->
+        <!-- Tutoriel Interactif & Visite GuidÃ©e -->
         <div class="bg-[#151C28] border border-amber-500/30 rounded-2xl p-4 space-y-2.5 shadow-md">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-amber-300">🎓 Tutoriel & Première Utilisation</span>
+            <span class="text-xs font-extrabold text-amber-300">ðŸŽ“ Tutoriel & PremiÃ¨re Utilisation</span>
             <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">Interactif</span>
           </div>
           <p class="text-[11px] text-slate-400 leading-relaxed">
-            Relancez à tout moment le questionnaire de personnalisation initiale, le tutoriel illustré des fonctionnalités ou la visite guidée pas-à-pas.
+            Relancez Ã  tout moment le questionnaire de personnalisation initiale, le tutoriel illustrÃ© des fonctionnalitÃ©s ou la visite guidÃ©e pas-Ã -pas.
           </p>
           <div class="grid grid-cols-2 gap-2">
             <button
               onclick="IronPulse.App.openOnboardingWizard(1)"
               class="py-2.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-xs font-extrabold text-amber-300 transition"
             >
-              📋 Questionnaire & Tuto
+              ðŸ“‹ Questionnaire & Tuto
             </button>
             <button
               onclick="IronPulse.App.startGuidedTour()"
               class="py-2.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-xs font-extrabold text-emerald-300 transition"
             >
-              🧭 Visite Guidée des Onglets
+              ðŸ§­ Visite GuidÃ©e des Onglets
             </button>
           </div>
         </div>
 
-        <!-- Configuration Optionnelle Clé API Google AI Studio / Gemini -->
+        <!-- Configuration Optionnelle ClÃ© API Google AI Studio / Gemini -->
         <div class="bg-[#151C28] border border-indigo-500/40 rounded-2xl p-4 space-y-3 shadow-md">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs">✨</span>
-              <span class="text-xs font-black uppercase tracking-wider text-white">Google AI Studio • Moteur Gemini</span>
+              <span class="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs">âœ¨</span>
+              <span class="text-xs font-black uppercase tracking-wider text-white">Google AI Studio â€¢ Moteur Gemini</span>
             </div>
             <span class="text-[10px] px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 font-extrabold border border-indigo-500/30">
               ${profile.geminiModel || 'gemini-2.5-flash'}
@@ -2119,21 +2180,21 @@ window.IronPulse = window.IronPulse || {};
           </div>
 
           <p class="text-[11px] text-slate-300 leading-relaxed">
-            Le Coach IA fonctionne immédiatement hors-ligne grâce à son moteur biomécanique local. Pour débloquer la synthèse conversationnelle complète de Google DeepMind, configurez votre clé API gratuite Google AI Studio.
+            Le Coach IA fonctionne immÃ©diatement hors-ligne grÃ¢ce Ã  son moteur biomÃ©canique local. Pour dÃ©bloquer la synthÃ¨se conversationnelle complÃ¨te de Google DeepMind, configurez votre clÃ© API gratuite Google AI Studio.
           </p>
 
-          <!-- Sélecteur de Modèle -->
+          <!-- SÃ©lecteur de ModÃ¨le -->
           <div class="space-y-1">
-            <label class="block text-[10px] font-black uppercase text-slate-400">Modèle Gemini</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400">ModÃ¨le Gemini</label>
             <select
               onchange="IronPulse.App.updateProfileField('geminiModel', this.value)"
               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="gemini-2.5-flash" ${(profile.geminiModel || 'gemini-2.5-flash') === 'gemini-2.5-flash' ? 'selected' : ''}>
-                Gemini 2.5 Flash (Recommandé • Ultra-rapide & équilibré)
+                Gemini 2.5 Flash (RecommandÃ© â€¢ Ultra-rapide & Ã©quilibrÃ©)
               </option>
               <option value="gemini-2.0-flash" ${profile.geminiModel === 'gemini-2.0-flash' ? 'selected' : ''}>
-                Gemini 2.0 Flash (Raisonnement avancé)
+                Gemini 2.0 Flash (Raisonnement avancÃ©)
               </option>
               <option value="gemini-1.5-flash" ${profile.geminiModel === 'gemini-1.5-flash' ? 'selected' : ''}>
                 Gemini 1.5 Flash (Standard stable)
@@ -2141,18 +2202,18 @@ window.IronPulse = window.IronPulse || {};
             </select>
           </div>
 
-          <!-- Saisie Clé API avec bouton Masquer/Afficher -->
+          <!-- Saisie ClÃ© API avec bouton Masquer/Afficher -->
           <div class="space-y-1">
             <div class="flex items-center justify-between">
-              <label class="block text-[10px] font-black uppercase text-slate-400">Clé API Google AI Studio</label>
+              <label class="block text-[10px] font-black uppercase text-slate-400">ClÃ© API Google AI Studio</label>
               <a
                 href="https://aistudio.google.com/app/apikey"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-[10px] text-amber-400 hover:text-amber-300 font-extrabold underline flex items-center gap-1"
               >
-                <span>🔑 Obtenir une clé gratuite</span>
-                <span>↗</span>
+                <span>ðŸ”‘ Obtenir une clÃ© gratuite</span>
+                <span>â†—</span>
               </a>
             </div>
             <div class="relative">
@@ -2167,13 +2228,13 @@ window.IronPulse = window.IronPulse || {};
                 type="button"
                 onclick="IronPulse.App.toggleShowApiKey()"
                 class="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-[11px] text-slate-400 hover:text-white"
-                title="${ui.showApiKey ? 'Masquer la clé' : 'Afficher la clé'}"
+                title="${ui.showApiKey ? 'Masquer la clÃ©' : 'Afficher la clÃ©'}"
               >
-                ${ui.showApiKey ? '🙈' : '👁️'}
+                ${ui.showApiKey ? 'ðŸ™ˆ' : 'ðŸ‘ï¸'}
               </button>
             </div>
             <p class="text-[9px] text-slate-500">
-              🔒 Sécurité locale : votre clé est conservée uniquement dans votre navigateur (localStorage) et n'est jamais transmise à des tiers.
+              ðŸ”’ SÃ©curitÃ© locale : votre clÃ© est conservÃ©e uniquement dans votre navigateur (localStorage) et n'est jamais transmise Ã  des tiers.
             </p>
           </div>
 
@@ -2185,7 +2246,7 @@ window.IronPulse = window.IronPulse || {};
               ${ui.geminiTesting ? 'disabled' : ''}
               class="w-full py-2.5 px-3 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 text-indigo-200 text-xs font-black transition active:scale-95 flex items-center justify-center gap-2"
             >
-              <span>${ui.geminiTesting ? '⏳' : '⚡'}</span>
+              <span>${ui.geminiTesting ? 'â³' : 'âš¡'}</span>
               <span>${ui.geminiTesting ? 'Test de connexion en cours...' : 'Tester la connexion Google AI Studio'}</span>
             </button>
             ${
@@ -2196,7 +2257,7 @@ window.IronPulse = window.IronPulse || {};
                   ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
                   : 'bg-rose-500/15 border-rose-500/40 text-rose-300'
               }">
-                ${ui.geminiTestResult.success ? '✓' : '⚠️'} ${escapeHtml(ui.geminiTestResult.message)}
+                ${ui.geminiTestResult.success ? 'âœ“' : 'âš ï¸'} ${escapeHtml(ui.geminiTestResult.message)}
               </div>
             `
                 : ''
@@ -2204,35 +2265,35 @@ window.IronPulse = window.IronPulse || {};
           </div>
         </div>
 
-        <!-- Gestion des données & Préréglage AURA FIT (Mehdi) -->
+        <!-- Gestion des donnÃ©es & PrÃ©rÃ©glage AURA FIT (Mehdi) -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5">
           <div class="flex items-center justify-between">
-            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Données, Export Antigravity & Profil Mehdi</h3>
-            <span class="text-[10px] font-bold text-amber-300">AURA FIT × IRONPULSE Z</span>
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">DonnÃ©es, Export Antigravity & Profil Mehdi</h3>
+            <span class="text-[10px] font-bold text-amber-300">AURA FIT Ã— IRONPULSE Z</span>
           </div>
           <button
             onclick="IronPulse.App.loadMehdiProfile()"
             class="w-full py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-xs font-extrabold text-amber-300 transition flex items-center justify-center gap-2"
           >
-            ⚡ Charger le Profil Mehdi (AURA FIT — Rang B • 25 ans • 182 cm • 78.5 kg)
+            âš¡ Charger le Profil Mehdi (AURA FIT â€” Rang B â€¢ 25 ans â€¢ 182 cm â€¢ 78.5 kg)
           </button>
           <div class="grid grid-cols-3 gap-2">
             <button onclick="IronPulse.App.exportDataJson()" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-semibold text-slate-200 transition">
-              ⬇ Export JSON
+              â¬‡ Export JSON
             </button>
             <button onclick="IronPulse.App.exportAntigravityMarkdown()" class="py-2.5 px-2 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/40 text-[11px] font-bold text-indigo-300 transition">
-              📄 Export MD
+              ðŸ“„ Export MD
             </button>
             <button onclick="IronPulse.App.resetDemoData()" class="py-2.5 px-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-[11px] font-semibold text-rose-300 transition">
-              ↺ Reset Visite
+              â†º Reset Visite
             </button>
           </div>
           <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
             <button onclick="IronPulse.App.exportIronPulseBackup()" class="py-2.5 px-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-[11px] font-black text-emerald-300 transition flex items-center justify-center gap-1.5">
-              <span>🔒</span> <span>Sauvegarde .ironpulse</span>
+              <span>ðŸ”’</span> <span>Sauvegarde .ironpulse</span>
             </button>
             <label class="py-2.5 px-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-[11px] font-black text-cyan-300 transition flex items-center justify-center gap-1.5 cursor-pointer">
-              <span>📥</span> <span>Restaurer .ironpulse</span>
+              <span>ðŸ“¥</span> <span>Restaurer .ironpulse</span>
               <input type="file" accept=".ironpulse,.json" onchange="IronPulse.App.importIronPulseFile(event)" class="hidden" />
             </label>
           </div>
@@ -2242,19 +2303,19 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU ÉCRAN 8 : HÉROS RPG (UNIVERS SHONEN AURA PULSE & GUILDE)
+  // RENDU Ã‰CRAN 8 : HÃ‰ROS RPG (UNIVERS SHONEN AURA PULSE & GUILDE)
   // ============================================================================
   function renderRPGScreen() {
-    if (!ns.RPG) return '<div class="text-xs text-slate-400">Chargement du Système RPG...</div>';
+    if (!ns.RPG) return '<div class="text-xs text-slate-400">Chargement du SystÃ¨me RPG...</div>';
     const hero = ns.RPG.getHeroProfile();
 
     const subTabs = [
-      { id: 'hero', label: '⚔️ Statut' },
-      { id: 'talents', label: '⚡ Talents' },
-      { id: 'customize', label: '🎨 Studio' },
-      { id: 'quests', label: '🐉 Donjons' },
-      { id: 'relics', label: '👑 Reliques' },
-      { id: 'guild', label: '🛡️ Guilde' }
+      { id: 'hero', label: 'âš”ï¸ Statut' },
+      { id: 'talents', label: 'âš¡ Talents' },
+      { id: 'customize', label: 'ðŸŽ¨ Studio' },
+      { id: 'quests', label: 'ðŸ‰ Donjons' },
+      { id: 'relics', label: 'ðŸ‘‘ Reliques' },
+      { id: 'guild', label: 'ðŸ›¡ï¸ Guilde' }
     ];
 
     const subTabBar = `
@@ -2273,7 +2334,7 @@ window.IronPulse = window.IronPulse || {};
       </div>
     `;
 
-    // En-tête commun du Chasseur (Fenêtre Système)
+    // En-tÃªte commun du Chasseur (FenÃªtre SystÃ¨me)
     const heroHeader = `
       <div class="shonen-arena-card relative overflow-hidden bg-gradient-to-br from-indigo-950/50 via-[#151C28] to-slate-900 border border-indigo-500/30 rounded-2xl p-4 shadow-lg space-y-3">
         <div class="shonen-arena-bg" style="background-image: url('${hero.arenaBgUrl}');"></div>
@@ -2283,7 +2344,7 @@ window.IronPulse = window.IronPulse || {};
             <div class="min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span class="px-2 py-0.5 rounded border text-[10px] font-black ${hero.rankObj.badgeBg}">RANG ${hero.rankObj.rank}</span>
-                <span class="text-[11px] font-bold text-amber-300">« ${escapeHtml(hero.appearance?.battleTitle || hero.appearance?.customTitle || hero.rankObj.title)} »</span>
+                <span class="text-[11px] font-bold text-amber-300">Â« ${escapeHtml(hero.appearance?.battleTitle || hero.appearance?.customTitle || hero.rankObj.title)} Â»</span>
               </div>
               <h1 class="text-lg font-extrabold text-white truncate mt-0.5">${escapeHtml(hero.heroName)}</h1>
               <div class="text-xs text-emerald-400 font-semibold">${hero.classObj.icon} ${escapeHtml(hero.classObj.name)}</div>
@@ -2298,24 +2359,24 @@ window.IronPulse = window.IronPulse || {};
         <!-- Barre d'XP du Niveau Actuel -->
         <div class="relative z-10 bg-slate-950/80 border border-slate-800/80 rounded-xl p-2.5 space-y-1.5">
           <div class="flex items-center justify-between text-[11px]">
-            <span class="text-slate-300 font-semibold">Expérience d'Éveil (Total : ${hero.totalXp} XP)</span>
+            <span class="text-slate-300 font-semibold">ExpÃ©rience d'Ã‰veil (Total : ${hero.totalXp} XP)</span>
             <span class="text-emerald-400 font-bold">${hero.xpInCurrentLevel} / ${hero.xpForNextLevel} XP (${hero.levelProgressPct}%)</span>
           </div>
           <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
             <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: ${hero.levelProgressPct}%"></div>
           </div>
           <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5 flex-wrap gap-1">
-            <span>⚡ CP : <strong class="text-white">${hero.combatPower}</strong></span>
-            <span>❤️ HP : <strong class="text-rose-400">${hero.hpMax}</strong></span>
-            <span>💧 MP : <strong class="text-cyan-300">${hero.mpMax}</strong></span>
-            <span>🪙 Or : <strong class="text-amber-300">${hero.gold}</strong></span>
-            <span>🔥 Série : <strong class="text-orange-400">${hero.streakDays}j</strong></span>
+            <span>âš¡ CP : <strong class="text-white">${hero.combatPower}</strong></span>
+            <span>â¤ï¸ HP : <strong class="text-rose-400">${hero.hpMax}</strong></span>
+            <span>ðŸ’§ MP : <strong class="text-cyan-300">${hero.mpMax}</strong></span>
+            <span>ðŸª™ Or : <strong class="text-amber-300">${hero.gold}</strong></span>
+            <span>ðŸ”¥ SÃ©rie : <strong class="text-orange-400">${hero.streakDays}j</strong></span>
           </div>
         </div>
       </div>
     `;
 
-    // SOUS-ONGLET TALENTS SHŌNEN (ARBRE DE COMPÉTENCES : TITAN, MOINE, OMBRE) - Densetsu Scénariste
+    // SOUS-ONGLET TALENTS SHÅŒNEN (ARBRE DE COMPÃ‰TENCES : TITAN, MOINE, OMBRE) - Densetsu ScÃ©nariste
     if (ui.rpgSubTab === 'talents') {
       const state = ns.Storage.getState();
       const tpAvailable = ns.RPG.getTalentPointsAvailable(state);
@@ -2323,9 +2384,9 @@ window.IronPulse = window.IronPulse || {};
       const allocated = (state.rpg && state.rpg.talents && state.rpg.talents.allocated) || {};
 
       const talentPaths = [
-        { key: 'TITAN', def: ns.RPG.TALENT_PATHS.TITAN },
-        { key: 'MONK', def: ns.RPG.TALENT_PATHS.MONK },
-        { key: 'SHADOW', def: ns.RPG.TALENT_PATHS.SHADOW }
+        { key: 'PULL', def: ns.RPG.TALENT_PATHS.PULL },
+        { key: 'PUSH', def: ns.RPG.TALENT_PATHS.PUSH },
+        { key: 'CORE', def: ns.RPG.TALENT_PATHS.CORE }
       ];
 
       const pathsHtml = talentPaths
@@ -2352,13 +2413,13 @@ window.IronPulse = window.IronPulse || {};
                     </div>
                     ${
                       isMax
-                        ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black">✓ Max</span>`
+                        ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black">âœ“ Max</span>`
                         : isLocked
-                        ? `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-500 text-[10px] font-bold">🔒 Prérequis</span>`
+                        ? `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-500 text-[10px] font-bold">ðŸ”’ PrÃ©requis</span>`
                         : `<button onclick="IronPulse.App.unlockTalent('${node.id}')" ${canUnlock ? '' : 'disabled'} class="px-2.5 py-1 rounded-lg ${
                             canUnlock ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black' : 'bg-slate-800 text-slate-500'
                           } text-[10px] transition active:scale-95">
-                            ⚡ Éveiller (${node.costPerRank} TP)
+                            âš¡ Ã‰veiller (${node.costPerRank} TP)
                           </button>`
                     }
                   </div>
@@ -2390,17 +2451,17 @@ window.IronPulse = window.IronPulse || {};
           ${heroHeader}
           ${subTabBar}
 
-          <!-- Bannière Points de Talents -->
+          <!-- BanniÃ¨re Points de Talents -->
           <div class="bg-gradient-to-r from-amber-950/40 via-[#151C28] to-slate-900 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between gap-2 shadow-lg">
             <div>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300">Points d’Éveil Shōnen</span>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300">Points dâ€™Ã‰veil ShÅnen</span>
               <div class="text-xl font-black text-white flex items-center gap-2">
-                <span>⚡ ${tpAvailable} TP Disponibles</span>
+                <span>âš¡ ${tpAvailable} TP Disponibles</span>
               </div>
-              <p class="text-[10px] text-slate-400 mt-0.5">Gagnez 1 TP à chaque passage de niveau pour débloquer vos spécialisations</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">Gagnez 1 TP Ã  chaque passage de niveau pour dÃ©bloquer vos spÃ©cialisations</p>
             </div>
             <button onclick="IronPulse.App.resetTalents()" class="py-1.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-extrabold text-slate-300 transition shrink-0">
-              ↺ Réinitialiser
+              â†º RÃ©initialiser
             </button>
           </div>
 
@@ -2449,7 +2510,7 @@ window.IronPulse = window.IronPulse || {};
                       <span class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-base shrink-0">${item.icon}</span>
                       <div class="min-w-0">
                         <div class="text-xs font-extrabold text-white truncate">${escapeHtml(item.name)}</div>
-                        <div class="text-[10px] text-slate-400 truncate">Niv. ${item.minLevel} requis • ${item.priceGold === 0 ? 'Gratuit' : `${item.priceGold} 🪙`}</div>
+                        <div class="text-[10px] text-slate-400 truncate">Niv. ${item.minLevel} requis â€¢ ${item.priceGold === 0 ? 'Gratuit' : `${item.priceGold} ðŸª™`}</div>
                       </div>
                     </div>
                     <button
@@ -2466,12 +2527,12 @@ window.IronPulse = window.IronPulse || {};
                     >
                       ${
                         item.equipped
-                          ? '✓ Équipé'
+                          ? 'âœ“ Ã‰quipÃ©'
                           : item.unlocked
-                          ? 'Équiper'
+                          ? 'Ã‰quiper'
                           : !item.levelMet
-                          ? `🔒 Niv.${item.minLevel}`
-                          : `🪙 ${item.priceGold}`
+                          ? `ðŸ”’ Niv.${item.minLevel}`
+                          : `ðŸª™ ${item.priceGold}`
                       }
                     </button>
                   </div>
@@ -2564,7 +2625,7 @@ window.IronPulse = window.IronPulse || {};
                 </div>
               </div>
               <span class="px-1.5 py-0.5 rounded text-[9px] font-black shrink-0 ${active ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-500'}">
-                ${active ? 'ÉQUIPÉ' : '+ AJOUTER'}
+                ${active ? 'Ã‰QUIPÃ‰' : '+ AJOUTER'}
               </span>
             </div>
           </button>
@@ -2692,7 +2753,7 @@ window.IronPulse = window.IronPulse || {};
           <button onclick="IronPulse.App.updateHeroAppearance('battleTitle', '${escapeHtml(title).replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 rounded-xl border text-[11px] font-bold transition ${
             active ? 'bg-amber-500/20 border-amber-400 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white'
           }">
-            « ${escapeHtml(title)} »
+            Â« ${escapeHtml(title)} Â»
           </button>
         `;
       }).join('');
@@ -2717,13 +2778,13 @@ window.IronPulse = window.IronPulse || {};
           ${heroHeader}
           ${subTabBar}
 
-          <!-- SCÈNE D'APERÇU EN DIRECT DU STRIKER PLEIN PIED TORSE NU -->
+          <!-- SCÃˆNE D'APERÃ‡U EN DIRECT DU STRIKER PLEIN PIED TORSE NU -->
           <div class="shonen-arena-card relative overflow-hidden bg-[#151C28] border border-amber-500/40 rounded-2xl p-4 shadow-2xl space-y-3">
             <div class="shonen-arena-bg" style="background-image: url('${hero.arenaBgUrl}');"></div>
             <div class="relative z-10 flex items-center justify-between">
               <div>
-                <span class="text-[10px] uppercase tracking-wider text-amber-300 font-black">⚡ Studio Striker Cinétique (Plein Pied & Torse Nu)</span>
-                <h2 class="text-sm font-extrabold text-white">Apparence & Aura Cinétique</h2>
+                <span class="text-[10px] uppercase tracking-wider text-amber-300 font-black">âš¡ Studio Striker CinÃ©tique (Plein Pied & Torse Nu)</span>
+                <h2 class="text-sm font-extrabold text-white">Apparence & Aura CinÃ©tique</h2>
               </div>
               <button
                 onclick="IronPulse.App.updateHeroAppearance('lightningSparks', ${!sparksOn})"
@@ -2733,7 +2794,7 @@ window.IronPulse = window.IronPulse || {};
                     : 'bg-slate-900 border-slate-700 text-slate-400'
                 }"
               >
-                ⚡ Éclairs d'Aura : ${sparksOn ? 'ACTIFS' : 'OFF'}
+                âš¡ Ã‰clairs d'Aura : ${sparksOn ? 'ACTIFS' : 'OFF'}
               </button>
             </div>
 
@@ -2744,13 +2805,13 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- ARCHÉTYPES MANGA RPG & SPORTS DE COMBAT (1-CLIC) -->
+          <!-- ARCHÃ‰TYPES MANGA RPG & SPORTS DE COMBAT (1-CLIC) -->
           <div class="bg-gradient-to-r from-red-950/60 via-slate-900 to-indigo-950/60 border-2 border-amber-500/50 rounded-2xl p-4 space-y-3 shadow-xl">
             <div class="flex items-center justify-between gap-2">
               <div>
-                <span class="px-2 py-0.5 rounded bg-amber-500/25 border border-amber-400 text-amber-300 text-[9px] font-black uppercase tracking-wider">⚡ STYLES SPORTS & COMBAT MANGA</span>
-                <h3 class="text-xs font-black uppercase tracking-wider text-white mt-1">Archétypes Sport & Arts Martiaux (1-Clic)</h3>
-                <p class="text-[11px] text-slate-300">Activez en 1 clic l'apparence, l'aura et la morphologie de Baki, Ippo, Dragon Ball Z, Solo Leveling ou Persona.</p>
+                <span class="px-2 py-0.5 rounded bg-amber-500/25 border border-amber-400 text-amber-300 text-[9px] font-black uppercase tracking-wider">âš¡ STYLES SPORTS & COMBAT MANGA</span>
+                <h3 class="text-xs font-black uppercase tracking-wider text-white mt-1">ArchÃ©types Sport & Arts Martiaux (1-Clic)</h3>
+                <p class="text-[11px] text-slate-300">Activez en 1 clic l'apparence, l'aura et la morphologie de Baki, Ippo, Dragon Ball Z, Édition Nocturne ou Persona.</p>
               </div>
             </div>
 
@@ -2790,7 +2851,7 @@ window.IronPulse = window.IronPulse || {};
                           : 'bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-black shadow'
                       }"
                     >
-                      ${isActive ? '✓ Archétype Actif' : `⚡ Activer ${escapeHtml(arch.name)}`}
+                      ${isActive ? 'âœ“ ArchÃ©type Actif' : `âš¡ Activer ${escapeHtml(arch.name)}`}
                     </button>
                   </div>
                 `;
@@ -2798,30 +2859,30 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- BOUTIQUE & DRESSING 16-BIT AURA FIT (TENUES, ACCESSOIRES, DÉCORS PAYABLES EN OR 🪙) -->
+          <!-- BOUTIQUE & DRESSING 16-BIT AURA FIT (TENUES, ACCESSOIRES, DÃ‰CORS PAYABLES EN OR ðŸª™) -->
           <div class="bg-[#151C28] border border-amber-500/40 rounded-2xl p-4 space-y-3 shadow-md">
             <div class="flex items-center justify-between gap-2">
               <div>
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">🛍️ Boutique & Dressing GAUVAX 16-Bit (AURA FIT)</h3>
-                <p class="text-[11px] text-slate-400">Débloquez tenues, accessoires et décors avec votre Or gagné en séance</p>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">ðŸ›ï¸ Boutique & Dressing GAUVAX 16-Bit (AURA FIT)</h3>
+                <p class="text-[11px] text-slate-400">DÃ©bloquez tenues, accessoires et dÃ©cors avec votre Or gagnÃ© en sÃ©ance</p>
               </div>
               <span class="px-2.5 py-1 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-black shrink-0">
-                🪙 ${hero.gold} Or
+                ðŸª™ ${hero.gold} Or
               </span>
             </div>
 
-            ${renderWardrobeSlotSection('outfit', '👕 Tenues (Outfit)')}
-            ${renderWardrobeSlotSection('accessory', '🎧 Accessoires Signature')}
-            ${renderWardrobeSlotSection('background', '🌃 Décors de Salle 16-Bit')}
+            ${renderWardrobeSlotSection('outfit', 'ðŸ‘• Tenues (Outfit)')}
+            ${renderWardrobeSlotSection('accessory', 'ðŸŽ§ Accessoires Signature')}
+            ${renderWardrobeSlotSection('background', 'ðŸŒƒ DÃ©cors de Salle 16-Bit')}
           </div>
 
-          <!-- IMPORT & CRÉATION AVATAR 3D PROFESSIONNEL (GLTF / READY PLAYER ME) -->
+          <!-- IMPORT & CRÃ‰ATION AVATAR 3D PROFESSIONNEL (GLTF / READY PLAYER ME) -->
           <div class="bg-gradient-to-r from-indigo-950/80 to-slate-900 border-2 border-indigo-500/60 rounded-2xl p-4 space-y-3 shadow-xl">
             <div class="flex items-center justify-between gap-2">
               <div>
-                <span class="px-2 py-0.5 rounded bg-indigo-500/20 border border-indigo-400 text-indigo-300 text-[9px] font-black uppercase tracking-wider">PIPELINE 3D PRO • GLTF</span>
-                <h3 class="text-xs font-black uppercase tracking-wider text-white mt-1">🌐 Importateur d'Avatar 3D Réaliste (GLB / Ready Player Me)</h3>
-                <p class="text-[11px] text-slate-300">Chargez n'importe quel modèle 3D polygonal texturé (Ready Player Me, Mixamo, scan 3D) ou collez son lien GLB.</p>
+                <span class="px-2 py-0.5 rounded bg-indigo-500/20 border border-indigo-400 text-indigo-300 text-[9px] font-black uppercase tracking-wider">PIPELINE 3D PRO â€¢ GLTF</span>
+                <h3 class="text-xs font-black uppercase tracking-wider text-white mt-1">ðŸŒ Importateur d'Avatar 3D RÃ©aliste (GLB / Ready Player Me)</h3>
+                <p class="text-[11px] text-slate-300">Chargez n'importe quel modÃ¨le 3D polygonal texturÃ© (Ready Player Me, Mixamo, scan 3D) ou collez son lien GLB.</p>
               </div>
             </div>
             
@@ -2838,21 +2899,21 @@ window.IronPulse = window.IronPulse || {};
                   onclick="IronPulse.App.applyCustomGlbModel()"
                   class="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-xs transition active:scale-95 shadow"
                 >
-                  ⚡ Charger GLB
+                  âš¡ Charger GLB
                 </button>
               </div>
               <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-                <span>Créez gratuitement votre avatar réaliste sur <a href="https://readyplayer.me" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline font-bold">Ready Player Me</a> puis collez son URL GLB.</span>
-                ${app.customModelGlb ? `<button onclick="IronPulse.App.clearCustomGlbModel()" class="text-rose-400 hover:underline font-bold">Réinitialiser (Modèle Standard)</button>` : ''}
+                <span>CrÃ©ez gratuitement votre avatar rÃ©aliste sur <a href="https://readyplayer.me" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline font-bold">Ready Player Me</a> puis collez son URL GLB.</span>
+                ${app.customModelGlb ? `<button onclick="IronPulse.App.clearCustomGlbModel()" class="text-rose-400 hover:underline font-bold">RÃ©initialiser (ModÃ¨le Standard)</button>` : ''}
               </div>
             </div>
           </div>
 
-          <!-- 1. SEXE & ARCHÉTYPE MANGA -->
+          <!-- 1. SEXE & ARCHÃ‰TYPE MANGA -->
           <div class="bg-[#151C28] border border-amber-500/40 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">1. Sexe & Identité Manga (3D & 2D)</h3>
-              <p class="text-[11px] text-slate-400">Striker masculin ou Guerrière Valkyrie avec tenue ajustée</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">1. Sexe & IdentitÃ© Manga (3D & 2D)</h3>
+              <p class="text-[11px] text-slate-400">Striker masculin ou GuerriÃ¨re Valkyrie avec tenue ajustÃ©e</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
               ${genderPills}
@@ -2863,7 +2924,7 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-amber-500/40 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
               <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">2. Morphologie & Musculature (V-Taper, Baki, Ippo, Titan, Valkyrie)</h3>
-              <p class="text-[11px] text-slate-400">Impacte la carrure, les trapèzes, les striations et le rendu des sprites de combat</p>
+              <p class="text-[11px] text-slate-400">Impacte la carrure, les trapÃ¨zes, les striations et le rendu des sprites de combat</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               ${morphologyPills}
@@ -2895,19 +2956,19 @@ window.IronPulse = window.IronPulse || {};
           <!-- 5. COULEUR DES CHEVEUX (TRANSFORMATION) -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">5. Couleur des Cheveux (Éveil Cinétique)</h3>
-              <p class="text-[11px] text-slate-400">Noir Onyx, Or Cinétique, Argent Astral, Rouge Berserker, Cyan Pulsé, Améthyste...</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">5. Couleur des Cheveux (Ã‰veil CinÃ©tique)</h3>
+              <p class="text-[11px] text-slate-400">Noir Onyx, Or CinÃ©tique, Argent Astral, Rouge Intensité, Cyan PulsÃ©, AmÃ©thyste...</p>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
               ${hairPills}
             </div>
           </div>
 
-          <!-- 6. FORME DU VISAGE & MÂCHOIRE (3 CHOIX) -->
+          <!-- 6. FORME DU VISAGE & MÃ‚CHOIRE (3 CHOIX) -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">6. Forme du Visage & Mâchoire (3 Choix)</h3>
-              <p class="text-[11px] text-slate-400">Structure angulaire manga, ciselage de la mâchoire et proportion crânienne 3D</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">6. Forme du Visage & MÃ¢choire (3 Choix)</h3>
+              <p class="text-[11px] text-slate-400">Structure angulaire manga, ciselage de la mÃ¢choire et proportion crÃ¢nienne 3D</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
               ${jawTypePills}
@@ -2918,15 +2979,15 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
               <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">7. Regard & Couleur des Yeux (Lueur d'Aura)</h3>
-              <p class="text-[11px] text-slate-400">Iris luminescents avec reflets d'énergie martiale</p>
+              <p class="text-[11px] text-slate-400">Iris luminescents avec reflets d'Ã©nergie martiale</p>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
               ${eyePills}
             </div>
             <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
               <div>
-                <span class="text-xs font-bold text-cyan-300">Volutes de Fumée de Mana (Mana Smoke FX)</span>
-                <p class="text-[10px] text-slate-400">Émanation d'énergie magique depuis les coins des yeux</p>
+                <span class="text-xs font-bold text-cyan-300">Volutes de FumÃ©e de Mana (Mana Smoke FX)</span>
+                <p class="text-[10px] text-slate-400">Ã‰manation d'Ã©nergie magique depuis les coins des yeux</p>
               </div>
               <button
                 onclick="IronPulse.App.updateHeroAppearance('manaEyeSmoke', ${app.manaEyeSmoke === false})"
@@ -2936,7 +2997,7 @@ window.IronPulse = window.IronPulse || {};
                     : 'bg-slate-900 border-slate-700 text-slate-400'
                 }"
               >
-                ${app.manaEyeSmoke !== false ? '✓ ACTIF' : 'OFF'}
+                ${app.manaEyeSmoke !== false ? 'âœ“ ACTIF' : 'OFF'}
               </button>
             </div>
           </div>
@@ -2944,8 +3005,8 @@ window.IronPulse = window.IronPulse || {};
           <!-- 8. EXPRESSION FACIALE SHONEN -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">8. Expression Faciale & Tempérament</h3>
-              <p class="text-[11px] text-slate-400">Déterminé, Regard du Monarque, Rage Berserker 1RM ou Sourire Confiant</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">8. Expression Faciale & TempÃ©rament</h3>
+              <p class="text-[11px] text-slate-400">DÃ©terminÃ©, Regard du Monarque, Rage Berserker 1RM ou Sourire Confiant</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               ${expressionPills}
@@ -2956,18 +3017,18 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
               <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">9. Marquages de Guerre & Cicatrices</h3>
-              <p class="text-[11px] text-slate-400">Cicatrice oculaire biseautée, runes astrales, bandes de chasseur d’ombre</p>
+              <p class="text-[11px] text-slate-400">Cicatrice oculaire biseautÃ©e, runes astrales, bandes de chasseur dâ€™ombre</p>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
               ${markingPills}
             </div>
           </div>
 
-          <!-- 10. FLAMME D'AURA & ÉNERGIE D'ÉVEIL -->
+          <!-- 10. FLAMME D'AURA & Ã‰NERGIE D'Ã‰VEIL -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">10. Flamme d'Aura & Énergie d'Éveil</h3>
-              <p class="text-[11px] text-slate-400">Aura d'Or Solaire, Surcharge Écarlate, Pulsation Azur, Éther Astral...</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">10. Flamme d'Aura & Ã‰nergie d'Ã‰veil</h3>
+              <p class="text-[11px] text-slate-400">Aura d'Or Solaire, Surcharge Ã‰carlate, Pulsation Azur, Ã‰ther Astral...</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
               ${auraPills}
@@ -2978,18 +3039,18 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-amber-500/40 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
               <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">11. Tenue Urbaine & Fitness Techwear (3 Propositions)</h3>
-              <p class="text-[11px] text-slate-400">Dogi de l'Ordre, Stringer Techwear & Cargo à sangles, ou Combinaison Cyber-Pulse</p>
+              <p class="text-[11px] text-slate-400">Dogi de l'Ordre, Stringer Techwear & Cargo Ã  sangles, ou Combinaison Cyber-Pulse</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
               ${outfitPills}
             </div>
           </div>
 
-          <!-- 12. ÉQUIPEMENTS DE FORCE & POWERLIFTING PRO -->
+          <!-- 12. Ã‰QUIPEMENTS DE FORCE & POWERLIFTING PRO -->
           <div class="bg-[#151C28] border border-emerald-500/40 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-300">12. Équipements de Force Professionnels</h3>
-              <p class="text-[11px] text-slate-400">Ceinture à levier acier, genouillères 7mm néoprène, protège-poignets et sangles grip</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-300">12. Ã‰quipements de Force Professionnels</h3>
+              <p class="text-[11px] text-slate-400">Ceinture Ã  levier acier, genouillÃ¨res 7mm nÃ©oprÃ¨ne, protÃ¨ge-poignets et sangles grip</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               ${powerEquipmentPills}
@@ -3000,18 +3061,18 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
               <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">13. Teinte d'Armure & Accents de Tenue</h3>
-              <p class="text-[11px] text-slate-400">Couleurs des tissus, passepoils tactiques et ceinture nouée</p>
+              <p class="text-[11px] text-slate-400">Couleurs des tissus, passepoils tactiques et ceinture nouÃ©e</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
               ${armorPills}
             </div>
           </div>
 
-          <!-- 14. CLASSE & ARCHÉTYPE DE PLEIN PIED -->
+          <!-- 14. CLASSE & ARCHÃ‰TYPE DE PLEIN PIED -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">14. Archétype & Illustration de Classe</h3>
-              <p class="text-[11px] text-slate-400">Artworks HD pour le mode Portrait & Bannière de Guilde</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">14. ArchÃ©type & Illustration de Classe</h3>
+              <p class="text-[11px] text-slate-400">Artworks HD pour le mode Portrait & BanniÃ¨re de Guilde</p>
             </div>
             <div class="grid grid-cols-2 gap-2">
               ${classPortraits}
@@ -3021,8 +3082,8 @@ window.IronPulse = window.IronPulse || {};
           <!-- 15. TITRE DE COMBAT -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">15. Titre de Striker Cinétique</h3>
-              <p class="text-[11px] text-slate-400">Affiché sur le HUD tactique et dans le classement de Guilde</p>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">15. Titre de Striker CinÃ©tique</h3>
+              <p class="text-[11px] text-slate-400">AffichÃ© sur le HUD tactique et dans le classement de Guilde</p>
             </div>
             <div class="flex flex-wrap gap-1.5">
               ${titlePills}
@@ -3033,20 +3094,20 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-gradient-to-r from-emerald-950/40 via-[#151C28] to-slate-900 border border-emerald-500/40 rounded-2xl p-4 space-y-3 shadow-md">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-300">💾 Sauvegarde & Restauration du Chasseur</h3>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-300">ðŸ’¾ Sauvegarde & Restauration du Chasseur</h3>
                 <p class="text-[11px] text-slate-400">Exportez votre profil, vos 1RM et votre progression pour ne jamais rien perdre</p>
               </div>
-              <span class="text-xl">🛡️</span>
+              <span class="text-xl">ðŸ›¡ï¸</span>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <button
                 onclick="IronPulse.App.exportBackup()"
                 class="py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/60 text-emerald-200 text-xs font-extrabold flex items-center justify-center gap-1.5 transition active:scale-95"
               >
-                <span>💾</span> Exporter (.json)
+                <span>ðŸ’¾</span> Exporter (.json)
               </button>
               <label class="cursor-pointer py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-extrabold flex items-center justify-center gap-1.5 transition active:scale-95">
-                <span>📥</span> Importer (.json)
+                <span>ðŸ“¥</span> Importer (.json)
                 <input type="file" accept=".json" class="hidden" onchange="IronPulse.App.onImportBackupFile(event)" />
               </label>
             </div>
@@ -3092,7 +3153,7 @@ window.IronPulse = window.IronPulse || {};
                 </div>
                 ${
                   selected
-                    ? `<span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 text-[10px] font-extrabold shrink-0">Équipée</span>`
+                    ? `<span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 text-[10px] font-extrabold shrink-0">Ã‰quipÃ©e</span>`
                     : `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-semibold shrink-0">Choisir</span>`
                 }
               </div>
@@ -3107,33 +3168,33 @@ window.IronPulse = window.IronPulse || {};
           ${heroHeader}
           ${subTabBar}
 
-          <!-- Aperçu Visuel de l'Avatar & Équipements actifs -->
+          <!-- AperÃ§u Visuel de l'Avatar & Ã‰quipements actifs -->
           <div class="bg-[#151C28] border border-indigo-500/30 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-md">
             <div class="w-36 shrink-0">
               ${ns.RPG.renderHeroAvatarSVG(hero, { compact: true })}
             </div>
             <div class="flex-1 space-y-2">
-              <div class="text-xs font-extrabold text-white">Direction Artistique Shonen & Éveil</div>
+              <div class="text-xs font-extrabold text-white">Direction Artistique Shonen & Ã‰veil</div>
               <p class="text-[11px] text-slate-300 leading-relaxed">
-                Personnalisez l'illustration HD, la couleur d'Aura Ki, les éclairs et l'armure de votre <strong class="text-emerald-400">${escapeHtml(hero.classObj.name)}</strong>.
+                Personnalisez l'illustration HD, la couleur d'Aura Ki, les Ã©clairs et l'armure de votre <strong class="text-emerald-400">${escapeHtml(hero.classObj.name)}</strong>.
               </p>
               <div class="flex flex-wrap gap-1.5">
                 <button onclick="IronPulse.App.setRpgSubTab('customize')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-extrabold transition">
-                  🎨 Studio Apparence
+                  ðŸŽ¨ Studio Apparence
                 </button>
                 <button onclick="IronPulse.App.setRpgSubTab('relics')" class="px-3 py-1.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 text-[11px] font-bold transition">
-                  👑 Reliques (${hero.relicsStatus.filter((r) => r.equipped).length})
+                  ðŸ‘‘ Reliques (${hero.relicsStatus.filter((r) => r.equipped).length})
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Attributs Biomécaniques du Chasseur -->
+          <!-- Attributs BiomÃ©caniques du Chasseur -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-sm font-extrabold text-white">📊 Attributs d'Éveil (Liés aux muscles)</h2>
-                <p class="text-[11px] text-slate-400">Augmentent automatiquement selon vos séries et records 1RM</p>
+                <h2 class="text-sm font-extrabold text-white">ðŸ“Š Attributs d'Ã‰veil (LiÃ©s aux muscles)</h2>
+                <p class="text-[11px] text-slate-400">Augmentent automatiquement selon vos sÃ©ries et records 1RM</p>
               </div>
             </div>
             <div class="space-y-3 pt-1">
@@ -3144,8 +3205,8 @@ window.IronPulse = window.IronPulse || {};
           <!-- Choix de la Classe Shonen / Fantasy -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h2 class="text-sm font-extrabold text-white">⚔️ Classe de Chasseur (Spécialisation)</h2>
-              <p class="text-[11px] text-slate-400">Changez de classe à tout moment selon votre cycle d'entraînement</p>
+              <h2 class="text-sm font-extrabold text-white">âš”ï¸ Classe de Chasseur (SpÃ©cialisation)</h2>
+              <p class="text-[11px] text-slate-400">Changez de classe Ã  tout moment selon votre cycle d'entraÃ®nement</p>
             </div>
             <div class="space-y-2">
               ${classesHtml}
@@ -3155,7 +3216,7 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // SOUS-ONGLET 2 : QUÊTES DU SYSTÈME & BOSS DE DONJON
+    // SOUS-ONGLET 2 : QUÃŠTES DU SYSTÃˆME & BOSS DE DONJON
     if (ui.rpgSubTab === 'quests') {
       const questsHtml = hero.weeklyQuests
         .map((q) => {
@@ -3176,7 +3237,7 @@ window.IronPulse = window.IronPulse || {};
               </div>
               <div class="flex items-center justify-between text-[11px]">
                 <span class="text-slate-300 font-semibold">${q.current} / ${q.target} ${escapeHtml(q.unit)}</span>
-                <span class="${q.completed ? 'text-emerald-400 font-bold' : 'text-amber-300'}">${q.completed ? '✓ Accomplie' : 'En cours'}</span>
+                <span class="${q.completed ? 'text-emerald-400 font-bold' : 'text-amber-300'}">${q.completed ? 'âœ“ Accomplie' : 'En cours'}</span>
               </div>
             </div>
           `;
@@ -3197,7 +3258,7 @@ window.IronPulse = window.IronPulse || {};
               <span class="px-2 py-0.5 rounded ${
                 b.defeated ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500/20 text-amber-200 border border-amber-500/50 backdrop-blur-sm'
               } text-[10px] font-extrabold">
-                ${b.defeated ? '✓ BOSS VAINCU' : `Récompense : +${b.rewardXp} XP`}
+                ${b.defeated ? 'âœ“ BOSS VAINCU' : `RÃ©compense : +${b.rewardXp} XP`}
               </span>
             </div>
             <div class="absolute bottom-2 left-3 right-3">
@@ -3225,11 +3286,11 @@ window.IronPulse = window.IronPulse || {};
           ${heroHeader}
           ${subTabBar}
 
-          <!-- Quêtes Hebdomadaires du Système -->
+          <!-- QuÃªtes Hebdomadaires du SystÃ¨me -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h2 class="text-sm font-extrabold text-white">📜 Quêtes Hebdomadaires du Système</h2>
-              <p class="text-[11px] text-slate-400">Validées automatiquement par vos séances des 7 derniers jours</p>
+              <h2 class="text-sm font-extrabold text-white">ðŸ“œ QuÃªtes Hebdomadaires du SystÃ¨me</h2>
+              <p class="text-[11px] text-slate-400">ValidÃ©es automatiquement par vos sÃ©ances des 7 derniers jours</p>
             </div>
             <div class="space-y-2">
               ${questsHtml}
@@ -3239,8 +3300,8 @@ window.IronPulse = window.IronPulse || {};
           <!-- Boss de Donjon (Seuils 1RM) -->
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div>
-              <h2 class="text-sm font-extrabold text-white">🐉 Boss de Donjon (Records 1RM)</h2>
-              <p class="text-[11px] text-slate-400">Terrassez les Boss en franchissant des paliers de force (1RM estimé)</p>
+              <h2 class="text-sm font-extrabold text-white">ðŸ‰ Boss de Donjon (Records 1RM)</h2>
+              <p class="text-[11px] text-slate-400">Terrassez les Boss en franchissant des paliers de force (1RM estimÃ©)</p>
             </div>
             <div class="space-y-2.5">
               ${bossesHtml}
@@ -3265,7 +3326,7 @@ window.IronPulse = window.IronPulse || {};
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-2.5">
                   <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl shrink-0">
-                    ${r.unlocked ? r.icon : '🔒'}
+                    ${r.unlocked ? r.icon : 'ðŸ”’'}
                   </div>
                   <div>
                     <div class="flex items-center gap-1.5">
@@ -3284,14 +3345,14 @@ window.IronPulse = window.IronPulse || {};
                             ? 'bg-emerald-500 text-slate-950'
                             : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
                         }">
-                          ${r.equipped ? '✓ Équipé' : 'Équiper'}
+                          ${r.equipped ? 'âœ“ Ã‰quipÃ©' : 'Ã‰quiper'}
                         </button>`
-                      : `<span class="px-2 py-1 rounded bg-slate-800 text-slate-500 text-[10px] font-bold">Verrouillé</span>`
+                      : `<span class="px-2 py-1 rounded bg-slate-800 text-slate-500 text-[10px] font-bold">VerrouillÃ©</span>`
                   }
                 </div>
               </div>
               <div class="text-[11px] text-slate-400 border-t border-slate-800/80 pt-1.5">
-                Condition d'éveil : <strong class="text-slate-200">${escapeHtml(r.conditionDesc)}</strong>
+                Condition d'Ã©veil : <strong class="text-slate-200">${escapeHtml(r.conditionDesc)}</strong>
               </div>
             </div>
           `;
@@ -3306,8 +3367,8 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-sm font-extrabold text-white">👑 Arsenal & Reliques des Ombres</h2>
-                <p class="text-[11px] text-slate-400">Équipez vos reliques débloquées pour cumuler jusqu'à +51% de bonus d'XP</p>
+                <h2 class="text-sm font-extrabold text-white">ðŸ‘‘ Arsenal & Reliques des Ombres</h2>
+                <p class="text-[11px] text-slate-400">Ã‰quipez vos reliques dÃ©bloquÃ©es pour cumuler jusqu'Ã  +51% de bonus d'XP</p>
               </div>
             </div>
             <div class="space-y-2.5">
@@ -3318,7 +3379,7 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // SOUS-ONGLET 4 : SOCIAL, DÉFIS D'AMIS & COMPÉTITIONS DE CLUB (GUILDE)
+    // SOUS-ONGLET 4 : SOCIAL, DÃ‰FIS D'AMIS & COMPÃ‰TITIONS DE CLUB (GUILDE)
     const challengesHtml = hero.evaluatedChallenges
       .map((ch) => {
         return `
@@ -3328,7 +3389,7 @@ window.IronPulse = window.IronPulse || {};
                 <span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-base">${ch.friendAvatar}</span>
                 <div>
                   <div class="text-xs font-extrabold text-white">${escapeHtml(ch.title)}</div>
-                  <div class="text-[11px] text-indigo-300">Contre ${escapeHtml(ch.friendName)} • Reste ${ch.daysLeft}j</div>
+                  <div class="text-[11px] text-indigo-300">Contre ${escapeHtml(ch.friendName)} â€¢ Reste ${ch.daysLeft}j</div>
                 </div>
               </div>
               <span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold shrink-0">
@@ -3360,17 +3421,17 @@ window.IronPulse = window.IronPulse || {};
 
             <div class="flex items-center justify-between pt-0.5">
               <span class="text-[11px] font-semibold ${ch.isWinning ? 'text-emerald-400' : 'text-amber-300'}">
-                ${ch.isWinning ? '🔥 Vous êtes en tête du duel !' : '⚡ Encore un effort pour passer devant !'}
+                ${ch.isWinning ? 'ðŸ”¥ Vous Ãªtes en tÃªte du duel !' : 'âš¡ Encore un effort pour passer devant !'}
               </span>
               ${
                 ch.isClaimed
-                  ? `<span class="text-[11px] font-bold text-emerald-400">✓ Récompense encaissée</span>`
+                  ? `<span class="text-[11px] font-bold text-emerald-400">âœ“ RÃ©compense encaissÃ©e</span>`
                   : ch.isWinning
                   ? `<button onclick="IronPulse.App.claimChallengeReward('${ch.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 text-[11px] font-extrabold active:scale-95 transition">
-                      Réclamer +${ch.rewardXp} XP
+                      RÃ©clamer +${ch.rewardXp} XP
                     </button>`
                   : `<button onclick="IronPulse.App.navigate('workout')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold">
-                      S'entraîner →
+                      S'entraÃ®ner â†’
                     </button>`
               }
             </div>
@@ -3381,7 +3442,7 @@ window.IronPulse = window.IronPulse || {};
 
     const leaderboardHtml = hero.leaderboard
       .map((m, idx) => {
-        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`;
+        const medal = idx === 0 ? 'ðŸ¥‡' : idx === 1 ? 'ðŸ¥ˆ' : idx === 2 ? 'ðŸ¥‰' : `#${idx + 1}`;
         return `
           <div class="flex items-center justify-between py-2 px-2.5 rounded-xl border ${
             m.isUser ? 'bg-emerald-500/15 border-emerald-500/40' : 'bg-slate-900/80 border-slate-800/80'
@@ -3393,7 +3454,7 @@ window.IronPulse = window.IronPulse || {};
                 <div class="text-xs font-extrabold ${m.isUser ? 'text-emerald-300' : 'text-white'} truncate">
                   ${escapeHtml(m.name)} <span class="text-[10px] text-amber-300">[Rang ${escapeHtml(m.rank)}]</span>
                 </div>
-                <div class="text-[10px] text-slate-400">Niv. ${m.level} • ${escapeHtml(m.heroClass)}</div>
+                <div class="text-[10px] text-slate-400">Niv. ${m.level} â€¢ ${escapeHtml(m.heroClass)}</div>
               </div>
             </div>
             <div class="text-right shrink-0 ml-2">
@@ -3414,12 +3475,12 @@ window.IronPulse = window.IronPulse || {};
         ${heroHeader}
         ${subTabBar}
 
-        <!-- Bannière Club & Ligue Shōnen (Hub Communautaire & Viral) -->
+        <!-- BanniÃ¨re Club & Ligue ShÅnen (Hub Communautaire & Viral) -->
         <div class="bg-gradient-to-br from-indigo-950/60 via-[#151C28] to-[#151C28] border border-indigo-500/40 rounded-2xl p-4 space-y-3 shadow-xl">
           <div class="flex items-start justify-between gap-2 flex-wrap">
             <div class="flex items-center gap-3">
               <span class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400/20 to-indigo-500/20 border border-amber-400/40 flex items-center justify-center text-2xl shrink-0 shadow">
-                ⚡
+                âš¡
               </span>
               <div>
                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -3427,36 +3488,36 @@ window.IronPulse = window.IronPulse || {};
                   <span class="px-2 py-0.5 rounded-full text-[9px] font-black border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">${escapeHtml(hero.guildTier || 'Ligue Or')}</span>
                 </div>
                 <h2 class="text-base font-black text-white leading-tight mt-0.5">${escapeHtml(hero.guildName)}</h2>
-                <p class="text-[11px] text-slate-400 italic">« ${escapeHtml(hero.guildMotto)} »</p>
+                <p class="text-[11px] text-slate-400 italic">Â« ${escapeHtml(hero.guildMotto)} Â»</p>
               </div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               <button onclick="IronPulse.App.openSwitchClubModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] font-bold transition active:scale-95">
-                🔄 Changer
+                ðŸ”„ Changer
               </button>
               <button onclick="IronPulse.App.openCreateChallengeModal()" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] shadow transition active:scale-95">
-                ⚔️ Défier un Ami
+                âš”ï¸ DÃ©fier un Ami
               </button>
               <button onclick="IronPulse.App.shareHunterChallenge('Rejoins mon Dojo')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-[11px] shadow transition active:scale-95" title="Partager sur WhatsApp / Instagram">
-                📲 Partager
+                ðŸ“² Partager
               </button>
             </div>
           </div>
 
           <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3 space-y-1.5">
             <div class="flex justify-between text-xs">
-              <span class="font-bold text-amber-300">🔥 Boss de Raid de Guilde : Dragon de Fer</span>
+              <span class="font-bold text-amber-300">ðŸ”¥ Boss de Raid de Guilde : Dragon de Fer</span>
               <span class="font-bold text-white">${(guildTotalVol / 1000).toFixed(1)} / ${(raidTargetVol / 1000).toFixed(0)} t (${raidPct}%)</span>
             </div>
             <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
               <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full" style="width: ${raidPct}%"></div>
             </div>
             <div class="text-[11px] text-slate-400">
-              Chaque série validée par vous et les membres de votre club inflige des dégâts au Boss de Raid hebdomadaire.
+              Chaque sÃ©rie validÃ©e par vous et les membres de votre club inflige des dÃ©gÃ¢ts au Boss de Raid hebdomadaire.
             </div>
           </div>
 
-          <!-- BOSS MONDIAL ASYNCHRONE CALAMITÉ (1 000 000 PV) - Densetsu Scénariste -->
+          <!-- BOSS MONDIAL ASYNCHRONE CALAMITÃ‰ (1 000 000 PV) - Densetsu ScÃ©nariste -->
           ${(() => {
             const wb = ns.RPG.getWorldBossStatus ? ns.RPG.getWorldBossStatus() : null;
             if (!wb) return '';
@@ -3471,7 +3532,7 @@ window.IronPulse = window.IronPulse || {};
                   </div>
                 </div>
                 <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-black">
-                  ${wb.isDefeated ? '💀 TERRASSÉ' : '🔥 ACTIF'}
+                  ${wb.isDefeated ? 'ðŸ’€ TERRASSÃ‰' : 'ðŸ”¥ ACTIF'}
                 </span>
               </div>
               <div>
@@ -3484,23 +3545,23 @@ window.IronPulse = window.IronPulse || {};
                 </div>
               </div>
               <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/80">
-                <span>⚔️ Vos Dégâts : <strong class="text-white">${wb.userDamage.toLocaleString()} PV</strong> (${wb.userContributionPct}%)</span>
-                <span class="text-amber-300 font-bold">🎁 Paliers : 25% • 50% • 100%</span>
+                <span>âš”ï¸ Vos DÃ©gÃ¢ts : <strong class="text-white">${wb.userDamage.toLocaleString()} PV</strong> (${wb.userContributionPct}%)</span>
+                <span class="text-amber-300 font-bold">ðŸŽ Paliers : 25% â€¢ 50% â€¢ 100%</span>
               </div>
             </div>
             `;
           })()}
         </div>
 
-        <!-- 3 DÉFIS HEBDOMADAIRES DU CLUB POUR SES ADHÉRENTS -->
+        <!-- 3 DÃ‰FIS HEBDOMADAIRES DU CLUB POUR SES ADHÃ‰RENTS -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-sm font-extrabold text-white">🎯 Défis du Club pour les Adhérents</h3>
-              <p class="text-[11px] text-slate-400">Objectifs collectifs de la semaine lancés par l'administration du Dojo</p>
+              <h3 class="text-sm font-extrabold text-white">ðŸŽ¯ DÃ©fis du Club pour les AdhÃ©rents</h3>
+              <p class="text-[11px] text-slate-400">Objectifs collectifs de la semaine lancÃ©s par l'administration du Dojo</p>
             </div>
             <span class="px-2 py-0.5 rounded-lg bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 text-[10px] font-black">
-              Hebdo ⏳
+              Hebdo â³
             </span>
           </div>
           <div class="space-y-2.5">
@@ -3516,7 +3577,7 @@ window.IronPulse = window.IronPulse || {};
                       </div>
                     </div>
                     <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black shrink-0">
-                      +${cc.rewardXp} XP • 🪙${cc.rewardGold}
+                      +${cc.rewardXp} XP â€¢ ðŸª™${cc.rewardGold}
                     </span>
                   </div>
                   <div>
@@ -3531,9 +3592,9 @@ window.IronPulse = window.IronPulse || {};
                   <div class="flex justify-end pt-1">
                     ${
                       cc.isClaimed
-                        ? `<span class="text-[10px] font-bold text-emerald-400">✓ Récompense réclamée</span>`
+                        ? `<span class="text-[10px] font-bold text-emerald-400">âœ“ RÃ©compense rÃ©clamÃ©e</span>`
                         : `<button onclick="IronPulse.App.claimClubChallenge('${cc.id}')" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] transition active:scale-95 shadow">
-                            Réclamer Récompense (+${cc.rewardXp} XP)
+                            RÃ©clamer RÃ©compense (+${cc.rewardXp} XP)
                           </button>`
                     }
                   </div>
@@ -3543,12 +3604,12 @@ window.IronPulse = window.IronPulse || {};
           </div>
         </div>
 
-        <!-- FIL D'ACTUALITÉ EN DIRECT DES POTES DE FONTE -->
+        <!-- FIL D'ACTUALITÃ‰ EN DIRECT DES POTES DE FONTE -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-sm font-extrabold text-white">⚡ Fil d'Activité des Potes de Fonte</h3>
-              <p class="text-[11px] text-slate-400">Flux en direct des séances et records validés par vos amis</p>
+              <h3 class="text-sm font-extrabold text-white">âš¡ Fil d'ActivitÃ© des Potes de Fonte</h3>
+              <p class="text-[11px] text-slate-400">Flux en direct des sÃ©ances et records validÃ©s par vos amis</p>
             </div>
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" title="Flux actif"></span>
           </div>
@@ -3573,15 +3634,15 @@ window.IronPulse = window.IronPulse || {};
           </div>
         </div>
 
-        <!-- Duels & Défis d'Amis en cours -->
+        <!-- Duels & DÃ©fis d'Amis en cours -->
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-sm font-extrabold text-white">⚔️ Défis d'Amis en Direct (${hero.evaluatedChallenges.length})</h3>
-              <p class="text-[11px] text-slate-400">Affrontez vos amis sur le tonnage, le nombre de séries ou la régularité</p>
+              <h3 class="text-sm font-extrabold text-white">âš”ï¸ DÃ©fis d'Amis en Direct (${hero.evaluatedChallenges.length})</h3>
+              <p class="text-[11px] text-slate-400">Affrontez vos amis sur le tonnage, le nombre de sÃ©ries ou la rÃ©gularitÃ©</p>
             </div>
-            <button onclick="IronPulse.App.shareHunterChallenge('Défi de Fonte')" class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold hover:bg-indigo-500/30">
-              📲 Inviter un Ami
+            <button onclick="IronPulse.App.shareHunterChallenge('DÃ©fi de Fonte')" class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold hover:bg-indigo-500/30">
+              ðŸ“² Inviter un Ami
             </button>
           </div>
           <div class="space-y-2.5">
@@ -3593,10 +3654,10 @@ window.IronPulse = window.IronPulse || {};
         <div class="bg-[#151C28] border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-md">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-sm font-extrabold text-white">🏆 Classement Hebdomadaire du Club</h3>
-              <p class="text-[11px] text-slate-400">Classé par tonnage total soulevé sur les 7 derniers jours</p>
+              <h3 class="text-sm font-extrabold text-white">ðŸ† Classement Hebdomadaire du Club</h3>
+              <p class="text-[11px] text-slate-400">ClassÃ© par tonnage total soulevÃ© sur les 7 derniers jours</p>
             </div>
-            <span class="text-[10px] text-amber-300 font-bold">Ligue Active 🥇</span>
+            <span class="text-[10px] text-amber-300 font-bold">Ligue Active ðŸ¥‡</span>
           </div>
           <div class="space-y-1.5">
             ${leaderboardHtml}
@@ -3607,13 +3668,13 @@ window.IronPulse = window.IronPulse || {};
   }
 
   // ============================================================================
-  // RENDU DES MODALES (DÉTAIL EXERCICE, CRÉATION SÉANCE, RÉCAPITULATIF, ETC.)
+  // RENDU DES MODALES (DÃ‰TAIL EXERCICE, CRÃ‰ATION SÃ‰ANCE, RÃ‰CAPITULATIF, ETC.)
   // ============================================================================
   function renderModal() {
     if (!ui.modal) return '';
     const state = ns.Storage.getState();
 
-    // 1. Modale Fiche Détaillée d'un Exercice
+    // 1. Modale Fiche DÃ©taillÃ©e d'un Exercice
     if (ui.modal.type === 'exercise-detail') {
       const ex = ns.Storage.getExerciseById(ui.modal.data.exerciseId);
       const timeline = ns.Storage.getExerciseTimeline(ex.id);
@@ -3631,18 +3692,18 @@ window.IronPulse = window.IronPulse || {};
                 </div>
                 <h2 class="text-lg font-extrabold text-white">${escapeHtml(ex.name)}</h2>
               </div>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
 
             <p class="text-xs text-slate-300 leading-relaxed">${escapeHtml(ex.description)}</p>
 
-            <!-- Démonstration Biomécanique 3D en direct par votre Striker -->
+            <!-- DÃ©monstration BiomÃ©canique 3D en direct par votre Striker -->
             ${
               ns.Hero3D
                 ? `
               <div class="space-y-1.5">
                 <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-extrabold text-amber-300 uppercase tracking-wider">🧊 Démonstration 3D Interactive (360°)</span>
+                  <span class="font-extrabold text-amber-300 uppercase tracking-wider">ðŸ§Š DÃ©monstration 3D Interactive (360Â°)</span>
                   <span class="text-slate-400">Glissez pour tourner</span>
                 </div>
                 ${ns.Hero3D.renderHero3DStageHTML({ exerciseId: ex.id, compact: true })}
@@ -3651,10 +3712,10 @@ window.IronPulse = window.IronPulse || {};
                 : ''
             }
 
-            <!-- Muscles ciblés -->
+            <!-- Muscles ciblÃ©s -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 space-y-2">
               <div>
-                <span class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Muscles principaux ciblés</span>
+                <span class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Muscles principaux ciblÃ©s</span>
                 <div class="text-xs font-semibold text-white mt-0.5">${escapeHtml((ex.primaryMuscles || []).join(', '))}</div>
               </div>
               ${
@@ -3669,9 +3730,9 @@ window.IronPulse = window.IronPulse || {};
               }
             </div>
 
-            <!-- Consignes d'exécution -->
+            <!-- Consignes d'exÃ©cution -->
             <div class="space-y-2">
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-200">📋 Consignes d’exécution</h3>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-200">ðŸ“‹ Consignes dâ€™exÃ©cution</h3>
               <div class="space-y-2">
                 ${(ex.instructions || [])
                   .map(
@@ -3690,7 +3751,7 @@ window.IronPulse = window.IronPulse || {};
               ex.tips
                 ? `
               <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-200">
-                <strong class="text-amber-300">💡 Conseil sécurité & posture :</strong> ${escapeHtml(ex.tips)}
+                <strong class="text-amber-300">ðŸ’¡ Conseil sÃ©curitÃ© & posture :</strong> ${escapeHtml(ex.tips)}
               </div>
             `
                 : ''
@@ -3700,7 +3761,7 @@ window.IronPulse = window.IronPulse || {};
               best1RM > 0
                 ? `
               <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 flex items-center justify-between text-xs">
-                <span class="text-slate-300">Votre record 1RM estimé :</span>
+                <span class="text-slate-300">Votre record 1RM estimÃ© :</span>
                 <span class="text-emerald-400 font-extrabold">${best1RM} kg (${timeline[timeline.length - 1].bestSetStr})</span>
               </div>
             `
@@ -3712,7 +3773,7 @@ window.IronPulse = window.IronPulse || {};
                 state.activeWorkout
                   ? `
                 <button onclick="IronPulse.App.addExerciseToActiveWorkout('${ex.id}')" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs">
-                  ＋ Ajouter à la séance en cours
+                  ï¼‹ Ajouter Ã  la sÃ©ance en cours
                 </button>
               `
                   : ''
@@ -3726,14 +3787,14 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // 2. Modale Ajouter un exercice à la séance en cours
+    // 2. Modale Ajouter un exercice Ã  la sÃ©ance en cours
     if (ui.modal.type === 'add-workout-exercise') {
       return `
         <div class="modal-backdrop z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-slide-up">
           <div class="bg-[#111722] border border-slate-700 w-full max-w-md max-h-[82vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto p-5 space-y-3 shadow-2xl">
             <div class="flex items-center justify-between">
-              <h2 class="text-base font-extrabold text-white">Ajouter un exercice à la séance</h2>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <h2 class="text-base font-extrabold text-white">Ajouter un exercice Ã  la sÃ©ance</h2>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
             <div class="space-y-2">
               ${state.exercises
@@ -3742,10 +3803,10 @@ window.IronPulse = window.IronPulse || {};
                 <div class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl p-3">
                   <div>
                     <div class="text-xs font-bold text-white">${escapeHtml(ex.name)}</div>
-                    <div class="text-[11px] text-slate-400">${escapeHtml(ex.muscleGroup)} • ${escapeHtml(ex.equipment)}</div>
+                    <div class="text-[11px] text-slate-400">${escapeHtml(ex.muscleGroup)} â€¢ ${escapeHtml(ex.equipment)}</div>
                   </div>
                   <button onclick="IronPulse.App.addExerciseToActiveWorkout('${ex.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-extrabold text-xs">
-                    ＋ Ajouter
+                    ï¼‹ Ajouter
                   </button>
                 </div>
               `
@@ -3757,30 +3818,30 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // 3. Modale Création d'une Séance Personnalisée
+    // 3. Modale CrÃ©ation d'une SÃ©ance PersonnalisÃ©e
     if (ui.modal.type === 'create-session') {
       const draft = ui.modal.data;
       return `
         <div class="modal-backdrop z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-slide-up">
           <div class="bg-[#111722] border border-slate-700 w-full max-w-md max-h-[88vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto p-5 space-y-3.5 shadow-2xl">
             <div class="flex items-center justify-between">
-              <h2 class="text-base font-extrabold text-white">Créer une séance personnalisée</h2>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <h2 class="text-base font-extrabold text-white">CrÃ©er une sÃ©ance personnalisÃ©e</h2>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1">Nom de la séance</label>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Nom de la sÃ©ance</label>
               <input
                 type="text"
                 value="${escapeHtml(draft.name)}"
                 oninput="IronPulse.App.updateSessionDraftName(this.value)"
-                placeholder="Ex: Pectoraux & Bras Spécial"
+                placeholder="Ex: Pectoraux & Bras SpÃ©cial"
                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500"
               />
             </div>
 
             <div class="space-y-2">
-              <div class="text-xs font-bold text-slate-300">Exercices sélectionnés (${draft.exercises.length})</div>
+              <div class="text-xs font-bold text-slate-300">Exercices sÃ©lectionnÃ©s (${draft.exercises.length})</div>
               ${
                 draft.exercises.length === 0
                   ? `<div class="text-xs text-slate-500 italic py-2">Ajoutez des exercices depuis la liste ci-dessous.</div>`
@@ -3791,15 +3852,15 @@ window.IronPulse = window.IronPulse || {};
                         <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 space-y-2">
                           <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-white">${idx + 1}. ${escapeHtml(ex.name)}</span>
-                            <button onclick="IronPulse.App.removeDraftExercise(${idx})" class="text-slate-400 hover:text-rose-400 text-xs">✕</button>
+                            <button onclick="IronPulse.App.removeDraftExercise(${idx})" class="text-slate-400 hover:text-rose-400 text-xs">âœ•</button>
                           </div>
                           <div class="grid grid-cols-3 gap-2">
                             <div>
-                              <label class="block text-[10px] text-slate-400">Séries</label>
+                              <label class="block text-[10px] text-slate-400">SÃ©ries</label>
                               <input type="number" min="1" max="10" value="${item.targetSets}" onchange="IronPulse.App.updateDraftExField(${idx}, 'targetSets', Number(this.value))" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white text-center" />
                             </div>
                             <div>
-                              <label class="block text-[10px] text-slate-400">Répétitions</label>
+                              <label class="block text-[10px] text-slate-400">RÃ©pÃ©titions</label>
                               <input type="text" value="${escapeHtml(item.targetReps)}" onchange="IronPulse.App.updateDraftExField(${idx}, 'targetReps', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white text-center" />
                             </div>
                             <div>
@@ -3815,16 +3876,16 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1">Ajouter un exercice du répertoire :</label>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Ajouter un exercice du rÃ©pertoire :</label>
               <select onchange="if(this.value){IronPulse.App.addDraftExercise(this.value); this.value='';}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
-                <option value="">＋ Choisir un exercice à ajouter...</option>
+                <option value="">ï¼‹ Choisir un exercice Ã  ajouter...</option>
                 ${state.exercises.map((ex) => `<option value="${ex.id}">${escapeHtml(ex.name)} (${escapeHtml(ex.muscleGroup)})</option>`).join('')}
               </select>
             </div>
 
             <div class="flex gap-2 pt-2">
               <button onclick="IronPulse.App.saveCustomSessionDraft()" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs">
-                Enregistrer la séance
+                Enregistrer la sÃ©ance
               </button>
               <button onclick="IronPulse.App.closeModal()" class="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">
                 Annuler
@@ -3835,19 +3896,19 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // 4. Modale Création d'un Exercice Personnalisé dans le Répertoire
+    // 4. Modale CrÃ©ation d'un Exercice PersonnalisÃ© dans le RÃ©pertoire
     if (ui.modal.type === 'create-exercise') {
       return `
         <div class="modal-backdrop z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-slide-up">
           <div class="bg-[#111722] border border-slate-700 w-full max-w-md max-h-[88vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto p-5 space-y-3 shadow-2xl">
             <div class="flex items-center justify-between">
-              <h2 class="text-base font-extrabold text-white">Ajouter un exercice au répertoire</h2>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <h2 class="text-base font-extrabold text-white">Ajouter un exercice au rÃ©pertoire</h2>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1">Nom de l’exercice</label>
-              <input id="new-ex-name" type="text" placeholder="Ex: Fentes bulgares aux haltères" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+              <label class="block text-xs font-bold text-slate-300 mb-1">Nom de lâ€™exercice</label>
+              <input id="new-ex-name" type="text" placeholder="Ex: Fentes bulgares aux haltÃ¨res" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none" />
             </div>
 
             <div class="grid grid-cols-2 gap-2">
@@ -3860,7 +3921,7 @@ window.IronPulse = window.IronPulse || {};
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">Équipement</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Ã‰quipement</label>
                 <select id="new-ex-equip" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white outline-none">
                   ${ns.Data.EQUIPMENTS.filter((e) => e !== 'Tous')
                     .map((e) => `<option value="${e}">${escapeHtml(e)}</option>`)
@@ -3870,18 +3931,18 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1">Muscles principaux ciblés</label>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Muscles principaux ciblÃ©s</label>
               <input id="new-ex-primary" type="text" placeholder="Ex: Quadriceps, Grands fessiers" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none" />
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1">Description & Consignes d'exécution</label>
-              <textarea id="new-ex-desc" rows="3" placeholder="Décrivez la posture et les étapes clés d'exécution..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none"></textarea>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Description & Consignes d'exÃ©cution</label>
+              <textarea id="new-ex-desc" rows="3" placeholder="DÃ©crivez la posture et les Ã©tapes clÃ©s d'exÃ©cution..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none"></textarea>
             </div>
 
             <div class="flex gap-2 pt-2">
               <button onclick="IronPulse.App.saveNewExercise()" class="flex-1 py-3 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs">
-                Ajouter au répertoire
+                Ajouter au rÃ©pertoire
               </button>
               <button onclick="IronPulse.App.closeModal()" class="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">
                 Annuler
@@ -3892,14 +3953,14 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // 5. Modale Lancer un Défi à un Ami / Membre de Guilde
+    // 5. Modale Lancer un DÃ©fi Ã  un Ami / Membre de Guilde
     if (ui.modal.type === 'create-challenge') {
       return `
         <div class="modal-backdrop z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-slide-up">
           <div class="bg-[#111722] border border-slate-700 w-full max-w-md max-h-[88vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto p-5 space-y-3.5 shadow-2xl">
             <div class="flex items-center justify-between">
-              <h2 class="text-base font-extrabold text-white">⚔️ Lancer un Défi de Chasseur</h2>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <h2 class="text-base font-extrabold text-white">âš”ï¸ Lancer un DÃ©fi de Chasseur</h2>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
 
             <div>
@@ -3908,28 +3969,28 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1">Nom du défi</label>
-              <input id="chal-title" type="text" placeholder="Ex: Choc des Titans — Tonnage 7j" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" />
+              <label class="block text-xs font-bold text-slate-300 mb-1">Nom du dÃ©fi</label>
+              <input id="chal-title" type="text" placeholder="Ex: Choc des Titans â€” Tonnage 7j" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" />
             </div>
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">Type d'épreuve</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Type d'Ã©preuve</label>
                 <select id="chal-type" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white outline-none">
                   <option value="volume7d">Tonnage 7 jours (kg)</option>
-                  <option value="sets7d">Séries validées (7j)</option>
-                  <option value="workouts7d">Nombre de séances (7j)</option>
+                  <option value="sets7d">SÃ©ries validÃ©es (7j)</option>
+                  <option value="workouts7d">Nombre de sÃ©ances (7j)</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">Cible à atteindre</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Cible Ã  atteindre</label>
                 <input id="chal-target" type="number" value="15000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none" />
               </div>
             </div>
 
             <div class="flex gap-2 pt-2">
               <button onclick="IronPulse.App.saveNewChallenge()" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs">
-                Envoyer le Défi (+250 XP en jeu)
+                Envoyer le DÃ©fi (+250 XP en jeu)
               </button>
               <button onclick="IronPulse.App.closeModal()" class="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">
                 Annuler
@@ -3948,10 +4009,10 @@ window.IronPulse = window.IronPulse || {};
           <div class="bg-[#111722] border border-slate-700 w-full max-w-md max-h-[88vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto p-5 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-base font-extrabold text-white">🏛️ Choisir un Club / Guilde</h2>
+                <h2 class="text-base font-extrabold text-white">ðŸ›ï¸ Choisir un Club / Guilde</h2>
                 <p class="text-[11px] text-slate-400">Rejoignez un dojo pour participer aux raids et ligues collectives</p>
               </div>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
             <div class="space-y-2.5">
               ${(hero.presetClubs || [])
@@ -3967,15 +4028,15 @@ window.IronPulse = window.IronPulse || {};
                             <h3 class="text-xs font-black text-white">${escapeHtml(club.name)}</h3>
                             <span class="px-1.5 py-0.5 rounded text-[9px] font-black border ${club.tierBadge}">${club.tier}</span>
                           </div>
-                          <p class="text-[10px] text-slate-400 italic mt-0.5">« ${escapeHtml(club.motto)} »</p>
+                          <p class="text-[10px] text-slate-400 italic mt-0.5">Â« ${escapeHtml(club.motto)} Â»</p>
                         </div>
                       </div>
                     </div>
                     <div class="flex items-center justify-between pt-1 border-t border-slate-800/80 text-[10px] text-slate-400">
-                      <span>👥 ${club.membersCount} adhérents • Tonnage : <strong>${(club.baseTonnage / 1000).toFixed(0)}t</strong></span>
+                      <span>ðŸ‘¥ ${club.membersCount} adhÃ©rents â€¢ Tonnage : <strong>${(club.baseTonnage / 1000).toFixed(0)}t</strong></span>
                       ${
                         isCurrent
-                          ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-extrabold text-[10px]">✓ Votre Club</span>`
+                          ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-extrabold text-[10px]">âœ“ Votre Club</span>`
                           : `<button onclick="IronPulse.App.selectClub('${club.id}')" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] transition active:scale-95">Rejoindre</button>`
                       }
                     </div>
@@ -3989,7 +4050,7 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // 6. Modale Échauffement Dynamique Articulaire & Montée en Charge (DynamicWarmupModal AURA FIT)
+    // 6. Modale Ã‰chauffement Dynamique Articulaire & MontÃ©e en Charge (DynamicWarmupModal AURA FIT)
     if (ui.modal.type === 'warmup-protocol') {
       const workout = state.activeWorkout;
       const firstExBlock = workout && workout.exercises && workout.exercises[0];
@@ -4005,28 +4066,28 @@ window.IronPulse = window.IronPulse || {};
             <div class="flex items-start justify-between gap-2">
               <div>
                 <span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-black uppercase tracking-wider">
-                  🔥 Protocole Pré-Combat AURA FIT
+                  ðŸ”¥ Protocole PrÃ©-Combat AURA FIT
                 </span>
-                <h2 class="text-base font-extrabold text-white mt-1">Échauffement Dynamique & Gammes</h2>
-                <p class="text-[11px] text-slate-400">Préparez vos articulations et votre système nerveux (+35 XP & +15 🪙)</p>
+                <h2 class="text-base font-extrabold text-white mt-1">Ã‰chauffement Dynamique & Gammes</h2>
+                <p class="text-[11px] text-slate-400">PrÃ©parez vos articulations et votre systÃ¨me nerveux (+35 XP & +15 ðŸª™)</p>
               </div>
-              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">✕</button>
+              <button onclick="IronPulse.App.closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-sm font-bold">âœ•</button>
             </div>
 
-            <!-- Phase 1 : Mobilité Articulaire -->
+            <!-- Phase 1 : MobilitÃ© Articulaire -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
-              <div class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider">1. Mobilité Articulaire & Coiffe (3 min)</div>
+              <div class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider">1. MobilitÃ© Articulaire & Coiffe (3 min)</div>
               <div class="space-y-1.5 text-xs text-slate-200">
                 <div class="flex items-center justify-between bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                  <span>🔄 Rotations externes épaules & dislocates</span>
-                  <span class="font-bold text-emerald-300">2 × 15 rép.</span>
+                  <span>ðŸ”„ Rotations externes Ã©paules & dislocates</span>
+                  <span class="font-bold text-emerald-300">2 Ã— 15 rÃ©p.</span>
                 </div>
                 <div class="flex items-center justify-between bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                  <span>🧘 Ouverture thoracique & hanches dynamiques</span>
+                  <span>ðŸ§˜ Ouverture thoracique & hanches dynamiques</span>
                   <span class="font-bold text-emerald-300">60 sec</span>
                 </div>
                 <div class="flex items-center justify-between bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                  <span>⚡ Gainage d'activation abdos / fessiers</span>
+                  <span>âš¡ Gainage d'activation abdos / fessiers</span>
                   <span class="font-bold text-emerald-300">45 sec</span>
                 </div>
               </div>
@@ -4035,23 +4096,23 @@ window.IronPulse = window.IronPulse || {};
             <!-- Phase 2 : Gammes Montantes sur le 1er exercice -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-extrabold text-amber-300 uppercase tracking-wider">2. Séries de Chauffe (${escapeHtml(firstEx ? firstEx.name : '1er Exercice')})</span>
+                <span class="text-xs font-extrabold text-amber-300 uppercase tracking-wider">2. SÃ©ries de Chauffe (${escapeHtml(firstEx ? firstEx.name : '1er Exercice')})</span>
                 <span class="text-[10px] text-slate-400">Travail : ${workingWeight} kg</span>
               </div>
               <div class="grid grid-cols-3 gap-2 text-center">
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-2">
-                  <div class="text-[10px] text-slate-400 font-bold">Série 1 (50%)</div>
-                  <div class="text-sm font-black text-white mt-0.5">${w50} kg × 8</div>
+                  <div class="text-[10px] text-slate-400 font-bold">SÃ©rie 1 (50%)</div>
+                  <div class="text-sm font-black text-white mt-0.5">${w50} kg Ã— 8</div>
                   <div class="text-[9px] text-emerald-400">Repos 45s</div>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-2">
-                  <div class="text-[10px] text-slate-400 font-bold">Série 2 (70%)</div>
-                  <div class="text-sm font-black text-amber-300 mt-0.5">${w70} kg × 5</div>
+                  <div class="text-[10px] text-slate-400 font-bold">SÃ©rie 2 (70%)</div>
+                  <div class="text-sm font-black text-amber-300 mt-0.5">${w70} kg Ã— 5</div>
                   <div class="text-[9px] text-emerald-400">Repos 60s</div>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-2">
-                  <div class="text-[10px] text-slate-400 font-bold">Série 3 (85%)</div>
-                  <div class="text-sm font-black text-rose-300 mt-0.5">${w85} kg × 2</div>
+                  <div class="text-[10px] text-slate-400 font-bold">SÃ©rie 3 (85%)</div>
+                  <div class="text-sm font-black text-rose-300 mt-0.5">${w85} kg Ã— 2</div>
                   <div class="text-[9px] text-emerald-400">Repos 90s</div>
                 </div>
               </div>
@@ -4059,7 +4120,7 @@ window.IronPulse = window.IronPulse || {};
 
             <div class="flex gap-2 pt-1">
               <button onclick="IronPulse.App.completeWarmupProtocol()" class="flex-1 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-lg">
-                ✓ Valider l'Échauffement (+35 XP & +15 🪙)
+                âœ“ Valider l'Ã‰chauffement (+35 XP & +15 ðŸª™)
               </button>
               <button onclick="IronPulse.App.closeModal()" class="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">
                 Fermer
@@ -4070,7 +4131,7 @@ window.IronPulse = window.IronPulse || {};
       `;
     }
 
-    // 7. Modale Récompense de Fin de Séance (Victoire de Quête RPG & Butin AURA FIT)
+    // 7. Modale RÃ©compense de Fin de SÃ©ance (Victoire de QuÃªte RPG & Butin AURA FIT)
     if (ui.modal.type === 'workout-rpg-reward') {
       const d = ui.modal.data;
       const hero = ns.RPG ? ns.RPG.getHeroProfile() : null;
@@ -4078,20 +4139,20 @@ window.IronPulse = window.IronPulse || {};
         <div class="modal-backdrop z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-slide-up">
           <div class="bg-[#111722] border-2 border-emerald-500 w-full max-w-md max-h-[88vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto p-5 space-y-4 shadow-2xl text-center">
             <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-3xl mx-auto">
-              🏆
+              ðŸ†
             </div>
             <div>
               <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-black uppercase tracking-wider">
-                Système d'Éveil — Quête Accomplie
+                SystÃ¨me d'Ã‰veil â€” QuÃªte Accomplie
               </span>
               <h2 class="text-lg font-extrabold text-white mt-1.5">${escapeHtml(d.workoutName)}</h2>
-              <p class="text-xs text-slate-300 mt-0.5">Séance enregistrée ! Vos attributs de Chasseur et votre Or progressent.</p>
+              <p class="text-xs text-slate-300 mt-0.5">SÃ©ance enregistrÃ©e ! Vos attributs de Chasseur et votre Or progressent.</p>
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
               <div class="flex items-center justify-center gap-4">
                 <div class="text-2xl font-black text-emerald-400">+${d.earnedXp} XP</div>
-                <div class="text-2xl font-black text-amber-300">+${d.earnedGold || 75} 🪙 Or</div>
+                <div class="text-2xl font-black text-amber-300">+${d.earnedGold || 75} ðŸª™ Or</div>
               </div>
               <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-center">
                 <div>
@@ -4099,11 +4160,11 @@ window.IronPulse = window.IronPulse || {};
                   <div class="text-xs font-bold text-white">${d.totalVolume} kg</div>
                 </div>
                 <div>
-                  <div class="text-[10px] text-slate-400">Séries</div>
+                  <div class="text-[10px] text-slate-400">SÃ©ries</div>
                   <div class="text-xs font-bold text-white">${d.completedSets}</div>
                 </div>
                 <div>
-                  <div class="text-[10px] text-slate-400">Durée</div>
+                  <div class="text-[10px] text-slate-400">DurÃ©e</div>
                   <div class="text-xs font-bold text-emerald-400">${d.durationMin} min</div>
                 </div>
               </div>
@@ -4114,7 +4175,7 @@ window.IronPulse = window.IronPulse || {};
                 ? `
               <div class="bg-slate-950/80 border border-indigo-500/30 rounded-xl p-3 text-left space-y-1.5">
                 <div class="flex items-center justify-between text-xs">
-                  <span class="font-extrabold text-white">${hero.classObj.icon} ${escapeHtml(hero.classObj.name)} • Rang ${hero.rankObj.rank}</span>
+                  <span class="font-extrabold text-white">${hero.classObj.icon} ${escapeHtml(hero.classObj.name)} â€¢ Rang ${hero.rankObj.rank}</span>
                   <span class="font-black text-emerald-400">Niv. ${hero.level}</span>
                 </div>
                 <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -4131,7 +4192,7 @@ window.IronPulse = window.IronPulse || {};
 
             <div class="flex gap-2">
               <button onclick="IronPulse.App.closeModal(); IronPulse.App.navigate('rpg');" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs">
-                ⚔️ Voir mon Héros
+                âš”ï¸ Voir mon HÃ©ros
               </button>
               <button onclick="IronPulse.App.closeModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">
                 Voir l'historique
@@ -4148,66 +4209,66 @@ window.IronPulse = window.IronPulse || {};
   // ============================================================================
   // RENDU GLOBAL SHELL MOBILE
   // ============================================================================
-  // TUTORIEL INTERACTIF, VISITE GUIDÉE & QUESTIONNAIRE PREMIÈRE UTILISATION
+  // TUTORIEL INTERACTIF, VISITE GUIDÃ‰E & QUESTIONNAIRE PREMIÃˆRE UTILISATION
   // ============================================================================
   const TUTORIAL_SLIDES = [
     {
-      badge: 'Module 1 / 5 · QG du Héros & Modèle 3D',
-      icon: '👑',
-      title: 'Votre Guerrier 3D Cel-Shading à 360°',
-      subtitle: 'Chaque kilo soulevé dans la vraie vie renforce votre avatar dans l\'univers Aura Pulse.',
+      badge: 'Module 1 / 5 Â· QG du HÃ©ros & ModÃ¨le 3D',
+      icon: 'ðŸ‘‘',
+      title: 'Votre Guerrier 3D Cel-Shading Ã  360Â°',
+      subtitle: 'Chaque kilo soulevÃ© dans la vraie vie renforce votre avatar dans l\'univers Aura Pulse.',
       bullets: [
-        '🎯 **Scène 3D interactive** : Faites pivoter votre guerrier à 360° à la souris ou au doigt et testez ses mouvements.',
-        '📊 **4 Attributs RPG réels** : Force (STR), Endurance (END), Vitesse/Constance (VIT) et Volonté/Intensité (VOL) calculés sur vos vraies séries.',
-        '👑 **Reliques & Titres** : Débloquez des artefacts passifs (+5% à +8% XP) en battant des records.'
+        'ðŸŽ¯ **ScÃ¨ne 3D interactive** : Faites pivoter votre guerrier Ã  360Â° Ã  la souris ou au doigt et testez ses mouvements.',
+        'ðŸ“Š **4 Attributs RPG rÃ©els** : Force (STR), Endurance (END), Vitesse/Constance (VIT) et VolontÃ©/IntensitÃ© (VOL) calculÃ©s sur vos vraies sÃ©ries.',
+        'ðŸ‘‘ **Reliques & Titres** : DÃ©bloquez des artefacts passifs (+5% Ã  +8% XP) en battant des records.'
       ],
       highlightTab: 'home'
     },
     {
-      badge: 'Module 2 / 5 · Donjon en Direct & Tempo 3-1-1',
-      icon: '⚔️',
-      title: 'Hologramme 3D Synchronisé & Métronome Biomécanique',
-      subtitle: 'Pendant votre séance, votre avatar exécute exactement le même exercice que vous en temps réel.',
+      badge: 'Module 2 / 5 Â· Donjon en Direct & Tempo 3-1-1',
+      icon: 'âš”ï¸',
+      title: 'Hologramme 3D SynchronisÃ© & MÃ©tronome BiomÃ©canique',
+      subtitle: 'Pendant votre sÃ©ance, votre avatar exÃ©cute exactement le mÃªme exercice que vous en temps rÃ©el.',
       bullets: [
-        '⏱️ **Métronome de Tempo (3-1-1 / 2-0-1 / 4-2-1)** : Suivez la jauge lumineuse (3s Descente Excentrique · 1s Pause · 1s Poussée Explosif) pour un recrutement musculaire maximal.',
-        '💥 **Surcharge d\'Aura Cinétique & Audio** : Chaque série cochée (`✓`) déclenche un flash d\'aura lumineuse et lance automatiquement le minuteur de repos.',
-        '⚡ **Mémoire de charge** : Vos poids et répétitions de la séance précédente sont pré-remplis automatiquement.'
+        'â±ï¸ **MÃ©tronome de Tempo (3-1-1 / 2-0-1 / 4-2-1)** : Suivez la jauge lumineuse (3s Descente Excentrique Â· 1s Pause Â· 1s PoussÃ©e Explosif) pour un recrutement musculaire maximal.',
+        'ðŸ’¥ **Surcharge d\'Aura CinÃ©tique & Audio** : Chaque sÃ©rie cochÃ©e (`âœ“`) dÃ©clenche un flash d\'aura lumineuse et lance automatiquement le minuteur de repos.',
+        'âš¡ **MÃ©moire de charge** : Vos poids et rÃ©pÃ©titions de la sÃ©ance prÃ©cÃ©dente sont prÃ©-remplis automatiquement.'
       ],
       highlightTab: 'workout'
     },
     {
-      badge: 'Module 3 / 5 · Campagnes & Grimoire 3D',
-      icon: '📜',
-      title: '4 Programmes Scientifiques & 25 Exercices Modélisés',
-      subtitle: 'Du Full Body Débutant au Push/Pull/Legs 6J, ou créez vos propres séances sur mesure.',
+      badge: 'Module 3 / 5 Â· Campagnes & Grimoire 3D',
+      icon: 'ðŸ“œ',
+      title: '4 Programmes Scientifiques & 25 Exercices ModÃ©lisÃ©s',
+      subtitle: 'Du Full Body DÃ©butant au Push/Pull/Legs 6J, ou crÃ©ez vos propres sÃ©ances sur mesure.',
       bullets: [
-        '📜 **Campagnes adaptées** : Choisissez un programme structuré ou créez vos propres routines dans l\'onglet *Mes Séances*.',
-        '📘 **Grimoire de 25 Exercices** : Filtrez par muscle ou matériel. Cliquez sur un exercice pour voir la **démonstration 3D interactive** + les consignes de sécurité.',
-        '➕ **Exercices personnalisés** : Ajoutez librement vos propres mouvements au répertoire.'
+        'ðŸ“œ **Campagnes adaptÃ©es** : Choisissez un programme structurÃ© ou crÃ©ez vos propres routines dans l\'onglet *Mes SÃ©ances*.',
+        'ðŸ“˜ **Grimoire de 25 Exercices** : Filtrez par muscle ou matÃ©riel. Cliquez sur un exercice pour voir la **dÃ©monstration 3D interactive** + les consignes de sÃ©curitÃ©.',
+        'âž• **Exercices personnalisÃ©s** : Ajoutez librement vos propres mouvements au rÃ©pertoire.'
       ],
       highlightTab: 'programs'
     },
     {
-      badge: 'Module 4 / 5 · Boss de Donjon 1RM & Guilde',
-      icon: '🐉',
-      title: 'Terrassez les 4 Boss Mythiques & Défiez la Guilde',
-      subtitle: 'Vos records de force maximale théorique (formule d\'Epley 1RM) font tomber les Boss de Donjon.',
+      badge: 'Module 4 / 5 Â· Boss de Donjon 1RM & Guilde',
+      icon: 'ðŸ‰',
+      title: 'Terrassez les 4 Boss Mythiques & DÃ©fiez la Guilde',
+      subtitle: 'Vos records de force maximale thÃ©orique (formule d\'Epley 1RM) font tomber les Boss de Donjon.',
       bullets: [
-        '🐉 **4 Boss 1RM** : Cerbère d\'Acier (Développé Couché ≥ 80 kg), Golem Titan (Squat ≥ 110 kg), Wyverne Abyssale (Soulevé de Terre ≥ 140 kg), Commandant de l\'Éclipse (Militaire ≥ 55 kg).',
-        '🛡️ **Défis de Guilde** : Affrontez des chasseurs rivaux sur 7 jours (volume, séries, régularité) pour gagner +250 à +350 XP bonus.',
-        '🎨 **Studio Striker Cinétique** : Personnalisez librement la morphologie, les coiffures, les tenues techwear et équipements de force pro.'
+        'ðŸ‰ **4 Boss 1RM** : CerbÃ¨re d\'Acier (DÃ©veloppÃ© CouchÃ© â‰¥ 80 kg), Golem Titan (Squat â‰¥ 110 kg), Wyverne Abyssale (SoulevÃ© de Terre â‰¥ 140 kg), Commandant de l\'Ã‰clipse (Militaire â‰¥ 55 kg).',
+        'ðŸ›¡ï¸ **DÃ©fis de Guilde** : Affrontez des chasseurs rivaux sur 7 jours (volume, sÃ©ries, rÃ©gularitÃ©) pour gagner +250 Ã  +350 XP bonus.',
+        'ðŸŽ¨ **Studio Striker CinÃ©tique** : Personnalisez librement la morphologie, les coiffures, les tenues techwear et Ã©quipements de force pro.'
       ],
       highlightTab: 'rpg'
     },
     {
-      badge: 'Module 5 / 5 · Oracle IA Prudent & Graphiques SVG',
-      icon: '🔮',
-      title: 'Coach IA Biomécanique & Courbes de Progression',
-      subtitle: 'Une intelligence artificielle qui analyse votre âge, taille, poids, IMC, RPE et surcharge progressive.',
+      badge: 'Module 5 / 5 Â· Oracle IA Prudent & Graphiques SVG',
+      icon: 'ðŸ”®',
+      title: 'Coach IA BiomÃ©canique & Courbes de Progression',
+      subtitle: 'Une intelligence artificielle qui analyse votre Ã¢ge, taille, poids, IMC, RPE et surcharge progressive.',
       bullets: [
-        '🧠 **Bilan Automatique Prudent** : Détecte la stagnation, la fatigue excessive (RPE ≥ 9) ou la marge de progression (+2,5 kg) et ajuste vos prochaines charges.',
-        '💬 **Chat Coach IA (Hors-ligne + Gemini)** : Posez n\'importe quelle question technique ou de récupération ; fonctionne 100% hors-ligne ou avec clé API Gemini.',
-        '📈 **Graphiques SVG** : Visualisez votre 1RM, votre charge max et votre tonnage séance après séance.'
+        'ðŸ§  **Bilan Automatique Prudent** : DÃ©tecte la stagnation, la fatigue excessive (RPE â‰¥ 9) ou la marge de progression (+2,5 kg) et ajuste vos prochaines charges.',
+        'ðŸ’¬ **Chat Coach IA (Hors-ligne + Gemini)** : Posez n\'importe quelle question technique ou de rÃ©cupÃ©ration ; fonctionne 100% hors-ligne ou avec clÃ© API Gemini.',
+        'ðŸ“ˆ **Graphiques SVG** : Visualisez votre 1RM, votre charge max et votre tonnage sÃ©ance aprÃ¨s sÃ©ance.'
       ],
       highlightTab: 'progress'
     }
@@ -4216,33 +4277,33 @@ window.IronPulse = window.IronPulse || {};
   const GUIDED_TOUR_STEPS = [
     {
       tab: 'home',
-      title: '1/6 · QG du Héros & Avatar 3D',
-      desc: 'Voici votre tableau de bord principal : faites tourner votre Guerrier 3D, consultez vos 4 attributs RPG (STR, END, VIT, VOL), votre quête prioritaire du jour et l\'avis rapide de l\'Oracle IA.'
+      title: '1/6 Â· QG du HÃ©ros & Avatar 3D',
+      desc: 'Voici votre tableau de bord principal : faites tourner votre Guerrier 3D, consultez vos 4 attributs RPG (STR, END, VIT, VOL), votre quÃªte prioritaire du jour et l\'avis rapide de l\'Oracle IA.'
     },
     {
       tab: 'rpg',
-      title: '2/6 · Guilde, Studio 3D & Boss de Donjon',
-      desc: 'Explorez les 5 sous-onglets ici : Statut RPG, Studio 3D (morphologies & coiffures), Donjons (les 4 Boss liés à vos 1RM), Reliques et Défis de Guilde entre amis.'
+      title: '2/6 Â· Guilde, Studio 3D & Boss de Donjon',
+      desc: 'Explorez les 5 sous-onglets ici : Statut RPG, Studio 3D (morphologies & coiffures), Donjons (les 4 Boss liÃ©s Ã  vos 1RM), Reliques et DÃ©fis de Guilde entre amis.'
     },
     {
       tab: 'workout',
-      title: '3/6 · Donjon d\'Entraînement & Métronome 3-1-1',
-      desc: 'Lancez une séance pour voir votre Guerrier 3D reproduire l\'exercice en direct avec le Métronome de Tempo (3s Descente · 1s Pause · 1s Poussée). Cochez une série pour déclencher la Surcharge d\'Aura !'
+      title: '3/6 Â· Donjon d\'EntraÃ®nement & MÃ©tronome 3-1-1',
+      desc: 'Lancez une sÃ©ance pour voir votre Guerrier 3D reproduire l\'exercice en direct avec le MÃ©tronome de Tempo (3s Descente Â· 1s Pause Â· 1s PoussÃ©e). Cochez une sÃ©rie pour dÃ©clencher la Surcharge d\'Aura !'
     },
     {
       tab: 'programs',
-      title: '4/6 · Campagnes & Séances sur mesure',
-      desc: 'Votre programme recommandé par le questionnaire est activé ici. Vous pouvez lancer n\'importe quelle journée d\'entraînement en 1 clic ou créer vos séances personnalisées.'
+      title: '4/6 Â· Campagnes & SÃ©ances sur mesure',
+      desc: 'Votre programme recommandÃ© par le questionnaire est activÃ© ici. Vous pouvez lancer n\'importe quelle journÃ©e d\'entraÃ®nement en 1 clic ou crÃ©er vos sÃ©ances personnalisÃ©es.'
     },
     {
       tab: 'exercises',
-      title: '5/6 · Grimoire des 25 Exercices 3D',
-      desc: 'Recherchez un mouvement par groupe musculaire ou équipement. Cliquez sur une fiche pour inspecter le modèle 3D en mouvement et les conseils de posture.'
+      title: '5/6 Â· Grimoire des 25 Exercices 3D',
+      desc: 'Recherchez un mouvement par groupe musculaire ou Ã©quipement. Cliquez sur une fiche pour inspecter le modÃ¨le 3D en mouvement et les conseils de posture.'
     },
     {
       tab: 'progress',
-      title: '6/6 · Oracle IA & Courbes SVG',
-      desc: 'Suivez vos courbes de 1RM et de tonnage, consultez les recommandations prudentes basées sur votre profil (âge, taille, poids, RPE) et discutez avec le Coach IA.'
+      title: '6/6 Â· Oracle IA & Courbes SVG',
+      desc: 'Suivez vos courbes de 1RM et de tonnage, consultez les recommandations prudentes basÃ©es sur votre profil (Ã¢ge, taille, poids, RPE) et discutez avec le Coach IA.'
     }
   ];
 
@@ -4255,14 +4316,14 @@ window.IronPulse = window.IronPulse || {};
       <div class="mb-3.5 rounded-2xl p-3.5 border-2 border-amber-400/60 bg-gradient-to-r from-amber-950/70 via-[#151C28] to-emerald-950/60 shadow-xl animate-slide-up">
         <div class="flex items-center justify-between gap-2 mb-1.5">
           <div class="flex items-center gap-1.5">
-            <span class="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">🧭 Visite Guidée</span>
+            <span class="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">ðŸ§­ Visite GuidÃ©e</span>
             <span class="text-xs font-black text-amber-300">${escapeHtml(step.title)}</span>
           </div>
           <button
             onclick="IronPulse.App.closeGuidedTour()"
             class="text-[10px] font-bold text-slate-400 hover:text-white px-2 py-0.5 rounded bg-slate-900/80 border border-slate-700"
           >
-            ✕ Fermer
+            âœ• Fermer
           </button>
         </div>
         <p class="text-[11px] text-slate-200 leading-relaxed mb-2.5">${escapeHtml(step.desc)}</p>
@@ -4279,13 +4340,13 @@ window.IronPulse = window.IronPulse || {};
           <div class="flex items-center gap-1.5">
             ${
               stepIdx > 0
-                ? `<button onclick="IronPulse.App.prevGuidedTourStep()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 border border-slate-700">◀ Précédent</button>`
+                ? `<button onclick="IronPulse.App.prevGuidedTourStep()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 border border-slate-700">â—€ PrÃ©cÃ©dent</button>`
                 : ''
             }
             ${
               stepIdx < GUIDED_TOUR_STEPS.length - 1
-                ? `<button onclick="IronPulse.App.nextGuidedTourStep()" class="px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-[11px] font-black text-slate-950 shadow">Suivant ▶</button>`
-                : `<button onclick="IronPulse.App.closeGuidedTour()" class="px-3 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-[11px] font-black text-slate-950 shadow">✓ Terminer la visite</button>`
+                ? `<button onclick="IronPulse.App.nextGuidedTourStep()" class="px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-[11px] font-black text-slate-950 shadow">Suivant â–¶</button>`
+                : `<button onclick="IronPulse.App.closeGuidedTour()" class="px-3 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-[11px] font-black text-slate-950 shadow">âœ“ Terminer la visite</button>`
             }
           </div>
         </div>
@@ -4296,7 +4357,7 @@ window.IronPulse = window.IronPulse || {};
   function renderOnboardingTacticalCardHTML(bio) {
     return `
       <div class="flex items-center justify-between">
-        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400">📡 Diagnostic Biométrique Instantané</span>
+        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400">ðŸ“¡ Diagnostic BiomÃ©trique InstantanÃ©</span>
         <span class="text-[10px] font-extrabold ${bio.bmiColor}">${bio.bmiLabel}</span>
       </div>
       <div class="grid grid-cols-3 gap-2 text-center">
@@ -4306,12 +4367,12 @@ window.IronPulse = window.IronPulse || {};
           <div class="text-[9px] text-slate-500">${bio.heightCm} cm / ${bio.weightKg} kg</div>
         </div>
         <div class="bg-slate-900 rounded-xl p-2 border border-slate-800">
-          <div class="text-[9px] text-slate-400 uppercase font-bold">Maintien Estimé</div>
+          <div class="text-[9px] text-slate-400 uppercase font-bold">Maintien EstimÃ©</div>
           <div class="text-base font-black text-amber-300">${bio.tdee} <span class="text-[10px]">kcal/j</span></div>
-          <div class="text-[9px] text-slate-500">Métabolisme: ${bio.bmr} kcal</div>
+          <div class="text-[9px] text-slate-500">MÃ©tabolisme: ${bio.bmr} kcal</div>
         </div>
         <div class="bg-slate-900 rounded-xl p-2 border border-slate-800">
-          <div class="text-[9px] text-slate-400 uppercase font-bold">Cible Protéines</div>
+          <div class="text-[9px] text-slate-400 uppercase font-bold">Cible ProtÃ©ines</div>
           <div class="text-base font-black text-emerald-300">${bio.proteinTargetG} <span class="text-[10px]">g/j</span></div>
           <div class="text-[9px] text-slate-500">1.8g / kg poids</div>
         </div>
@@ -4332,14 +4393,14 @@ window.IronPulse = window.IronPulse || {};
     const goalObj = ns.Data.GOALS.find((g) => g.id === profile.goal) || ns.Data.GOALS[0];
     const levelObj = ns.Data.LEVELS.find((l) => l.id === profile.level) || ns.Data.LEVELS[1];
     const goalIcons = {
-      hypertrophy: '💪',
-      strength: '🔥',
-      fitness: '❤️‍🔥',
-      fatloss: '⚡'
+      hypertrophy: 'ðŸ’ª',
+      strength: 'ðŸ”¥',
+      fitness: 'â¤ï¸â€ðŸ”¥',
+      fatloss: 'âš¡'
     };
 
     const stepLabels = [
-      { n: 1, label: 'Biométrie' },
+      { n: 1, label: 'BiomÃ©trie' },
       { n: 2, label: 'Objectifs' },
       { n: 3, label: 'Avatar 3D' },
       { n: 4, label: 'Tutoriel' },
@@ -4349,21 +4410,21 @@ window.IronPulse = window.IronPulse || {};
     let stepContentHtml = '';
 
     // -------------------------------------------------------------------------
-    // ÉTAPE 1 : QUESTIONNAIRE BIOMÉTRIQUE (PSEUDO, ÂGE, TAILLE, POIDS + IMC)
+    // Ã‰TAPE 1 : QUESTIONNAIRE BIOMÃ‰TRIQUE (PSEUDO, Ã‚GE, TAILLE, POIDS + IMC)
     // -------------------------------------------------------------------------
     if (step === 1) {
       stepContentHtml = `
         <div class="space-y-3.5">
           <div class="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-emerald-500/10 to-slate-900 border border-amber-500/30">
-            <div class="text-[10px] font-black uppercase tracking-widest text-amber-300">⚡ Bienvenue dans IronPulse Z — Première Utilisation</div>
-            <h3 class="text-sm font-black text-white mt-0.5">Étape 1/5 : Calibration Biométrique Tactique</h3>
+            <div class="text-[10px] font-black uppercase tracking-widest text-amber-300">âš¡ Bienvenue dans IronPulse Z â€” PremiÃ¨re Utilisation</div>
+            <h3 class="text-sm font-black text-white mt-0.5">Ã‰tape 1/5 : Calibration BiomÃ©trique Tactique</h3>
             <p class="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
-              Renseignez votre âge, votre taille et votre poids pour calibrer le moteur biomécanique, vos besoins énergétiques et l'Oracle IA.
+              Renseignez votre Ã¢ge, votre taille et votre poids pour calibrer le moteur biomÃ©canique, vos besoins Ã©nergÃ©tiques et l'Oracle IA.
             </p>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-200 mb-1">Votre Prénom ou Pseudo de Striker</label>
+            <label class="block text-xs font-bold text-slate-200 mb-1">Votre PrÃ©nom ou Pseudo de Striker</label>
             <input
               type="text"
               placeholder="Ex: Alex, Ren, Kaelen..."
@@ -4375,7 +4436,7 @@ window.IronPulse = window.IronPulse || {};
 
           <div class="grid grid-cols-3 gap-2.5">
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
-              <label class="block text-[10px] font-extrabold text-amber-300 uppercase mb-1">🎂 Âge (ans)</label>
+              <label class="block text-[10px] font-extrabold text-amber-300 uppercase mb-1">ðŸŽ‚ Ã‚ge (ans)</label>
               <input
                 type="number"
                 min="14"
@@ -4386,7 +4447,7 @@ window.IronPulse = window.IronPulse || {};
               />
             </div>
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
-              <label class="block text-[10px] font-extrabold text-emerald-300 uppercase mb-1">📏 Taille (cm)</label>
+              <label class="block text-[10px] font-extrabold text-emerald-300 uppercase mb-1">ðŸ“ Taille (cm)</label>
               <input
                 type="number"
                 min="130"
@@ -4397,7 +4458,7 @@ window.IronPulse = window.IronPulse || {};
               />
             </div>
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
-              <label class="block text-[10px] font-extrabold text-sky-300 uppercase mb-1">⚖️ Poids (kg)</label>
+              <label class="block text-[10px] font-extrabold text-sky-300 uppercase mb-1">âš–ï¸ Poids (kg)</label>
               <input
                 type="number"
                 step="0.5"
@@ -4410,7 +4471,7 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- Analyse Tactique Instantanée -->
+          <!-- Analyse Tactique InstantanÃ©e -->
           <div id="onb-scouter-card" class="rounded-2xl p-3.5 bg-slate-950/90 border border-emerald-500/30 space-y-2">
             ${renderOnboardingScouterCardHTML(bio)}
           </div>
@@ -4419,23 +4480,23 @@ window.IronPulse = window.IronPulse || {};
     }
 
     // -------------------------------------------------------------------------
-    // ÉTAPE 2 : QUESTIONNAIRE SPORTIF (NIVEAU, OBJECTIF, FRÉQUENCE, MATÉRIEL)
+    // Ã‰TAPE 2 : QUESTIONNAIRE SPORTIF (NIVEAU, OBJECTIF, FRÃ‰QUENCE, MATÃ‰RIEL)
     // -------------------------------------------------------------------------
     else if (step === 2) {
       const equipOptions = [
-        { id: 'full-gym', icon: '🏋️', title: 'Salle complète', desc: 'Barres, haltères, poulies, machines' },
-        { id: 'home-gym', icon: '🏠', title: 'Home Gym', desc: 'Barre, banc, haltères libres' },
-        { id: 'bodyweight-db', icon: '🤸', title: 'Haltères & Poids du corps', desc: 'Minimaliste & polyvalent' }
+        { id: 'full-gym', icon: 'ðŸ‹ï¸', title: 'Salle complÃ¨te', desc: 'Barres, haltÃ¨res, poulies, machines' },
+        { id: 'home-gym', icon: 'ðŸ ', title: 'Home Gym', desc: 'Barre, banc, haltÃ¨res libres' },
+        { id: 'bodyweight-db', icon: 'ðŸ¤¸', title: 'HaltÃ¨res & Poids du corps', desc: 'Minimaliste & polyvalent' }
       ];
       const curEquip = profile.availableEquipment || 'full-gym';
 
       stepContentHtml = `
         <div class="space-y-3.5">
           <div class="p-3 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-indigo-500/10 to-slate-900 border border-emerald-500/30">
-            <div class="text-[10px] font-black uppercase tracking-widest text-emerald-300">🎯 Calibration de l'Entraînement</div>
-            <h3 class="text-sm font-black text-white mt-0.5">Étape 2/5 : Expérience, Objectif & Rythme</h3>
+            <div class="text-[10px] font-black uppercase tracking-widest text-emerald-300">ðŸŽ¯ Calibration de l'EntraÃ®nement</div>
+            <h3 class="text-sm font-black text-white mt-0.5">Ã‰tape 2/5 : ExpÃ©rience, Objectif & Rythme</h3>
             <p class="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
-              Le système sélectionne automatiquement votre campagne idéale et votre temps de repos optimal.
+              Le systÃ¨me sÃ©lectionne automatiquement votre campagne idÃ©ale et votre temps de repos optimal.
             </p>
           </div>
 
@@ -4466,7 +4527,7 @@ window.IronPulse = window.IronPulse || {};
             <div class="grid grid-cols-2 gap-2">
               ${ns.Data.GOALS.map((g) => {
                 const active = profile.goal === g.id;
-                const emoji = goalIcons[g.id] || '⚡';
+                const emoji = goalIcons[g.id] || 'âš¡';
                 return `
                   <button
                     onclick="IronPulse.App.updateOnboardingField('goal', '${g.id}')"
@@ -4489,8 +4550,8 @@ window.IronPulse = window.IronPulse || {};
 
           <div>
             <div class="flex items-center justify-between mb-1.5">
-              <label class="text-xs font-bold text-slate-200">3. Fréquence hebdomadaire souhaitée</label>
-              <span class="text-xs font-black text-amber-300">${profile.weeklyTarget || 4} séances / sem.</span>
+              <label class="text-xs font-bold text-slate-200">3. FrÃ©quence hebdomadaire souhaitÃ©e</label>
+              <span class="text-xs font-black text-amber-300">${profile.weeklyTarget || 4} sÃ©ances / sem.</span>
             </div>
             <div class="grid grid-cols-5 gap-1.5">
               ${[2, 3, 4, 5, 6]
@@ -4514,7 +4575,7 @@ window.IronPulse = window.IronPulse || {};
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-200 mb-1.5">4. Équipement principal à disposition</label>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">4. Ã‰quipement principal Ã  disposition</label>
             <div class="grid grid-cols-3 gap-2">
               ${equipOptions
                 .map((eq) => {
@@ -4542,9 +4603,9 @@ window.IronPulse = window.IronPulse || {};
             <label class="block text-xs font-bold text-slate-200 mb-1.5">5. Corpulence actuelle</label>
             <div class="grid grid-cols-3 gap-2">
               ${[
-                { id: 'slim', icon: '🏃', label: 'Mince / Ecto', desc: 'Métabolisme rapide, ossature fine' },
-                { id: 'athletic', icon: '⚡', label: 'Athlétique', desc: 'Forme équilibrée, base sportive' },
-                { id: 'heavy', icon: '🛡️', label: 'Robuste / Massif', desc: 'Grosse charpente, masse établie' }
+                { id: 'slim', icon: 'ðŸƒ', label: 'Mince / Ecto', desc: 'MÃ©tabolisme rapide, ossature fine' },
+                { id: 'athletic', icon: 'âš¡', label: 'AthlÃ©tique', desc: 'Forme Ã©quilibrÃ©e, base sportive' },
+                { id: 'heavy', icon: 'ðŸ›¡ï¸', label: 'Robuste / Massif', desc: 'Grosse charpente, masse Ã©tablie' }
               ].map((c) => {
                 const active = (profile.currentBuild || 'athletic') === c.id;
                 return `
@@ -4564,9 +4625,9 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- Corpulence Visée (Morphologie Cible Manga) -->
+          <!-- Corpulence VisÃ©e (Morphologie Cible Manga) -->
           <div>
-            <label class="block text-xs font-bold text-slate-200 mb-1.5">6. Corpulence visée (Objectif Physique)</label>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">6. Corpulence visÃ©e (Objectif Physique)</label>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               ${(ns.RPG.MORPHOLOGIES || []).slice(0, 4).map((m) => {
                 const active = (profile.targetMorphology || hero?.appearance?.morphology || 'athletic-vtaper') === m.id;
@@ -4591,7 +4652,7 @@ window.IronPulse = window.IronPulse || {};
           <!-- Recommandation automatique du programme -->
           <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between gap-2">
             <div>
-              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-400">✨ Campagne Recommandée & Assignée</div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-400">âœ¨ Campagne RecommandÃ©e & AssignÃ©e</div>
               <div class="text-xs font-extrabold text-white mt-0.5">${escapeHtml(recProg.name)} (${recProg.frequency})</div>
             </div>
             <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-[10px] font-black shrink-0">Repos ${profile.defaultRestSeconds || 90}s</span>
@@ -4601,16 +4662,16 @@ window.IronPulse = window.IronPulse || {};
     }
 
     // -------------------------------------------------------------------------
-    // ÉTAPE 3 : CRÉATION DE L'AVATAR 3D (CLASSE RPG, CHEVEUX STRIKER, AURA CINÉTIQUE)
+    // Ã‰TAPE 3 : CRÃ‰ATION DE L'AVATAR 3D (CLASSE RPG, CHEVEUX STRIKER, AURA CINÃ‰TIQUE)
     // -------------------------------------------------------------------------
     else if (step === 3 && hero) {
       stepContentHtml = `
         <div class="space-y-3">
           <div class="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/10 to-slate-900 border border-amber-500/30">
-            <div class="text-[10px] font-black uppercase tracking-widest text-amber-300">🎨 Forge du Striker 3D (Cel-Shading)</div>
-            <h3 class="text-sm font-black text-white mt-0.5">Étape 3/5 : Créez votre Avatar Shonen</h3>
+            <div class="text-[10px] font-black uppercase tracking-widest text-amber-300">ðŸŽ¨ Forge du Striker 3D (Cel-Shading)</div>
+            <h3 class="text-sm font-black text-white mt-0.5">Ã‰tape 3/5 : CrÃ©ez votre Avatar Shonen</h3>
             <p class="text-[11px] text-slate-300 mt-0.5">
-              Faites pivoter le modèle 3D à 360°, testez ses exercices et choisissez votre Classe et éveil d'Aura.
+              Faites pivoter le modÃ¨le 3D Ã  360Â°, testez ses exercices et choisissez votre Classe et Ã©veil d'Aura.
             </p>
           </div>
 
@@ -4623,10 +4684,10 @@ window.IronPulse = window.IronPulse || {};
               : ''
           }
 
-          <!-- ARCHÉTYPES MANGA RAPIDES 1-CLIC (BAKI, IPPO, DBZ, SOLO LEVELING, PERSONA) -->
+          <!-- ARCHÃ‰TYPES MANGA RAPIDES 1-CLIC (BAKI, IPPO, Pro, SOLO LEVELING, PERSONA) -->
           <div class="bg-gradient-to-r from-red-950/60 via-slate-900 to-indigo-950/60 border border-amber-500/40 rounded-xl p-2.5 space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-[9px] font-black uppercase text-amber-300">🌟 Préréglages Rapides Manga (1-Clic)</span>
+              <span class="text-[9px] font-black uppercase text-amber-300">ðŸŒŸ PrÃ©rÃ©glages Rapides Manga (1-Clic)</span>
               <span class="text-[9px] text-slate-400">Sport & Arts Martiaux</span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
@@ -4670,7 +4731,7 @@ window.IronPulse = window.IronPulse || {};
 
           <div class="grid grid-cols-2 gap-2">
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-amber-300 uppercase mb-1.5">🎭 Teint de Peau</div>
+              <div class="text-[9px] font-black text-amber-300 uppercase mb-1.5">ðŸŽ­ Teint de Peau</div>
               <div class="flex flex-wrap gap-1">
                 ${(ns.RPG.SKIN_TONES || []).map((st) => {
                   const active = (hero.appearance.skinTone || 'golden') === st.id;
@@ -4690,7 +4751,7 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-cyan-300 uppercase mb-1.5">✂️ Coupe de Cheveux</div>
+              <div class="text-[9px] font-black text-cyan-300 uppercase mb-1.5">âœ‚ï¸ Coupe de Cheveux</div>
               <div class="flex flex-wrap gap-1">
                 ${(ns.RPG.HAIRSTYLES || []).map((hs) => {
                   const active = (hero.appearance.hairstyle || 'spiky-striker') === hs.id || (hero.appearance.hairstyle === 'spiky-dbz' && hs.id === 'spiky-striker');
@@ -4737,7 +4798,7 @@ window.IronPulse = window.IronPulse || {};
 
           <div class="grid grid-cols-3 gap-2">
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-amber-300 uppercase mb-1.5">⚡ Couleur des Cheveux</div>
+              <div class="text-[9px] font-black text-amber-300 uppercase mb-1.5">âš¡ Couleur des Cheveux</div>
               <div class="flex flex-wrap gap-1">
                 ${ns.RPG.HAIR_COLORS.map((hc) => {
                   const active = hero.appearance.hairColor === hc.id;
@@ -4757,7 +4818,7 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-emerald-300 uppercase mb-1.5">🔥 Aura Ki</div>
+              <div class="text-[9px] font-black text-emerald-300 uppercase mb-1.5">ðŸ”¥ Aura Ki</div>
               <div class="flex flex-wrap gap-1">
                 ${ns.RPG.AURA_STYLES.map((ac) => {
                   const active = hero.appearance.auraStyle === ac.id;
@@ -4777,7 +4838,7 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-indigo-300 uppercase mb-1.5">🥋 Tenue de Combat</div>
+              <div class="text-[9px] font-black text-indigo-300 uppercase mb-1.5">ðŸ¥‹ Tenue de Combat</div>
               <div class="flex flex-wrap gap-1">
                 ${(ns.RPG.OUTFITS || []).slice(0, 5).map((ot) => {
                   const active = hero.appearance.outfit === ot.id;
@@ -4800,7 +4861,7 @@ window.IronPulse = window.IronPulse || {};
           <!-- YEUX & MARQUAGES DE GUERRE / CICATRICES BAKI & IPPO -->
           <div class="grid grid-cols-2 gap-2">
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-cyan-300 uppercase mb-1.5">👁️ Couleur des Yeux</div>
+              <div class="text-[9px] font-black text-cyan-300 uppercase mb-1.5">ðŸ‘ï¸ Couleur des Yeux</div>
               <div class="flex flex-wrap gap-1">
                 ${(ns.RPG.EYE_COLORS || []).map((ec) => {
                   const active = hero.appearance.eyeColor === ec.id;
@@ -4820,7 +4881,7 @@ window.IronPulse = window.IronPulse || {};
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2">
-              <div class="text-[9px] font-black text-rose-300 uppercase mb-1.5">⚔️ Cicatrices & Marquages</div>
+              <div class="text-[9px] font-black text-rose-300 uppercase mb-1.5">âš”ï¸ Cicatrices & Marquages</div>
               <div class="flex flex-wrap gap-1">
                 ${(ns.RPG.WAR_MARKINGS || []).slice(0, 5).map((wm) => {
                   const active = (hero.appearance.warMarking || 'eye-scar') === wm.id;
@@ -4844,7 +4905,7 @@ window.IronPulse = window.IronPulse || {};
     }
 
     // -------------------------------------------------------------------------
-    // ÉTAPE 4 : TUTORIEL INTERACTIF DES FONCTIONNALITÉS (5 SLIDES ILLUSTRÉES)
+    // Ã‰TAPE 4 : TUTORIEL INTERACTIF DES FONCTIONNALITÃ‰S (5 SLIDES ILLUSTRÃ‰ES)
     // -------------------------------------------------------------------------
     else if (step === 4) {
       const slideIdx = Math.max(0, Math.min(TUTORIAL_SLIDES.length - 1, ui.tutorialSlideIdx || 0));
@@ -4853,14 +4914,14 @@ window.IronPulse = window.IronPulse || {};
       stepContentHtml = `
         <div class="space-y-3.5">
           <div class="p-3 rounded-2xl bg-gradient-to-r from-indigo-500/20 via-emerald-500/10 to-slate-900 border border-indigo-500/30">
-            <div class="text-[10px] font-black uppercase tracking-widest text-indigo-300">🎓 Guide Officiel des Fonctionnalités</div>
-            <h3 class="text-sm font-black text-white mt-0.5">Étape 4/5 : Comment fonctionne IronPulse Z</h3>
+            <div class="text-[10px] font-black uppercase tracking-widest text-indigo-300">ðŸŽ“ Guide Officiel des FonctionnalitÃ©s</div>
+            <h3 class="text-sm font-black text-white mt-0.5">Ã‰tape 4/5 : Comment fonctionne IronPulse Z</h3>
             <p class="text-[11px] text-slate-300 mt-0.5">
               Parcourez les 5 piliers de l'application avant de lancer votre aventure.
             </p>
           </div>
 
-          <!-- Sélecteur rapide des 5 modules du tutoriel -->
+          <!-- SÃ©lecteur rapide des 5 modules du tutoriel -->
           <div class="grid grid-cols-5 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
             ${TUTORIAL_SLIDES.map((s, idx) => {
               const active = idx === slideIdx;
@@ -4914,7 +4975,7 @@ window.IronPulse = window.IronPulse || {};
                     : 'border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700'
                 }"
               >
-                ◀ Module précédent
+                â—€ Module prÃ©cÃ©dent
               </button>
               <span class="text-[11px] font-bold text-slate-400">${slideIdx + 1} / ${TUTORIAL_SLIDES.length}</span>
               <button
@@ -4926,7 +4987,7 @@ window.IronPulse = window.IronPulse || {};
                     : 'border-amber-400/50 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30'
                 }"
               >
-                Module suivant ▶
+                Module suivant â–¶
               </button>
             </div>
           </div>
@@ -4935,38 +4996,38 @@ window.IronPulse = window.IronPulse || {};
     }
 
     // -------------------------------------------------------------------------
-    // ÉTAPE 5 : RÉCAPITULATIF TACTIQUE & CHOIX DU MODE DE DÉPART
+    // Ã‰TAPE 5 : RÃ‰CAPITULATIF TACTIQUE & CHOIX DU MODE DE DÃ‰PART
     // -------------------------------------------------------------------------
     else {
       stepContentHtml = `
         <div class="space-y-3.5">
           <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-amber-500/15 to-slate-900 border border-emerald-400/40 text-center">
-            <div class="text-2xl mb-1">⚡🐉</div>
-            <div class="text-[10px] font-black uppercase tracking-widest text-emerald-300">Calibration Tactique Terminée</div>
-            <h3 class="text-base font-black text-white mt-0.5">${escapeHtml(profile.name || 'Alex')} est prêt pour l'éveil !</h3>
+            <div class="text-2xl mb-1">âš¡ðŸ‰</div>
+            <div class="text-[10px] font-black uppercase tracking-widest text-emerald-300">Calibration Tactique TerminÃ©e</div>
+            <h3 class="text-base font-black text-white mt-0.5">${escapeHtml(profile.name || 'Alex')} est prÃªt pour l'Ã©veil !</h3>
             <p class="text-[11px] text-slate-300 mt-0.5">
-              Vérifiez votre fiche personnalisée et choisissez comment démarrer votre expérience.
+              VÃ©rifiez votre fiche personnalisÃ©e et choisissez comment dÃ©marrer votre expÃ©rience.
             </p>
           </div>
 
-          <!-- Fiche Synthèse -->
+          <!-- Fiche SynthÃ¨se -->
           <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                <div class="text-[10px] text-slate-400 uppercase font-bold">Profil Biométrique</div>
-                <div class="font-black text-white mt-0.5">${bio.age} ans · ${bio.heightCm} cm · ${bio.weightKg} kg</div>
+                <div class="text-[10px] text-slate-400 uppercase font-bold">Profil BiomÃ©trique</div>
+                <div class="font-black text-white mt-0.5">${bio.age} ans Â· ${bio.heightCm} cm Â· ${bio.weightKg} kg</div>
                 <div class="text-[10px] ${bio.bmiColor} font-bold">IMC ${bio.bmi} (${bio.tdee} kcal/j)</div>
               </div>
               <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                 <div class="text-[10px] text-slate-400 uppercase font-bold">Objectif & Rythme</div>
-                <div class="font-black text-amber-300 mt-0.5">${escapeHtml(goalObj.label)} · ${escapeHtml(levelObj.label)}</div>
-                <div class="text-[10px] text-slate-300 font-semibold">${profile.weeklyTarget} séances / sem.</div>
+                <div class="font-black text-amber-300 mt-0.5">${escapeHtml(goalObj.label)} Â· ${escapeHtml(levelObj.label)}</div>
+                <div class="text-[10px] text-slate-300 font-semibold">${profile.weeklyTarget} sÃ©ances / sem.</div>
               </div>
             </div>
 
             <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between">
               <div>
-                <div class="text-[10px] text-emerald-400 uppercase font-black">Campagne Assignée</div>
+                <div class="text-[10px] text-emerald-400 uppercase font-black">Campagne AssignÃ©e</div>
                 <div class="text-xs font-extrabold text-white">${escapeHtml(recProg.name)}</div>
               </div>
               <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-black">
@@ -4975,21 +5036,21 @@ window.IronPulse = window.IronPulse || {};
             </div>
           </div>
 
-          <!-- 3 Modes de Démarrage -->
+          <!-- 3 Modes de DÃ©marrage -->
           <div class="space-y-2 pt-1">
-            <div class="text-[11px] font-extrabold text-slate-300 uppercase tracking-wider">Choisissez votre mode de démarrage :</div>
+            <div class="text-[11px] font-extrabold text-slate-300 uppercase tracking-wider">Choisissez votre mode de dÃ©marrage :</div>
 
             <button
               onclick="IronPulse.App.finishOnboarding('guided')"
               class="w-full p-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-emerald-400 hover:opacity-95 text-slate-950 text-left shadow-lg transition flex items-center justify-between gap-2"
             >
               <div>
-                <div class="text-xs font-black uppercase tracking-wide">🧭 Démarrer + Visite Guidée Interactive (Recommandé)</div>
+                <div class="text-xs font-black uppercase tracking-wide">ðŸ§­ DÃ©marrer + Visite GuidÃ©e Interactive (RecommandÃ©)</div>
                 <div class="text-[11px] font-semibold text-slate-900 mt-0.5">
-                  Ouvre l'application avec une bannière pas-à-pas qui vous montre chaque onglet en direct.
+                  Ouvre l'application avec une banniÃ¨re pas-Ã -pas qui vous montre chaque onglet en direct.
                 </div>
               </div>
-              <span class="text-lg font-black">▶</span>
+              <span class="text-lg font-black">â–¶</span>
             </button>
 
             <button
@@ -4997,9 +5058,9 @@ window.IronPulse = window.IronPulse || {};
               class="w-full p-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-left transition flex items-center justify-between gap-2"
             >
               <div>
-                <div class="text-xs font-black text-emerald-300">🌱 Démarrer au Niveau 1 (Compte Vierge — 0 séance)</div>
+                <div class="text-xs font-black text-emerald-300">ðŸŒ± DÃ©marrer au Niveau 1 (Compte Vierge â€” 0 sÃ©ance)</div>
                 <div class="text-[11px] text-slate-300 mt-0.5">
-                  Conserve votre profil (${bio.age} ans, ${bio.heightCm} cm, ${bio.weightKg} kg) et remet le compteur de séances à zéro pour votre vraie 1re séance.
+                  Conserve votre profil (${bio.age} ans, ${bio.heightCm} cm, ${bio.weightKg} kg) et remet le compteur de sÃ©ances Ã  zÃ©ro pour votre vraie 1re sÃ©ance.
                 </div>
               </div>
               <span class="text-sm font-black text-emerald-300">Niv. 1</span>
@@ -5010,9 +5071,9 @@ window.IronPulse = window.IronPulse || {};
               class="w-full p-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-left transition flex items-center justify-between gap-2"
             >
               <div>
-                <div class="text-xs font-bold text-slate-200">🔥 Explorer avec Historique de Démo (Niveau 7)</div>
+                <div class="text-xs font-bold text-slate-200">ðŸ”¥ Explorer avec Historique de DÃ©mo (Niveau 7)</div>
                 <div class="text-[10px] text-slate-400 mt-0.5">
-                  Conserve votre profil personnalisé ET garde 6 séances d'exemple pour tester immédiatement les graphiques et Boss.
+                  Conserve votre profil personnalisÃ© ET garde 6 sÃ©ances d'exemple pour tester immÃ©diatement les graphiques et Boss.
                 </div>
               </div>
               <span class="text-xs font-bold text-amber-300">Niv. 7</span>
@@ -5023,9 +5084,9 @@ window.IronPulse = window.IronPulse || {};
               class="w-full p-2.5 rounded-2xl bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-400/50 text-left transition flex items-center justify-between gap-2"
             >
               <div>
-                <div class="text-xs font-black text-indigo-300">👾 Charger le Profil « Mehdi » (AURA FIT — Rang B • 320 🪙)</div>
+                <div class="text-xs font-black text-indigo-300">ðŸ‘¾ Charger le Profil Â« Mehdi Â» (AURA FIT â€” Rang B â€¢ 320 ðŸª™)</div>
                 <div class="text-[10px] text-slate-300 mt-0.5">
-                  25 ans · 182 cm · 78.5 kg · 5j 🔥 · PRs : Couché 92.5kg×6, Squat 125kg×4, Terre 145kg×4.
+                  25 ans Â· 182 cm Â· 78.5 kg Â· 5j ðŸ”¥ Â· PRs : CouchÃ© 92.5kgÃ—6, Squat 125kgÃ—4, Terre 145kgÃ—4.
                 </div>
               </div>
               <span class="text-xs font-black text-amber-300">Rang B</span>
@@ -5038,10 +5099,10 @@ window.IronPulse = window.IronPulse || {};
     return `
       <div class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-2.5 sm:p-4 animate-fade-in">
         <div class="bg-[#111722] border-2 border-amber-500/40 rounded-3xl w-full max-w-md max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
-          <!-- En-tête de l'assistant -->
+          <!-- En-tÃªte de l'assistant -->
           <div class="px-4 pt-3.5 pb-2.5 bg-[#0B0F17] border-b border-slate-800 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-emerald-500 text-slate-950 font-black text-xs flex items-center justify-center">⚡</span>
+              <span class="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-emerald-500 text-slate-950 font-black text-xs flex items-center justify-center">âš¡</span>
               <span class="text-xs font-black text-white uppercase tracking-wider">Initialisation Tactique & Tutoriel</span>
             </div>
             <button
@@ -5049,11 +5110,11 @@ window.IronPulse = window.IronPulse || {};
               class="text-[10px] font-bold text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-slate-900 border border-slate-800"
               title="Passer l'introduction"
             >
-              Passer ✕
+              Passer âœ•
             </button>
           </div>
 
-          <!-- Barre de progression des 5 étapes -->
+          <!-- Barre de progression des 5 Ã©tapes -->
           <div class="px-4 py-2 bg-[#0E1420] border-b border-slate-800/80 grid grid-cols-5 gap-1 shrink-0">
             ${stepLabels
               .map((s) => {
@@ -5070,33 +5131,33 @@ window.IronPulse = window.IronPulse || {};
                         : 'bg-slate-900/60 border border-slate-800 text-slate-500'
                     }"
                   >
-                    <div class="text-[9px] font-black">${isDone ? '✓' : s.n}. ${s.label}</div>
+                    <div class="text-[9px] font-black">${isDone ? 'âœ“' : s.n}. ${s.label}</div>
                   </button>
                 `;
               })
               .join('')}
           </div>
 
-          <!-- Corps défilant de l'étape -->
+          <!-- Corps dÃ©filant de l'Ã©tape -->
           <div class="p-4 overflow-y-auto flex-1">
             ${stepContentHtml}
           </div>
 
-          <!-- Pied de modale (Navigation Précédent / Suivant) -->
+          <!-- Pied de modale (Navigation PrÃ©cÃ©dent / Suivant) -->
           ${
             step < 5
               ? `
             <div class="px-4 py-3 bg-[#0B0F17] border-t border-slate-800 flex items-center justify-between gap-2 shrink-0">
               ${
                 step > 1
-                  ? `<button onclick="IronPulse.App.setOnboardingStep(${step - 1})" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700">◀ Retour</button>`
-                  : `<button onclick="IronPulse.App.setOnboardingStep(4)" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-[11px] font-semibold text-slate-400 border border-slate-800">Aller au Tutoriel ▶</button>`
+                  ? `<button onclick="IronPulse.App.setOnboardingStep(${step - 1})" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700">â—€ Retour</button>`
+                  : `<button onclick="IronPulse.App.setOnboardingStep(4)" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-[11px] font-semibold text-slate-400 border border-slate-800">Aller au Tutoriel â–¶</button>`
               }
               <button
                 onclick="IronPulse.App.setOnboardingStep(${step + 1})"
                 class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-emerald-400 hover:opacity-95 text-xs font-black text-slate-950 shadow-lg transition"
               >
-                Continuer (${step}/5) ▶
+                Continuer (${step}/5) â–¶
               </button>
             </div>
           `
@@ -5145,87 +5206,70 @@ window.IronPulse = window.IronPulse || {};
     }
 
     const navItems = [
-      { id: 'home', label: 'Héros', icon: '👑' },
-      { id: 'rpg', label: 'Guilde & Boss', icon: '🐉' },
-      { id: 'workout', label: hasActiveWorkout ? 'Combat !' : 'Donjon', icon: '⚔️', highlight: hasActiveWorkout },
-      { id: 'programs', label: 'Campagnes', icon: '📜' },
-      { id: 'exercises', label: 'Grimoire', icon: '📘' },
-      { id: 'progress', label: 'Oracle IA', icon: '🔮' }
+      { id: 'home', label: 'HÃ©ros', icon: 'ðŸ›¡ï¸' },
+      { id: 'rpg', label: 'Guildes', icon: 'âš”ï¸' },
+      { id: 'workout', label: hasActiveWorkout ? 'Combat !' : 'Combat', icon: 'âš”ï¸', highlight: hasActiveWorkout },
+      { id: 'programs', label: 'Campagnes', icon: 'ðŸ›ï¸' },
+      { id: 'progress', label: 'Oracle IA', icon: 'ðŸ¤–' }
     ];
 
     const heroQuick = ns.RPG ? ns.RPG.getHeroProfile() : null;
     root.className = ui.frameMode === 'framed' ? 'app-shell-framed' : 'app-shell-full';
 
     root.innerHTML = `
-      <!-- Barre d'état supérieure harmonisée Shonen / Radar Tactique -->
-      <header class="shonen-top-header px-3.5 pt-3 pb-2.5 flex items-center justify-between shrink-0 z-20">
+      <!-- Barre d'Ã©tat supÃ©rieure harmonisÃ©e Shonen / Radar Tactique -->
+      <header class="shonen-top-header px-3.5 pt-2.5 pb-2 flex items-center justify-between shrink-0 z-20 border-b border-cyan-500/20 bg-[#060912]/95 backdrop-blur-xl">
         <div onclick="IronPulse.App.navigate('home')" class="flex items-center gap-2 cursor-pointer">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 via-emerald-400 to-teal-600 flex items-center justify-center text-slate-950 font-black text-base shadow-md">
-            ⚡
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 via-teal-400 to-amber-400 flex items-center justify-center text-slate-950 font-black text-sm shadow-[0_0_12px_rgba(6,182,212,0.5)]">
+            âš¡
           </div>
           <div>
-            <span class="text-sm font-black tracking-tight text-white">IRON<span class="text-amber-400">PULSE</span> <span class="text-[10px] text-emerald-400 font-extrabold">Z</span></span>
-            <span class="block text-[9px] text-slate-400 uppercase tracking-widest -mt-0.5">Shonen RPG & AI Coach</span>
+            <span class="text-sm font-black tracking-tight text-white font-mono">ALTHER <span class="text-cyan-400">FIT</span> <span class="text-[10px] text-amber-400 font-extrabold">ALTR</span></span>
           </div>
         </div>
 
-        <div class="flex items-center gap-1">
-          ${
-            heroQuick
-              ? `
-            <button
-              onclick="IronPulse.App.openRpgSubTab('customize')"
-              class="px-2 py-1 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[10px] font-black text-amber-300 transition flex items-center gap-1.5"
-              title="Série 🔥, Or 🪙 & Puissance CP"
-            >
-              <span>🔥${heroQuick.streakDays}j</span>
-              <span>🪙${heroQuick.gold}</span>
-              <span class="hidden sm:inline">⚡${heroQuick.combatPower}</span>
-            </button>
-          `
-              : ''
-          }
+        <div class="flex items-center gap-1.5">
           <button
             onclick="IronPulse.App.openOnboardingWizard(4)"
-            class="px-2 py-1.5 rounded-xl text-[10px] font-extrabold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 transition"
-            title="Ouvrir le Tutoriel & Questionnaire de personnalisation"
+            class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 transition"
+            title="Ouvrir le Tutoriel & Questionnaire"
           >
-            🎓 Tuto
+            ðŸŽ“ Tuto
           </button>
           <button
             onclick="IronPulse.App.navigate('history')"
-            class="px-2 py-1.5 rounded-xl text-[11px] font-bold transition ${
+            class="px-2 py-1 rounded-lg text-[11px] font-bold transition ${
               ui.currentTab === 'history'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700/70'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                : 'bg-slate-900/80 text-slate-300 hover:text-white border border-slate-700/70'
             }"
-            title="Historique des séances"
+            title="Historique des sÃ©ances"
           >
-            🗓
+            ðŸ—“
           </button>
           <button
             onclick="IronPulse.App.navigate('profile')"
-            class="px-2 py-1.5 rounded-xl text-[11px] font-bold transition ${
+            class="px-2 py-1 rounded-lg text-[11px] font-bold transition ${
               ui.currentTab === 'profile'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700/70'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                : 'bg-slate-900/80 text-slate-300 hover:text-white border border-slate-700/70'
             }"
-            title="Profil & Paramètres"
+            title="Profil & ParamÃ¨tres"
           >
-            👤
+            ðŸ‘¤
           </button>
           <button
             onclick="IronPulse.App.toggleFrameMode()"
-            class="hidden sm:inline-flex px-2 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/70 text-[10px] text-slate-300 font-medium"
+            class="hidden sm:inline-flex px-2 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/70 text-[10px] text-slate-300 font-medium"
             title="Basculer Cadre Mobile / Large"
           >
-            ${ui.frameMode === 'framed' ? '⛶' : '📱'}
+            ${ui.frameMode === 'framed' ? 'â›¶' : 'ðŸ“±'}
           </button>
         </div>
       </header>
 
-      <!-- Contenu défilant de l'écran actif -->
-      <main class="flex-1 overflow-y-auto px-3.5 pt-3.5 pb-4">
+      <!-- Contenu dÃ©filant de l'Ã©cran actif -->
+      <main class="flex-1 overflow-y-auto px-3 pt-3 pb-3">
         ${renderGuidedTourBanner()}
         ${screenHtml}
       </main>
@@ -5233,8 +5277,8 @@ window.IronPulse = window.IronPulse || {};
       <!-- Bandeau flottant du Minuteur de Repos -->
       <div id="rest-timer-bar" class="hidden"></div>
 
-      <!-- Barre de navigation inférieure (Dock Shonen Moderne) -->
-      <nav class="app-bottom-nav shonen-bottom-dock px-1.5 py-1.5 grid grid-cols-6 gap-1 shrink-0 z-20">
+      <!-- Barre de navigation infÃ©rieure (Dock Shonen 5 Onglets - Image 2) -->
+      <nav class="app-bottom-nav shonen-bottom-dock px-1.5 py-1.5 grid grid-cols-5 gap-1 shrink-0 z-20 border-t border-cyan-500/20 bg-[#060912]/95 backdrop-blur-xl">
         ${navItems
           .map((item) => {
             const active = ui.currentTab === item.id;
@@ -5242,23 +5286,23 @@ window.IronPulse = window.IronPulse || {};
             <button
               onclick="IronPulse.App.navigate('${item.id}')"
               class="shonen-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition relative ${
-                active ? 'shonen-nav-active text-amber-300 font-extrabold' : 'text-slate-400 hover:text-slate-200 font-medium'
+                active ? 'shonen-nav-active text-cyan-300 font-extrabold bg-cyan-950/40 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]' : 'text-slate-400 hover:text-slate-200 font-medium'
               }"
             >
               ${
                 item.highlight
-                  ? `<span class="absolute top-1 right-2.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>`
+                  ? `<span class="absolute top-1 right-2.5 w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>`
                   : ''
               }
               <span class="text-base leading-none mb-1">${item.icon}</span>
-              <span class="text-[10px] tracking-tight truncate max-w-full px-0.5">${item.label}</span>
+              <span class="text-[9px] font-black uppercase tracking-wider truncate max-w-full px-0.5">${item.label}</span>
             </button>
           `;
           })
           .join('')}
       </nav>
 
-      <!-- Modale éventuelle ou Assistant Première Utilisation -->
+      <!-- Modale Ã©ventuelle ou Assistant PremiÃ¨re Utilisation -->
       ${ui.onboardingOpen ? renderOnboardingWizardModal() : renderModal()}
     `;
 
@@ -5268,7 +5312,7 @@ window.IronPulse = window.IronPulse || {};
     }
   }
 
-  // Mise à jour chaque seconde de l'horloge de séance en cours
+  // Mise Ã  jour chaque seconde de l'horloge de sÃ©ance en cours
   function startWorkoutClockTicker() {
     if (workoutElapsedInterval) clearInterval(workoutElapsedInterval);
     workoutElapsedInterval = setInterval(() => {
@@ -5362,7 +5406,7 @@ window.IronPulse = window.IronPulse || {};
       state.profile.activeProgramId = recommendProgramForProfile(state.profile);
 
       if (mode === 'fresh') {
-        // Compte vierge Niveau 1 (première utilisation réelle sans historique de démo)
+        // Compte vierge Niveau 1 (premiÃ¨re utilisation rÃ©elle sans historique de dÃ©mo)
         state.history = [];
         state.activeWorkout = null;
         if (state.rpg) {
@@ -5445,7 +5489,12 @@ window.IronPulse = window.IronPulse || {};
       render();
     },
 
-    // --- Actions Répertoire d'exercices ---
+    setHeroDisplayMode(mode) {
+      ui.heroDisplayMode = mode === '3d' ? '3d' : 'art';
+      render();
+    },
+
+    // --- Actions RÃ©pertoire d'exercices ---
     onExerciseSearch(val) {
       ui.exerciseSearch = val;
       render();
@@ -5491,18 +5540,18 @@ window.IronPulse = window.IronPulse || {};
         id: 'ex-custom-' + Date.now(),
         name,
         muscleGroup: muscleEl ? muscleEl.value : 'Pectoraux',
-        primaryMuscles: (primaryEl && primaryEl.value ? primaryEl.value : 'Muscle ciblé').split(',').map((s) => s.trim()),
+        primaryMuscles: (primaryEl && primaryEl.value ? primaryEl.value : 'Muscle ciblÃ©').split(',').map((s) => s.trim()),
         secondaryMuscles: [],
-        equipment: equipEl ? equipEl.value : 'Haltères',
-        level: 'Intermédiaire',
+        equipment: equipEl ? equipEl.value : 'HaltÃ¨res',
+        level: 'IntermÃ©diaire',
         defaultRest: 90,
-        description: (descEl && descEl.value ? descEl.value : 'Exercice personnalisé ajouté au répertoire.').trim(),
+        description: (descEl && descEl.value ? descEl.value : 'Exercice personnalisÃ© ajoutÃ© au rÃ©pertoire.').trim(),
         instructions: [
           'Adoptez une posture stable et un gainage actif.',
-          'Contrôlez la phase excentrique (descente) sur 2 secondes.',
+          'ContrÃ´lez la phase excentrique (descente) sur 2 secondes.',
           'Expirez lors de la phase concentrique (effort).'
         ],
-        tips: 'Gardez une amplitude maîtrisée et sans douleur articulaire.'
+        tips: 'Gardez une amplitude maÃ®trisÃ©e et sans douleur articulaire.'
       };
 
       state.exercises.unshift(newEx);
@@ -5511,7 +5560,7 @@ window.IronPulse = window.IronPulse || {};
       render();
     },
 
-    // --- Actions Programmes & Séances Personnalisées ---
+    // --- Actions Programmes & SÃ©ances PersonnalisÃ©es ---
     setProgramSubTab(sub) {
       ui.programSubTab = sub;
       render();
@@ -5557,7 +5606,7 @@ window.IronPulse = window.IronPulse || {};
       ui.modal = {
         type: 'create-session',
         data: {
-          name: 'Ma Séance Personnalisée',
+          name: 'Ma SÃ©ance PersonnalisÃ©e',
           exercises: [
             { exerciseId: 'ex-bench-press', targetSets: 3, targetReps: '8-10', restSeconds: 120 },
             { exerciseId: 'ex-lat-pulldown', targetSets: 3, targetReps: '10-12', restSeconds: 90 }
@@ -5605,7 +5654,7 @@ window.IronPulse = window.IronPulse || {};
       const state = ns.Storage.getState();
       state.customSessions.unshift({
         id: 'custom-' + Date.now(),
-        name: (draft.name || 'Séance Personnalisée').trim(),
+        name: (draft.name || 'SÃ©ance PersonnalisÃ©e').trim(),
         estimatedMinutes: draft.exercises.length * 10 + 5,
         isCustom: true,
         exercises: draft.exercises
@@ -5623,11 +5672,11 @@ window.IronPulse = window.IronPulse || {};
       render();
     },
 
-    // --- Actions Séance en cours (Live Workout) ---
+    // --- Actions SÃ©ance en cours (Live Workout) ---
     updateWorkoutName(val) {
       const state = ns.Storage.getState();
       if (!state.activeWorkout) return;
-      state.activeWorkout.name = val.trim() || 'Séance';
+      state.activeWorkout.name = val.trim() || 'SÃ©ance';
       ns.Storage.saveState();
     },
 
@@ -5786,7 +5835,7 @@ window.IronPulse = window.IronPulse || {};
 
       const durationMin = Math.max(1, Math.round((Date.now() - workout.startedAt) / 60000));
 
-      // Conserver les séries validées (ou toutes les séries si l'utilisateur a oublié de cocher)
+      // Conserver les sÃ©ries validÃ©es (ou toutes les sÃ©ries si l'utilisateur a oubliÃ© de cocher)
       const cleanedExercises = workout.exercises
         .map((eb) => {
           const anyCompleted = eb.sets.some((s) => s.completed);
@@ -5858,7 +5907,7 @@ window.IronPulse = window.IronPulse || {};
       render();
     },
 
-    // --- Actions Périodisation AURA FIT ---
+    // --- Actions PÃ©riodisation AURA FIT ---
     selectPeriodizationPhase(phaseId) {
       const state = ns.Storage.getState();
       state.profile.periodizationPhase = phaseId;
@@ -5924,15 +5973,15 @@ window.IronPulse = window.IronPulse || {};
       const hero = ns.RPG ? ns.RPG.getHeroProfile() : {};
       const bio = computeBiometricSummary(state.profile || {});
       const md = [
-        '# AURA FIT × IRONPULSE Z — Export Spécification & Statut Antigravity',
+        '# AURA FIT Ã— IRONPULSE Z â€” Export SpÃ©cification & Statut Antigravity',
         '',
         `## 1. Profil Chasseur (${state.profile.name || 'Mehdi'})`,
-        `- **Rang Isekai** : [${hero.rank?.tier || 'B'}] — ${hero.rank?.name || 'Chasseur'}`,
-        `- **Niveau** : ${hero.level || 4} (${hero.totalXp || 0} XP) • **Puissance de Combat (CP)** : ${hero.combatPower || 0}`,
-        `- **Or** : ${hero.gold || 0} 🪙 • **Série** : ${hero.streakDays || 0} jours 🔥`,
-        `- **HP / MP** : ${hero.hpCurrent || 0}/${hero.hpMax || 0} HP • ${hero.mpCurrent || 0}/${hero.mpMax || 0} MP`,
+        `- **Rang Isekai** : [${hero.rank?.tier || 'B'}] â€” ${hero.rank?.name || 'Chasseur'}`,
+        `- **Niveau** : ${hero.level || 4} (${hero.totalXp || 0} XP) â€¢ **Puissance de Combat (CP)** : ${hero.combatPower || 0}`,
+        `- **Or** : ${hero.gold || 0} ðŸª™ â€¢ **SÃ©rie** : ${hero.streakDays || 0} jours ðŸ”¥`,
+        `- **HP / MP** : ${hero.hpCurrent || 0}/${hero.hpMax || 0} HP â€¢ ${hero.mpCurrent || 0}/${hero.mpMax || 0} MP`,
         `- **Attributs** : FOR ${hero.attributes?.FOR || 0} | END ${hero.attributes?.END || 0} | VIT ${hero.attributes?.VIT || 0} | AGI ${hero.attributes?.AGI || 0} | INT ${hero.attributes?.INT || 0}`,
-        `- **Biométrie & Nutrition** : ${bio.age} ans • ${bio.heightCm} cm • ${bio.weightKg} kg • IMC ${bio.bmi} • BMR ${bio.bmr} kcal • Cible ${bio.targetKcal} kcal/j (P: ${bio.proteinG}g / G: ${bio.carbsG}g / L: ${bio.fatG}g)`,
+        `- **BiomÃ©trie & Nutrition** : ${bio.age} ans â€¢ ${bio.heightCm} cm â€¢ ${bio.weightKg} kg â€¢ IMC ${bio.bmi} â€¢ BMR ${bio.bmr} kcal â€¢ Cible ${bio.targetKcal} kcal/j (P: ${bio.proteinG}g / G: ${bio.carbsG}g / L: ${bio.fatG}g)`,
         '',
         '## 2. Dump JSON Complet',
         '```json',
@@ -5994,7 +6043,7 @@ window.IronPulse = window.IronPulse || {};
     },
 
     async submitAIQuestion() {
-      const q = (ui.aiCustomQuestion || '').trim() || 'Analyse mes séances et propose des ajustements prudents.';
+      const q = (ui.aiCustomQuestion || '').trim() || 'Analyse mes sÃ©ances et propose des ajustements prudents.';
       await this.askAI(q);
     },
 
@@ -6037,7 +6086,7 @@ window.IronPulse = window.IronPulse || {};
       const key = (state.profile.geminiApiKey || '').trim();
       const model = state.profile.geminiModel || 'gemini-2.5-flash';
       if (!key) {
-        ui.geminiTestResult = { success: false, message: 'Veuillez saisir votre clé API Google AI Studio d\'abord.' };
+        ui.geminiTestResult = { success: false, message: 'Veuillez saisir votre clÃ© API Google AI Studio d\'abord.' };
         render();
         return;
       }
@@ -6050,12 +6099,12 @@ window.IronPulse = window.IronPulse || {};
       if (result.success) {
         ui.geminiTestResult = {
           success: true,
-          message: `Connexion Google AI Studio réussie avec le modèle ${result.model} !`
+          message: `Connexion Google AI Studio rÃ©ussie avec le modÃ¨le ${result.model} !`
         };
       } else {
         ui.geminiTestResult = {
           success: false,
-          message: `Échec : ${result.error}`
+          message: `Ã‰chec : ${result.error}`
         };
       }
       render();
@@ -6082,7 +6131,7 @@ window.IronPulse = window.IronPulse || {};
       render();
     },
 
-    // --- Actions RPG (Héros, Reliques, Défis & Guilde) ---
+    // --- Actions RPG (HÃ©ros, Reliques, DÃ©fis & Guilde) ---
     setRpgSubTab(sub) {
       ui.rpgSubTab = sub;
       render();
@@ -6206,8 +6255,8 @@ window.IronPulse = window.IronPulse || {};
 
       const unitMap = {
         volume7d: 'kg',
-        sets7d: 'séries',
-        workouts7d: 'séances'
+        sets7d: 'sÃ©ries',
+        workouts7d: 'sÃ©ances'
       };
 
       const state = ns.Storage.getState();
@@ -6216,7 +6265,7 @@ window.IronPulse = window.IronPulse || {};
       state.rpg.activeChallenges.unshift({
         id: 'chal-' + Date.now(),
         friendName,
-        friendAvatar: '⚔️',
+        friendAvatar: 'âš”ï¸',
         title,
         type,
         targetValue,
@@ -6261,7 +6310,7 @@ window.IronPulse = window.IronPulse || {};
       if (targetChal && !targetChal.claimed) {
         targetChal.claimed = true;
         if (ns.RPG && ns.RPG.awardExperience) {
-          ns.RPG.awardExperience(targetChal.rewardXp || 200, targetChal.title || 'Défi de Club accompli');
+          ns.RPG.awardExperience(targetChal.rewardXp || 200, targetChal.title || 'DÃ©fi de Club accompli');
         }
         if (typeof state.rpg.gold === 'number') {
           state.rpg.gold += (targetChal.rewardGold || 100);
@@ -6276,20 +6325,20 @@ window.IronPulse = window.IronPulse || {};
 
     shareHunterChallenge(chalTitle, targetDesc) {
       const shareData = {
-        title: 'IronPulse Z — Défi Chasseur',
-        text: `⚔️ Je te défie sur IronPulse Z : "${chalTitle || 'Défi Chasseur'}" (${targetDesc || 'Rejoins mon dojo'}). Prêt à mesurer ton tonnage ?`,
+        title: 'IronPulse Z â€” DÃ©fi Chasseur',
+        text: `âš”ï¸ Je te dÃ©fie sur IronPulse Z : "${chalTitle || 'DÃ©fi Chasseur'}" (${targetDesc || 'Rejoins mon dojo'}). PrÃªt Ã  mesurer ton tonnage ?`,
         url: window.location.href
       };
       if (navigator.share) {
         navigator.share(shareData).catch(() => {});
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(`${shareData.text} — ${shareData.url}`).then(() => {
-          alert('✓ Défi copié dans le presse-papier ! Partage-le à ton rival.');
+        navigator.clipboard.writeText(`${shareData.text} â€” ${shareData.url}`).then(() => {
+          alert('âœ“ DÃ©fi copiÃ© dans le presse-papier ! Partage-le Ã  ton rival.');
         }).catch(() => {
-          alert(`Défi : ${shareData.text}`);
+          alert(`DÃ©fi : ${shareData.text}`);
         });
       } else {
-        alert(`Défi : ${shareData.text}`);
+        alert(`DÃ©fi : ${shareData.text}`);
       }
     },
 
@@ -6314,10 +6363,10 @@ window.IronPulse = window.IronPulse || {};
         if (ns.Storage && ns.Storage.importIronPulseSecureBackup) {
           const res = await ns.Storage.importIronPulseSecureBackup(content);
           if (res.success) {
-            alert(`✓ Profil IronPulse de ${res.heroName} (Niv. ${res.level}) restauré avec intégrité validée !`);
+            alert(`âœ“ Profil IronPulse de ${res.heroName} (Niv. ${res.level}) restaurÃ© avec intÃ©gritÃ© validÃ©e !`);
             render();
           } else {
-            alert('⚠️ ' + (res.error || 'Erreur lors de la restauration.'));
+            alert('âš ï¸ ' + (res.error || 'Erreur lors de la restauration.'));
           }
         }
       };
@@ -6330,13 +6379,13 @@ window.IronPulse = window.IronPulse || {};
         if (res.success) {
           render();
         } else {
-          alert('⚠️ ' + (res.reason || 'Impossible de débloquer ce talent'));
+          alert('âš ï¸ ' + (res.reason || 'Impossible de dÃ©bloquer ce talent'));
         }
       }
     },
 
     resetTalents() {
-      if (confirm('Voulez-vous réinitialiser tous vos talents et récupérer vos points d’éveil (TP) ?')) {
+      if (confirm('Voulez-vous rÃ©initialiser tous vos talents et rÃ©cupÃ©rer vos points dâ€™Ã©veil (TP) ?')) {
         if (ns.RPG && ns.RPG.resetTalents) {
           ns.RPG.resetTalents();
           render();
@@ -6353,10 +6402,10 @@ window.IronPulse = window.IronPulse || {};
         if (ns.Storage && ns.Storage.importBackupJSON) {
           const res = ns.Storage.importBackupJSON(content);
           if (res.success) {
-            alert('✓ Données du Chasseur restaurées avec succès !');
+            alert('âœ“ DonnÃ©es du Chasseur restaurÃ©es avec succÃ¨s !');
             render();
           } else {
-            alert('⚠️ ' + (res.error || 'Erreur lors de la lecture du fichier.'));
+            alert('âš ï¸ ' + (res.error || 'Erreur lors de la lecture du fichier.'));
           }
         }
       };

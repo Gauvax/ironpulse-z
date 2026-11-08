@@ -11,9 +11,9 @@ window.IronPulse = window.IronPulse || {};
   const HERO_CLASSES = [
     {
       id: 'berserker',
-      name: 'Berserker de Fer',
+      name: 'Athlète Force Pure',
       icon: '⚔️',
-      artFile: 'hero-berserker.jpg',
+      artFile: 'hero-anime-original.svg',
       title: 'Seigneur de la Poussée & de l’Impact',
       bonusDesc: '+10 % XP Pectoraux, Épaules & Bras',
       desc: 'Spécialiste des charges explosives du haut du corps. +10 % d’XP sur les exercices Pectoraux, Épaules et Triceps.',
@@ -47,7 +47,7 @@ window.IronPulse = window.IronPulse || {};
     },
     {
       id: 'monarch',
-      name: 'Monarque des Ombres',
+      name: 'Athlète Nocturne',
       icon: '👑',
       artFile: 'hero-monarch.jpg',
       title: 'Chasseur Polyvalent de Rang Souverain',
@@ -61,10 +61,10 @@ window.IronPulse = window.IronPulse || {};
 
   // Options de personnalisation visuelle du personnage (Studio Chara-Design / Anime Urbain)
   const AURA_STYLES = [
-    { id: 'shadow-monarch', label: 'Monarque des Ombres (Solo Leveling)', primary: '#7C3AED', secondary: '#06B6D4', glow: 'rgba(124, 58, 237, 0.85)' },
-    { id: 'phantom-rebel', label: 'Voleur Fantôme (Persona 5)', primary: '#EF4444', secondary: '#F8FAFC', glow: 'rgba(239, 68, 68, 0.85)' },
+    { id: 'shadow-monarch', label: 'Aura Cinétique Nocturne', primary: '#7C3AED', secondary: '#06B6D4', glow: 'rgba(124, 58, 237, 0.85)' },
+    { id: 'phantom-rebel', label: 'Sprinter Urbain Tactique', primary: '#EF4444', secondary: '#F8FAFC', glow: 'rgba(239, 68, 68, 0.85)' },
     { id: 'gold', label: 'Éveil Solaire Cinétique', primary: '#F59E0B', secondary: '#FEF08A', glow: 'rgba(245, 158, 11, 0.75)' },
-    { id: 'crimson', label: 'Surcharge Berserker Écarlate', primary: '#F43F5E', secondary: '#FB923C', glow: 'rgba(244, 63, 94, 0.72)' },
+    { id: 'crimson', label: 'Surcharge Écarlate Intensive', primary: '#F43F5E', secondary: '#FB923C', glow: 'rgba(244, 63, 94, 0.72)' },
     { id: 'azure', label: 'Flux Astral Divin', primary: '#38BDF8', secondary: '#E0F2FE', glow: 'rgba(56, 189, 248, 0.75)' },
     { id: 'shadow', label: 'Aura de l’Ombre Souveraine', primary: '#8B5CF6', secondary: '#C4B5FD', glow: 'rgba(139, 92, 246, 0.75)' },
     { id: 'emerald', label: 'Résonance Tellurique Colossale', primary: '#10B981', secondary: '#BEF264', glow: 'rgba(16, 185, 129, 0.75)' }
@@ -87,16 +87,16 @@ window.IronPulse = window.IronPulse || {};
     },
     {
       id: 'ogre-hanma',
-      label: 'Ogre Déchaîné (Style Baki)',
-      name: 'Ogre Déchaîné (Style Baki)',
+      label: 'Titan Calisthénie & Hypertrophie',
+      name: 'Titan Calisthénie & Hypertrophie',
       icon: '👹',
       badge: 'Démon & Striations',
       desc: 'Trapèzes en cobra hyper-développés, dentelés en dents de requin, striations sternales et vascularisation sous tension maximale.'
     },
     {
       id: 'iron-puncher',
-      label: 'Puncheur d’Acier (Style Ippo)',
-      name: 'Puncheur d’Acier (Style Ippo)',
+      label: 'Puncheur d’Acier (Boxe & Cardio)',
+      name: 'Puncheur d’Acier (Boxe & Cardio)',
       icon: '🥊',
       badge: 'Épaules Canons & Impact',
       desc: 'Épaules en boulets de canon pour le Dempsey Roll, avant-bras bandés de puncheur, cou d’acier ultra-dense et vapeur corporelle.'
@@ -132,7 +132,7 @@ window.IronPulse = window.IronPulse || {};
   const EYE_COLORS = [
     { id: 'cyan-astral', label: 'Cyan Astral', hex: '#06B6D4', glow: '#67E8F9' },
     { id: 'kinetic-gold', label: 'Or Cinétique', hex: '#F59E0B', glow: '#FDE68A' },
-    { id: 'crimson-berserk', label: 'Rouge Berserker', hex: '#EF4444', glow: '#FCA5A5' },
+    { id: 'crimson-berserk', label: 'Rouge Intensité', hex: '#EF4444', glow: '#FCA5A5' },
     { id: 'amethyst-void', label: 'Violet du Néant', hex: '#8B5CF6', glow: '#C4B5FD' },
     { id: 'emerald-mana', label: 'Vert Tellurique', hex: '#10B981', glow: '#6EE7B7' },
     { id: 'silver-instinct', label: 'Argent Divin', hex: '#E2E8F0', glow: '#FFFFFF' }
@@ -142,16 +142,16 @@ window.IronPulse = window.IronPulse || {};
   const HAIRSTYLES = [
     {
       id: 'solo-undercut',
-      label: 'Mèche du Chasseur S (Solo Leveling)',
+      label: 'Mèche du Chasseur S (Édition Nocturne)',
       icon: '🗡️',
-      tag: 'Solo Leveling',
+      tag: 'Édition Nocturne',
       desc: 'Coupe effilée asymétrique noire de Monarque, mèche acérée couvrant le front et révélant un regard incandescent.'
     },
     {
       id: 'persona-joker',
-      label: 'Chevelure Rebelle (Persona 5)',
+      label: 'Chevelure Rebelle (Style Urbain)',
       icon: '🃏',
-      tag: 'Persona 5',
+      tag: 'Style Urbain',
       desc: 'Mèches texturées dynamiques au vent, contrastes marqués d’encre noire et reflets cel-shading ultra-stylisés.'
     },
     {
@@ -223,46 +223,46 @@ window.IronPulse = window.IronPulse || {};
   ];
 
   const WAR_MARKINGS = [
-    { id: 'shadow-monarch-eyes', label: 'Yeux du Monarque (Solo Leveling)', icon: '👁️' },
-    { id: 'phantom-mask', label: 'Masque Voleur Fantôme (Persona 5)', icon: '🎭' },
+    { id: 'shadow-monarch-eyes', label: 'Yeux du Monarque (Édition Nocturne)', icon: '👁️' },
+    { id: 'phantom-mask', label: 'Masque Sprinter Urbain Tactique', icon: '🎭' },
     { id: 'none', label: 'Visage Pur', icon: '✨' },
     { id: 'eye-scar', label: 'Balafre du Vétéran', icon: '⚔️' },
     { id: 'mana-runes', label: 'Runes Cinétiques d’Éveil', icon: '🔮' },
     { id: 'hunter-sigil', label: 'Sceau de Chasseur de Faille', icon: '⚡' },
     { id: 'energy-circuit', label: 'Lignes Bio-Circuits Néon', icon: '🌐' },
-    { id: 'baki-scars', label: 'Cicatrices de l’Ogre (Style Baki)', icon: '👹' },
-    { id: 'ippo-focus', label: 'Regard du Champion (Style Ippo)', icon: '🥊' }
+    { id: 'baki-scars', label: 'Cicatrices de l’Ogre (Hypertrophie Pure)', icon: '👹' },
+    { id: 'ippo-focus', label: 'Regard du Champion (Boxe & Cardio)', icon: '🥊' }
   ];
 
   // PROPOSITIONS DE TENUES SPORT & ACTION RPG
   const OUTFITS = [
     {
       id: 'outfit-baki-trunks',
-      label: 'Short de Combat Brut (Style Baki)',
+      label: 'Short de Combat Brut (Hypertrophie Pure)',
       icon: '🩳',
       desc: 'Torse nu ultra-strié, short court MMA écarlate, pieds nus avec bandages aux chevilles et Dos du Démon.'
     },
     {
       id: 'outfit-boxer-trunks',
-      label: 'Trunks de Boxe Anglaise (Style Ippo)',
+      label: 'Trunks de Boxe Anglaise (Boxe & Cardio)',
       icon: '🥊',
       desc: 'Trunks de boxe bleue à ceinture blanche de champion, bandages de frappe Dempsey Roll et carrure de puncheur.'
     },
     {
       id: 'outfit-z-warrior',
-      label: 'Dogi de la Gravité x100 (Style DBZ)',
+      label: 'Dogi de la Gravité x100 (Style Pro)',
       icon: '🥋',
-      desc: 'Dogi martial orange et bleu nuit de guerrier Sayan avec poignets lestés et ceinture de combat nouée.'
+      desc: 'Dogi martial d’entraînement intensif sous haute gravité avec poignets lestés et ceinture de combat nouée.'
     },
     {
       id: 'outfit-monarch-trench',
-      label: 'Manteau du Monarque (Solo Leveling)',
+      label: 'Manteau du Monarque (Édition Nocturne)',
       icon: '🧥',
       desc: 'Long trench d’ébène fluide aux volutes d’ombres violettes et revers relevés de Chasseur de rang S.'
     },
     {
       id: 'outfit-phantom-thief',
-      label: 'Queue-de-pie Rebelle (Persona 5)',
+      label: 'Queue-de-pie Rebelle (Style Urbain)',
       icon: '🎭',
       desc: 'Longue queue-de-pie de cuir noir doublée de pourpre écarlate, gants cramoisis et cel-shading tranché.'
     },
@@ -288,18 +288,18 @@ window.IronPulse = window.IronPulse || {};
 
   // ÉQUIPEMENTS DE FORCE PROFESSIONNELS & COMBAT
   const POWER_EQUIPMENTS = [
-    { id: 'shadow-daggers', label: 'Dagues Jumelles d’Ombre (Solo Leveling)', icon: '🗡️', slot: 'weapons', desc: 'Lames d’assassin forgées dans le néant avec tranchant infusé de mana bleuté.' },
-    { id: 'phantom-gloves', label: 'Gants Cramoisis du Rebelle (Persona 5)', icon: '🥊', slot: 'hands', desc: 'Gants de cuir rouge carmin emblématiques des cambrioleurs de cœurs.' },
+    { id: 'shadow-daggers', label: 'Dagues Jumelles d’Ombre (Édition Nocturne)', icon: '🗡️', slot: 'weapons', desc: 'Lames d’assassin forgées dans le néant avec tranchant infusé de mana bleuté.' },
+    { id: 'phantom-gloves', label: 'Gants Cramoisis du Rebelle (Style Urbain)', icon: '🥊', slot: 'hands', desc: 'Gants de cuir rouge carmin emblématiques des cambrioleurs de cœurs.' },
     { id: 'equip-belt', label: 'Ceinture à Levier Acier (13mm)', icon: '🛡️', slot: 'belt', desc: 'Ceinture de force en cuir rigide avec boucle à levier en acier runique.' },
     { id: 'equip-sleeves', label: 'Genouillères Néoprène (7mm)', icon: '🦵', slot: 'knees', desc: 'Manchons de compression 7mm assurant un rebond élastique optimal au squat.' },
     { id: 'equip-wristwraps', label: 'Protège-Poignets Cinétiques', icon: '🥊', slot: 'wrists', desc: 'Bandes élastiques haute tension stabilisant les poignets aux charges lourdes.' },
     { id: 'equip-straps', label: 'Sangles de Tirage Tactiques', icon: '✋', slot: 'hands', desc: 'Sangles en nylon haute résistance pour un grip infaillible au soulevé de terre.' },
-    { id: 'equip-boxer-wraps', label: 'Bandages de Boxe (Style Ippo)', icon: '🥊', slot: 'hands', desc: 'Bandes de gaze blanche serrées pour absorber les chocs titanesques.' },
-    { id: 'equip-demon-back', label: 'Dos du Démon (Style Baki)', icon: '👹', slot: 'back', desc: 'Sillons dorsaux et trapèzes en cobra irradiant une énergie rougeoyante.' }
+    { id: 'equip-boxer-wraps', label: 'Bandages de Boxe (Boxe & Cardio)', icon: '🥊', slot: 'hands', desc: 'Bandes de gaze blanche serrées pour absorber les chocs titanesques.' },
+    { id: 'equip-demon-back', label: 'Dos du Démon (Hypertrophie Pure)', icon: '👹', slot: 'back', desc: 'Sillons dorsaux et trapèzes en cobra irradiant une énergie rougeoyante.' }
   ];
 
   const CUSTOM_TITLES = [
-    'Monarque des Ombres (Rang S)',
+    'Athlète Nocturne (Rang S)',
     'Voleur Fantôme du Cœur',
     'Striker de la Fonte',
     'Éveillé du Tonnage',
@@ -314,8 +314,8 @@ window.IronPulse = window.IronPulse || {};
   const MANGA_ARCHETYPES = [
     {
       id: 'baki-hanma',
-      name: 'Ogre Déchaîné',
-      subtitle: 'Style Baki Hanma • Combat Brut & Calisthénie',
+      name: 'Titan Hypertrophie',
+      subtitle: 'Calisthénie Extrême & Force Brute • Combat Brut & Calisthénie',
       icon: '👹',
       badge: 'Démon & Striations',
       description: 'Torse nu ultra-strié, dentelés en dents de requin, Dos du Démon irradiant, cicatrices de l’Ogre, short de combat MMA écarlate et rage pure.',
@@ -336,9 +336,9 @@ window.IronPulse = window.IronPulse || {};
     {
       id: 'hajime-ippo',
       name: 'Puncheur d’Acier',
-      subtitle: 'Style Hajime no Ippo • Boxe Anglaise',
+      subtitle: 'Boxe & Cardio Explosif • Cadence & Impact',
       icon: '🥊',
-      badge: 'Impact & Dempsey Roll',
+      badge: 'Impact & Explosivité',
       description: 'Trunks de boxe de champion à large ceinture blanche, bandages de frappe serrés, épaules canons de puncheur, regard d’acier et aura azur d’impact.',
       appearance: {
         gender: 'male',
@@ -350,24 +350,24 @@ window.IronPulse = window.IronPulse || {};
         warMarking: 'ippo-focus',
         eyeColor: 'cyan-astral',
         powerEquipments: ['equip-boxer-wraps'],
-        battleTitle: 'Artilleur du Dempsey Roll',
+        battleTitle: 'Artilleur du Ring',
         lightningSparks: true
       }
     },
     {
       id: 'dbz-saiyan',
-      name: 'Guerrier Sayan',
-      subtitle: 'Style Dragon Ball Z • Gravité x100 & Énergie',
+      name: 'Athlète Puissance Pure',
+      subtitle: 'Haute Gravité x100 & Énergie Cinétique',
       icon: '⚡',
-      badge: 'Super Sayan Solaire',
-      description: 'Dogi de combat martial sous gravité x100, chevelure flamboyante dorée Super Sayan, aura solaire crépitante d’éclairs et ceinture runique.',
+      badge: 'Aura Solaire Apex',
+      description: 'Tenue de Compression Pro martiale sous gravité x100, aura solaire dorée crépitante d’éclairs et ceinture de force.',
       appearance: {
         gender: 'male',
         morphology: 'athletic-vtaper',
         auraStyle: 'gold',
         outfit: 'outfit-z-warrior',
-        hairstyle: 'spiky-striker',
-        hairColor: 'kinetic-gold',
+        hairstyle: 'tactical-crop',
+        hairColor: 'obsidian',
         warMarking: 'hunter-sigil',
         eyeColor: 'emerald-mana',
         powerEquipments: ['equip-belt'],
@@ -377,11 +377,11 @@ window.IronPulse = window.IronPulse || {};
     },
     {
       id: 'solo-leveling',
-      name: 'Monarque des Ombres',
-      subtitle: 'Style Solo Leveling (Sung Jin-woo)',
+      name: 'Athlète Nocturne',
+      subtitle: 'Athlète Nocturne • Force & Agilité',
       icon: '👑',
       badge: 'Rang S National',
-      description: 'Aura violette ténébreuse, trench noir fluide, mèches asymétriques acérées, dagues jumelles et regard embrasé de mana cyan.',
+      description: 'Aura violette ténébreuse, veste athlétique sombre fluide, coupe dynamique moderne et regard embrasé de mana cyan.',
       appearance: {
         gender: 'male',
         morphology: 'athletic-vtaper',
@@ -392,17 +392,17 @@ window.IronPulse = window.IronPulse || {};
         warMarking: 'shadow-monarch-eyes',
         eyeColor: 'cyan-astral',
         powerEquipments: ['shadow-daggers'],
-        battleTitle: 'Monarque des Ombres (Rang S)',
+        battleTitle: 'Athlète Nocturne (Rang S)',
         lightningSparks: true
       }
     },
     {
       id: 'persona-5',
-      name: 'Voleur Fantôme',
-      subtitle: 'Style Persona 5 (Joker / Ren)',
+      name: 'Sprinter Urbain Tactique',
+      subtitle: 'Style Urbain • Agilité & Explosivité',
       icon: '🎭',
-      badge: 'Rebelle Écarlate',
-      description: 'Aura pourpre écarlate, longue queue-de-pie de cuir noir doublée de pourpre, gants rouges, masque blanc emblématique et cel-shading ultra-contrasté.',
+      badge: 'Vitesse Écarlate',
+      description: 'Aura pourpre écarlate, tenue urbaine profilée, gants de grip carmin et cel-shading ultra-contrasté.',
       appearance: {
         gender: 'male',
         morphology: 'athletic-vtaper',
@@ -413,7 +413,7 @@ window.IronPulse = window.IronPulse || {};
         warMarking: 'phantom-mask',
         eyeColor: 'silver-instinct',
         powerEquipments: ['phantom-gloves'],
-        battleTitle: 'Voleur Fantôme du Cœur',
+        battleTitle: 'Sprinter Urbain Tactique',
         lightningSparks: true
       }
     }
@@ -457,7 +457,7 @@ window.IronPulse = window.IronPulse || {};
   const RELICS = [
     {
       id: 'relic-gauntlets',
-      name: 'Gantelets du Berserker',
+      name: 'Bandages de Force Pro',
       slot: 'Mains',
       rarity: 'Rare (Rang C)',
       icon: '🥊',
@@ -599,147 +599,147 @@ window.IronPulse = window.IronPulse || {};
   ];
 
   // ============================================================================
-  // ARBRE DE TALENTS SHŌNEN (3 VOIES : TITAN, MOINE, OMBRE) - Densetsu Scénariste
+  // ARBRE DE COMPÉTENCES PHYSIQUES : CALISTHÉNIE & MAÎTRISE CORPORELLE
   // ============================================================================
   const TALENT_PATHS = {
-    TITAN: {
-      id: 'titan',
-      name: 'Voie du Titan',
-      subtitle: 'Briseur de Gravité & Surcharge Lourde',
-      icon: '🏔️',
+    PULL: {
+      id: 'pull',
+      name: 'Voie du Tirage (Traction & Levers)',
+      subtitle: 'Chaîne Postérieure, Dos d’Élite & Muscle-Up',
+      icon: '🦅',
+      color: 'cyan',
+      theme: 'Force Relative, Dorsaux & Contrôle Aérien'
+    },
+    PUSH: {
+      id: 'push',
+      name: 'Voie de la Poussée (Planche & Dips)',
+      subtitle: 'Épaules Canons, Triceps de Fer & Équilibre',
+      icon: '⚡',
       color: 'amber',
-      theme: 'Force Pure & Résistance 1RM'
+      theme: 'Stabilité Scapulaire, HSPU & Full Planche'
     },
-    MONK: {
-      id: 'monk',
-      name: 'Voie du Moine',
-      subtitle: 'Cadence de Fer & Résonance Bio-Énergétique',
-      icon: '🧘',
+    CORE: {
+      id: 'core',
+      name: 'Voie du Gainage (Drapeau & Dragon Flag)',
+      subtitle: 'Sangle Abdominale Blindée & Tension Corporelle',
+      icon: '🔥',
       color: 'emerald',
-      theme: 'Endurance, Volume & Récupération Ki'
-    },
-    SHADOW: {
-      id: 'shadow',
-      name: 'Voie de l’Ombre',
-      subtitle: 'Frappe Critique & Polyvalence du Souverain',
-      icon: '🗡️',
-      color: 'violet',
-      theme: 'Coups Critiques, Agilité & XP Transcendant'
+      theme: 'Ceinture d’Acier, L-Sit & Human Flag'
     }
   };
 
   const TALENT_NODES = [
-    // --- VOIE DU TITAN ---
+    // --- 1. BRANCHE TIRAGE & CALISTHÉNIE SUSPENDUE ---
     {
-      id: 'titan_1',
-      path: 'titan',
+      id: 'pull_1',
+      path: 'pull',
       tier: 1,
-      name: 'Ancrage Tellurique',
+      name: 'Tractions Strictes Propres',
+      icon: '🧗',
+      maxRank: 3,
+      requires: null,
+      costPerRank: 1,
+      description: 'Quête : Valider 10 tractions strictes menton au-dessus de la barre. Effet : +5% Force (FOR) et +4% XP sur tout le Dos.',
+      effects: { statBonus: { FOR: 5 }, muscleXpBonus: { Dos: 0.04 } }
+    },
+    {
+      id: 'pull_2',
+      path: 'pull',
+      tier: 2,
+      name: 'Muscle-Up Explosif',
+      icon: '⚡',
+      maxRank: 3,
+      requires: 'pull_1',
+      costPerRank: 1,
+      description: 'Quête : Transition explosive au-dessus de la barre sans kipping. Effet : +6% Puissance (PWR) et +5% sur le calcul 1RM.',
+      effects: { e1rmMultiplier: 0.05, statBonus: { PWR: 6 } }
+    },
+    {
+      id: 'pull_3',
+      path: 'pull',
+      tier: 3,
+      name: 'Front Lever Tendu (Légende)',
+      icon: '🦅',
+      maxRank: 1,
+      requires: 'pull_2',
+      costPerRank: 2,
+      description: 'Quête Ultime : Maintenir le corps horizontal rigide 5 secondes. Effet : Débloque la posture 3D Aérienne et +15% de Tonnage effectif.',
+      effects: { volumeMultiplier: 0.15, unlockBerserkMode: true }
+    },
+
+    // --- 2. BRANCHE POUSSÉE & FORCE SCAPULAIRE ---
+    {
+      id: 'push_1',
+      path: 'push',
+      tier: 1,
+      name: 'Dips Profonds Lestés',
       icon: '🛡️',
       maxRank: 3,
       requires: null,
       costPerRank: 1,
-      description: '+4% de Force (FOR) et +3% XP sur les exercices Jambes / Dos par rang.',
-      effects: { statBonus: { FOR: 4 }, muscleXpBonus: { Jambes: 0.03 } }
+      description: 'Quête : Valider 15 dips complets avec amplitude verrouillée. Effet : +5% Force de Poussée et -10s repos optimal.',
+      effects: { statBonus: { FOR: 5 }, restTimeReductionSec: 10 }
     },
     {
-      id: 'titan_2',
-      path: 'titan',
+      id: 'push_2',
+      path: 'push',
       tier: 2,
-      name: 'Impact Colossal',
+      name: 'Handstand Push-Up (HSPU)',
+      icon: '🤸',
+      maxRank: 3,
+      requires: 'push_1',
+      costPerRank: 1,
+      description: 'Quête : 5 pompes en équilibre sur les mains au mur. Effet : +5% Agilité (AGI) et +6% XP Épaules & Pectoraux.',
+      effects: { statBonus: { AGI: 5 }, muscleXpBonus: { Épaules: 0.06, Pectoraux: 0.04 } }
+    },
+    {
+      id: 'push_3',
+      path: 'push',
+      tier: 3,
+      name: 'Full Planche (Maîtrise Suprême)',
       icon: '💥',
-      maxRank: 3,
-      requires: 'titan_1',
-      costPerRank: 1,
-      description: '+5% sur le calcul du 1RM estimé et +5% de dégâts contre les Boss par rang.',
-      effects: { e1rmMultiplier: 0.05, bossDamageBonus: 0.05 }
-    },
-    {
-      id: 'titan_3',
-      path: 'titan',
-      tier: 3,
-      name: 'Surcharge Inébranlable',
-      icon: '🌋',
       maxRank: 1,
-      requires: 'titan_2',
+      requires: 'push_2',
       costPerRank: 2,
-      description: 'Palier Ultime : +15% Tonnage effectif et débloque l’Aura Tellurique réactive.',
-      effects: { volumeMultiplier: 0.15, unlockBerserkMode: true }
-    },
-
-    // --- VOIE DU MOINE ---
-    {
-      id: 'monk_1',
-      path: 'monk',
-      tier: 1,
-      name: 'Souffle de Fonte',
-      icon: '🫁',
-      maxRank: 3,
-      requires: null,
-      costPerRank: 1,
-      description: '+5% d’Endurance (END) et -10s sur le temps de repos optimal recommandé par rang.',
-      effects: { statBonus: { END: 5 }, restTimeReductionSec: 10 }
-    },
-    {
-      id: 'monk_2',
-      path: 'monk',
-      tier: 2,
-      name: 'Harmonie Posturale',
-      icon: '☯️',
-      maxRank: 3,
-      requires: 'monk_1',
-      costPerRank: 1,
-      description: '+4% de Vitalité (VIT) et +5% XP sur exercices Dos & Gainage par rang.',
-      effects: { statBonus: { VIT: 4 }, muscleXpBonus: { Dos: 0.05, Abdominaux: 0.05 } }
-    },
-    {
-      id: 'monk_3',
-      path: 'monk',
-      tier: 3,
-      name: 'Ascension Cinétique',
-      icon: '⚡',
-      maxRank: 1,
-      requires: 'monk_2',
-      costPerRank: 2,
-      description: 'Palier Ultime : +20% d’Or gagné par série validée et régénération instantanée de Mana.',
+      description: 'Quête Ultime : Lévitation bras tendus parallèle au sol. Effet : Débloque l’Aura Dorée de Maîtrise et +20% d’Or par séance.',
       effects: { goldMultiplier: 0.20, fullMpRegenOnFinish: true }
     },
 
-    // --- VOIE DE L’OMBRE ---
+    // --- 3. BRANCHE CORE & PHYSIQUE D’ATHLÈTE ---
     {
-      id: 'shadow_1',
-      path: 'shadow',
+      id: 'core_1',
+      path: 'core',
       tier: 1,
-      name: 'Frappe de Faille',
-      icon: '🗡️',
+      name: 'L-Sit Isométrique',
+      icon: '📐',
       maxRank: 3,
       requires: null,
       costPerRank: 1,
-      description: '+5% de chance d’infliger un Coup Critique de Fonte (+50% XP sur la série) par rang.',
+      description: 'Quête : Tenue d’équerre 20 secondes aux barres parallèles. Effet : +5% Endurance (END) et +50% XP Séries Critiques.',
       effects: { critChance: 0.05, critMultiplier: 0.50 }
     },
     {
-      id: 'shadow_2',
-      path: 'shadow',
+      id: 'core_2',
+      path: 'core',
       tier: 2,
-      name: 'Extraction d’Ombre',
-      icon: '👥',
+      name: 'Dragon Flag (Bruce Lee)',
+      icon: '🐉',
       maxRank: 3,
-      requires: 'shadow_1',
+      requires: 'core_1',
       costPerRank: 1,
-      description: '+3% Agilité (AGI) et +4% d’XP global sur toutes les séances par rang.',
-      effects: { statBonus: { AGI: 3 }, globalXpBonus: 0.04 }
+      description: 'Quête : Descente lente et remontée sur les seules épaules. Effet : +4% Vitalité (VIT) et +5% XP Global.',
+      effects: { statBonus: { VIT: 4 }, globalXpBonus: 0.05 }
     },
     {
-      id: 'shadow_3',
-      path: 'shadow',
+      id: 'core_3',
+      path: 'core',
       tier: 3,
-      name: 'Souveraineté des Abysses',
-      icon: '👑',
+      name: 'Human Flag (Drapeau Humain)',
+      icon: '🚩',
       maxRank: 1,
-      requires: 'shadow_2',
+      requires: 'core_2',
       costPerRank: 2,
-      description: 'Palier Ultime : Double la contribution au Boss Mondial et débloque le Halo de Mana Sombre.',
+      description: 'Quête Ultime : Suspension latérale horizontale à un poteau. Effet : Double la contribution aux Défis de Club et aura de tempête.',
       effects: { worldBossDamageMult: 2.0, darkManaCosmetic: true }
     }
   ];
@@ -943,8 +943,8 @@ window.IronPulse = window.IronPulse || {};
     guildMembers: [
       { id: 'gm-1', name: 'Lyra_Valkyrie', heroClass: 'Titan Colossal', rank: 'A', level: 15, weeklyVolume: 16400, avatar: '⚡' },
       { id: 'gm-2', name: 'Kaelen_Shield', heroClass: 'Paladin Égide', rank: 'B', level: 11, weeklyVolume: 14200, avatar: '🛡️' },
-      { id: 'gm-3', name: 'Ragnar_Iron', heroClass: 'Berserker de Fer', rank: 'C', level: 8, weeklyVolume: 9800, avatar: '🪓' },
-      { id: 'gm-4', name: 'Sora_Shadow', heroClass: 'Monarque des Ombres', rank: 'C', level: 7, weeklyVolume: 7600, avatar: '🗡️' }
+      { id: 'gm-3', name: 'Ragnar_Iron', heroClass: 'Athlète Force Pure', rank: 'C', level: 8, weeklyVolume: 9800, avatar: '🪓' },
+      { id: 'gm-4', name: 'Sora_Shadow', heroClass: 'Athlète Nocturne', rank: 'C', level: 7, weeklyVolume: 7600, avatar: '🗡️' }
     ]
   };
 
@@ -1703,7 +1703,7 @@ window.IronPulse = window.IronPulse || {};
               class="w-full h-[272px] object-cover object-center block shonen-hero-img"
             />
 
-            <!-- Superposition d'Aura Ki DBZ au sol, pierres en lévitation et éclairs en SVG -->
+            <!-- Superposition d'Aura Ki Pro au sol, pierres en lévitation et éclairs en SVG -->
             <svg viewBox="0 0 200 272" class="absolute inset-0 w-full h-full pointer-events-none">
               <defs>
                 <linearGradient id="kiGroundGlow" x1="0%" y1="70%" x2="0%" y2="100%">

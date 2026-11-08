@@ -1,89 +1,154 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- Fond Obsidienne Profond avec Lueur d'Arène -->
-    <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
-      <stop offset="0%" stop-color="#182338" />
-      <stop offset="55%" stop-color="#0E1524" />
-      <stop offset="100%" stop-color="#060910" />
+    <!-- Fond Obsidienne Profond 60% -->
+    <radialGradient id="bgObsidian" cx="50%" cy="42%" r="65%">
+      <stop offset="0%" stop-color="#132038" />
+      <stop offset="52%" stop-color="#09101E" />
+      <stop offset="100%" stop-color="#05080F" />
     </radialGradient>
 
-    <!-- Énergie Or Saiyan Ki -->
-    <linearGradient id="goldKi" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FDE68A" />
-      <stop offset="40%" stop-color="#F59E0B" />
-      <stop offset="100%" stop-color="#D97706" />
-    </linearGradient>
-
-    <!-- Énergie Cyan Astral Chasseur -->
-    <linearGradient id="cyanAstral" x1="0%" y1="100%" x2="100%" y2="0%">
+    <!-- Aura Extérieure Cyan Astral (10% Accent) -->
+    <linearGradient id="auraCyan" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#0284C7" />
       <stop offset="50%" stop-color="#06B6D4" />
       <stop offset="100%" stop-color="#67E8F9" />
     </linearGradient>
 
-    <!-- Émeraude Vitalité / Pulse -->
-    <linearGradient id="emeraldPulse" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#34D399" />
-      <stop offset="100%" stop-color="#059669" />
+    <!-- Aura de Puissance Or Ki (10% Accent) -->
+    <linearGradient id="auraGold" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="55%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#FEF08A" />
     </linearGradient>
 
-    <!-- Lueur Néon (Glow Filter) -->
-    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="10" result="blur" />
+    <!-- Acier Brossé Haltère & Disques (30% Surface) -->
+    <linearGradient id="titaniumSteel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="45%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Corps Sombre de l'ALTR (Alter Ego Musculaire) -->
+    <linearGradient id="altrBody" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="60%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#060A12" />
+    </linearGradient>
+
+    <!-- Filtres Néon Haute Intensité -->
+    <filter id="auraGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="9" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-
-    <filter id="subtleGlow" x="-10%" y="-10%" width="120%" height="120%">
+    <filter id="softGlow" x="-15%" y="-15%" width="130%" height="130%">
       <feGaussianBlur stdDeviation="4" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
   </defs>
 
-  <!-- Fond Squircle PWA -->
-  <rect width="512" height="512" rx="118" fill="url(#bgGrad)" />
+  <!-- 1. Socle Squircle App Store / PWA -->
+  <rect width="512" height="512" rx="116" fill="url(#bgObsidian)" />
 
-  <!-- Liseré Extérieur High-Tech Biseauté -->
-  <rect x="18" y="18" width="476" height="476" rx="100" fill="none" stroke="url(#cyanAstral)" stroke-width="2.5" stroke-opacity="0.35" />
-  <rect x="26" y="26" width="460" height="460" rx="92" fill="none" stroke="#243048" stroke-width="1.5" stroke-opacity="0.6" />
+  <!-- Cadre Hexagonal / Biseauté d'Arène -->
+  <rect x="16" y="16" width="480" height="480" rx="102" fill="none" stroke="url(#auraCyan)" stroke-width="3" stroke-opacity="0.45" />
+  <rect x="28" y="28" width="456" height="456" rx="92" fill="none" stroke="url(#auraGold)" stroke-width="1.5" stroke-opacity="0.35" />
 
-  <!-- Aura Circulaire d'Énergie Pulse (Arène) -->
-  <circle cx="256" cy="256" r="175" fill="none" stroke="url(#cyanAstral)" stroke-width="3" stroke-dasharray="14 8" stroke-opacity="0.4" />
-  <circle cx="256" cy="256" r="148" fill="none" stroke="url(#goldKi)" stroke-width="1.5" stroke-opacity="0.5" />
+  <!-- Ondes de Choc de Puissance Concentriques -->
+  <circle cx="256" cy="238" r="176" fill="none" stroke="url(#auraCyan)" stroke-width="2.5" stroke-dasharray="16 10" stroke-opacity="0.35" />
+  <circle cx="256" cy="238" r="146" fill="none" stroke="url(#auraGold)" stroke-width="2" stroke-opacity="0.4" />
 
-  <!-- Écussons Angulaires Mecha / Shonen (Coins d'Arène) -->
-  <path d="M 120 75 L 85 75 L 85 110" fill="none" stroke="url(#cyanAstral)" stroke-width="4" stroke-linecap="round" />
-  <path d="M 392 75 L 427 75 L 427 110" fill="none" stroke="url(#cyanAstral)" stroke-width="4" stroke-linecap="round" />
-  <path d="M 120 437 L 85 437 L 85 402" fill="none" stroke="url(#cyanAstral)" stroke-width="4" stroke-linecap="round" />
-  <path d="M 392 437 L 427 437 L 427 402" fill="none" stroke="url(#cyanAstral)" stroke-width="4" stroke-linecap="round" />
-
-  <!-- Haltère Cybernétique Stylisée (Symbole Fonte & Force) -->
-  <g id="dumbbellCore" opacity="0.95">
-    <!-- Barre centrale en titane -->
-    <rect x="156" y="244" width="200" height="24" rx="12" fill="#E2E8F0" filter="url(#subtleGlow)" />
-    <!-- Disques gauches -->
-    <rect x="146" y="196" width="22" height="120" rx="9" fill="url(#cyanAstral)" />
-    <rect x="120" y="210" width="20" height="92" rx="8" fill="#1E293B" stroke="url(#cyanAstral)" stroke-width="2" />
-    <!-- Disques droits -->
-    <rect x="344" y="196" width="22" height="120" rx="9" fill="url(#cyanAstral)" />
-    <rect x="372" y="210" width="20" height="92" rx="8" fill="#1E293B" stroke="url(#cyanAstral)" stroke-width="2" />
+  <!-- 2. L'AURA EXPLOSÉE (Flammes de Ki Or & Énergie Ascendante derrière l'Alter Ego) -->
+  <g filter="url(#auraGlow)" opacity="0.92">
+    <!-- Couronne de Flammes d'Aura Or Ki -->
+    <path d="M 118 310
+             C 92 250, 112 175, 152 138
+             L 146 172
+             C 168 122, 205 84, 256 56
+             C 307 84, 344 122, 366 172
+             L 360 138
+             C 400 175, 420 250, 394 310
+             Z"
+          fill="url(#auraGold)" opacity="0.32" />
+    <!-- Deuxième couche d'Aura Cyan Bio-Électrique -->
+    <path d="M 136 305
+             C 118 242, 138 182, 176 146
+             C 198 112, 228 88, 256 72
+             C 284 88, 314 112, 336 146
+             C 374 182, 394 242, 376 305
+             Z"
+          fill="url(#auraCyan)" opacity="0.28" />
   </g>
 
-  <!-- Le « Z » Héroïque & Éclair de Ki (Solo Leveling × DBZ) -->
-  <g id="heroicZ" filter="url(#neonGlow)">
-    <!-- Éclair central flamboyant -->
-    <path d="M 315 108 L 198 252 L 278 252 L 182 404 L 334 228 L 254 228 Z"
-          fill="url(#goldKi)"
-          stroke="#FFFBEB"
-          stroke-width="3"
-          stroke-linejoin="round" />
+  <!-- 3. L'ALTER EGO MUSCULAIRE ("TON ALTR") EN PLEINE PUISSANCE -->
+  <g id="altrTitanSilhouette">
+    <!-- Buste Athlétique Sculpté (Épaules, Trapèzes, Dorsaux en V + Contour d'Aura) -->
+    <path d="M 142 308
+             L 128 244
+             C 128 208, 158 188, 196 180
+             L 220 166
+             L 216 126
+             L 234 102
+             L 256 94
+             L 278 102
+             L 296 126
+             L 292 166
+             L 316 180
+             C 354 188, 384 208, 384 244
+             L 370 308
+             Z"
+          fill="url(#altrBody)"
+          stroke="url(#auraCyan)"
+          stroke-width="4"
+          stroke-linejoin="round"
+          filter="url(#softGlow)" />
+
+    <!-- Lignes Anatomiques de Puissance (Pectoraux, Deltoïdes & Abdominaux Illuminés) -->
+    <path d="M 192 214 L 252 232 L 320 214" fill="none" stroke="url(#auraCyan)" stroke-width="3.5" stroke-linecap="round" opacity="0.85" />
+    <path d="M 256 184 L 256 290" fill="none" stroke="url(#auraGold)" stroke-width="3" stroke-linecap="round" opacity="0.85" />
+    <path d="M 222 252 L 256 260 L 290 252" fill="none" stroke="url(#auraCyan)" stroke-width="2.5" stroke-linecap="round" opacity="0.65" />
+
+    <!-- Yeux Incandescents de l'ALTR (Éveil Rang S) -->
+    <polygon points="230,136 250,141 234,146" fill="#67E8F9" filter="url(#auraGlow)" />
+    <polygon points="282,136 262,141 278,146" fill="#67E8F9" filter="url(#auraGlow)" />
+
+    <!-- Monogramme "A" d'Énergie Gravé sur le Torse de l'ALTR -->
+    <path d="M 256 174 L 226 254 L 242 254 L 249 235 L 263 235 L 270 254 L 286 254 Z M 252 220 L 256 204 L 260 220 Z"
+          fill="url(#auraGold)"
+          filter="url(#softGlow)" />
   </g>
 
-  <!-- Particules & Éclats d'Énergie Électrique -->
-  <circle cx="205" cy="145" r="4.5" fill="#FDE68A" />
-  <circle cx="330" cy="360" r="4.5" fill="#67E8F9" />
-  <circle cx="150" cy="330" r="3" fill="#67E8F9" />
-  <circle cx="365" cy="160" r="3" fill="#FDE68A" />
+  <!-- 4. L'ÉQUIPEMENT DE MUSCULATION (BARRE OLYMPIQUE & DISQUES CALIBRÉS SOUS HAUTE TENSION) -->
+  <g id="olympicEquipment" filter="url(#softGlow)">
+    <!-- Barre Olympique en Titane (Courbée par la charge lourde) -->
+    <path d="M 52 332 Q 256 316 460 332" fill="none" stroke="url(#titaniumSteel)" stroke-width="18" stroke-linecap="round" />
+    <path d="M 52 332 Q 256 316 460 332" fill="none" stroke="#67E8F9" stroke-width="3" stroke-linecap="round" opacity="0.85" />
 
-  <!-- Monogramme de Signature Subtile : AURA FIT (Arc inférieur) -->
-  <text x="256" y="468" text-anchor="middle" font-family="'Chakra Petch', sans-serif" font-size="19" font-weight="900" letter-spacing="9" fill="#94A3B8" opacity="0.85">IRONPULSE Z</text>
+    <!-- Poings Bandés de l'ALTR Agrippant la Barre -->
+    <rect x="178" y="310" width="32" height="34" rx="8" fill="#0F172A" stroke="url(#auraGold)" stroke-width="3" />
+    <rect x="302" y="310" width="32" height="34" rx="8" fill="#0F172A" stroke="url(#auraGold)" stroke-width="3" />
+
+    <!-- Disques Olympiques Gauches (25kg Or + 20kg Cyan + 15kg Acier) -->
+    <rect x="114" y="258" width="24" height="144" rx="7" fill="url(#auraGold)" stroke="#FFFBEB" stroke-width="2" />
+    <rect x="84" y="272" width="22" height="116" rx="6" fill="url(#auraCyan)" stroke="#E0F2FE" stroke-width="2" />
+    <rect x="58" y="288" width="18" height="84" rx="5" fill="#1E293B" stroke="url(#auraCyan)" stroke-width="2" />
+
+    <!-- Disques Olympiques Droits (25kg Or + 20kg Cyan + 15kg Acier) -->
+    <rect x="374" y="258" width="24" height="144" rx="7" fill="url(#auraGold)" stroke="#FFFBEB" stroke-width="2" />
+    <rect x="406" y="272" width="22" height="116" rx="6" fill="url(#auraCyan)" stroke="#E0F2FE" stroke-width="2" />
+    <rect x="436" y="288" width="18" height="84" rx="5" fill="#1E293B" stroke="url(#auraCyan)" stroke-width="2" />
+  </g>
+
+  <!-- 5. ARCS BIO-ÉLECTRIQUES DE PUISSANCE (Sensation d'Impact) -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#auraGlow)">
+    <polyline points="148,150 124,185 152,196 122,238" stroke="#67E8F9" stroke-width="3.5" />
+    <polyline points="364,150 388,185 360,196 390,238" stroke="#FDE047" stroke-width="3.5" />
+  </g>
+
+  <!-- 6. SIGNATURE OFFICIELLE : ALTHER FIT • FORGE TON ALTR -->
+  <g>
+    <rect x="96" y="420" width="320" height="48" rx="16" fill="#070C18" stroke="url(#auraCyan)" stroke-width="2" opacity="0.95" />
+    <text x="256" y="451" text-anchor="middle" font-family="'Chakra Petch', 'Plus Jakarta Sans', sans-serif" font-size="25" font-weight="900" letter-spacing="5" fill="#FFFFFF">
+      ALTHER <tspan fill="#06B6D4">FIT</tspan>
+    </text>
+  </g>
 </svg>

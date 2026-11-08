@@ -1,0 +1,14 @@
+# Dependances et caches
+node_modules/
+.vercel
+dist/
+build/
+
+# Fichiers temporaires et logs
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Tests audio locaux
+audio_tests/

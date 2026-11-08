@@ -1,175 +1,1015 @@
 <!doctype html>
 <html lang="fr" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#080B11" />
-    <meta name="description" content="IronPulse Z by Aura Fit — MMORPG de musculation 3D avec Avatar interactif, Donjons de Boss et Coach IA Gemini." />
-    <title>IronPulse Z — MMORPG Musculation 3D & Coach IA</title>
-
-    <!-- Meta Tags PWA & Immersion Plein Écran Native (iOS & Android) -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="IronPulse Z" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="IronPulse Z" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="color-scheme" content="dark" />
-
-    <link rel="icon" type="image/svg+xml" href="./src/icon.svg" />
-    <link rel="apple-touch-icon" href="./src/icon.svg" />
-
-    <script>
-      // Détection d'environnement : support universel file:/// vs PWA / http
-      if (window.location.protocol !== 'file:') {
-        var manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        manifestLink.href = './manifest.json';
-        document.head.appendChild(manifestLink);
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#080B11" />
+  <title>ALTHER FIT — Forge ton ALTR • Studio Sport &amp; Alter Ego 3D</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/svg+xml" href="./src/icon.svg?v=5.1" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./src/styles.css?v=5.0" />
+  <style id="ipz-critical-css">
+    *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #1E293B; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #05080D !important;
+      color: #F8FAFC !important;
+      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background-image:
+        radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 82% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 45%);
+      min-height: 100vh;
+    }
+    .app-shell-framed {
+      max-width: 430px;
+      width: 100%;
+      margin: 16px auto;
+      height: calc(100vh - 32px);
+      min-height: 580px;
+      max-height: 920px;
+      border-radius: 38px;
+      border: 8px solid #1E293B;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.88), 0 0 0 1px rgba(6, 182, 212, 0.16);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, rgba(56, 189, 248, 0.05) 35%, rgba(7, 11, 20, 1) 75%), #070B14;
+      transform: translateZ(0);
+      contain: layout paint;
+    }
+    .app-shell-full {
+      max-width: 768px;
+      width: 100%;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background-color: #070B14;
+      border-left: 1px solid #1E293B;
+      border-right: 1px solid #1E293B;
+    }
+    @media (max-width: 500px) {
+      .app-shell-framed {
+        max-width: 100%;
+        margin: 0;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
       }
-    </script>
+    }
+    .modal-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; }
+    .shonen-top-header {
+      padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+      background: linear-gradient(180deg, rgba(9, 13, 24, 0.96) 0%, rgba(13, 19, 33, 0.92) 100%);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.22);
+      backdrop-filter: blur(12px);
+    }
+    .shonen-bottom-dock {
+      display: grid !important;
+      grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+      width: 100% !important;
+      gap: 4px !important;
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+      background: linear-gradient(0deg, rgba(5, 8, 15, 0.99) 0%, rgba(12, 19, 32, 0.96) 100%) !important;
+      border-top: 1px solid rgba(34, 211, 238, 0.28) !important;
+      backdrop-filter: blur(16px);
+      align-items: end;
+    }
+    .air-focus-glass {
+      background: rgba(8, 13, 24, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+    }
+    .relic-glow-slot {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      background: linear-gradient(180deg, rgba(13, 22, 38, 0.95) 0%, rgba(8, 13, 24, 0.98) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.12), 0 2px 8px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s ease;
+    }
+    .relic-glow-slot.equipped {
+      background: radial-gradient(circle at center, rgba(6, 182, 212, 0.28) 0%, rgba(9, 15, 28, 0.96) 80%);
+      border-color: rgba(34, 211, 238, 0.85);
+      box-shadow: 0 0 14px rgba(34, 211, 238, 0.4), inset 0 0 10px rgba(34, 211, 238, 0.22);
+    }
+    .altr-hero-blend {
+      -webkit-mask-image: radial-gradient(ellipse 74% 94% at 50% 50%, #000 60%, transparent 99%);
+      mask-image: radial-gradient(ellipse 74% 94% at 50% 50%, #000 60%, transparent 99%);
+    }
+    .cp-trapezoid-pill {
+      background: linear-gradient(180deg, rgba(8, 47, 73, 0.92) 0%, rgba(12, 20, 36, 0.98) 100%);
+      border: 1.5px solid rgba(34, 211, 238, 0.75);
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(34, 211, 238, 0.2);
+      border-radius: 9999px;
+    }
+    .dungeon-combat-card {
+      background:
+        radial-gradient(circle at 18% 90%, rgba(245, 158, 11, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 85% 50%, rgba(6, 182, 212, 0.22) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(13, 21, 36, 0.96) 0%, rgba(8, 13, 23, 0.99) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.48);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65), inset 0 0 15px rgba(6, 182, 212, 0.1);
+    }
+    .combat-cta-pill {
+      background: linear-gradient(180deg, rgba(14, 116, 144, 0.85) 0%, rgba(8, 51, 68, 0.95) 100%);
+      border: 1.5px solid #22D3EE;
+      box-shadow: 0 0 16px rgba(34, 211, 238, 0.55), inset 0 0 10px rgba(34, 211, 238, 0.35);
+    }
+    .radial-dial-card { transition: all 0.2s ease; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    svg { display: block; max-width: 100%; }
+  </style>
+  <script type="importmap">{"imports":{"@google/genai":"https://esm.sh/@google/genai@2.29.1"}}</script>
+</head>
+<body class="bg-[#05080D] text-slate-100 antialiased selection:bg-cyan-500 selection:text-slate-950 font-['Plus_Jakarta_Sans',sans-serif]">
+  <div id="ironpulse-splash" style="position:fixed;inset:0;z-index:99999;background:#060910;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.35s ease;">
+    <img src="./src/icon.svg?v=5.1" alt="ALTHER FIT Logo" style="width:84px;height:84px;border-radius:22px;box-shadow:0 0 28px rgba(6,182,212,0.45);" />
+    <div style="margin-top:16px;font-size:20px;font-weight:900;letter-spacing:0.1em;color:#fff;">ALTHER <span style="color:#06B6D4;">FIT</span></div>
+    <div style="font-size:11px;font-weight:700;color:#F59E0B;margin-top:4px;letter-spacing:0.06em;">FORGE TON ALTR • AURA &amp; PUISSANCE</div>
+  </div>
+  <div id="app-root" class="app-shell-framed"></div>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./src/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="./src/audio.js?v=4.1"></script>
+  <script src="./src/data.js?v=4.1"></script>
+  <script src="./src/storage.js?v=4.1"></script>
+  <script src="./src/rpg.js?v=4.1"></script>
+  <script src="./src/hero3d.js?v=4.1"></script>
+  <script src="./src/aiCoach.js?v=4.1"></script>
+  <script src="./src/hardware.js?v=4.1"></script>
+  <script src="./src/charts.js?v=4.1"></script>
+  <script src="./src/app.js?v=4.1"></script>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/genai": "https://esm.sh/@google/genai@2.29.1"
+  <script>
+    window.__hero3d_mode = false;
+    window.__current_tab = 'home';
+
+    var CLEAN_MAP = [
+      [/Monarque des Ombres \(Solo Leveling\)/g, 'Aura Cinétique Nocturne'],
+      [/Style Solo Leveling \(Sung Jin-woo\)/g, 'Athlète Nocturne • Force & Agilité'],
+      [/\(Solo Leveling\)/g, '(Édition Nocturne)'],
+      [/Solo Leveling/g, 'Édition Nocturne'],
+      [/Sung Jin-woo/g, 'Athlète Apex'],
+      [/Monarque des Ombres/g, 'Striker Nocturne'],
+      [/Voleur Fantôme \(Persona 5\)/g, 'Sprinter Urbain Tactique'],
+      [/Style Persona 5 \(Joker\)/g, 'Agilité Urbaine & Explosivité'],
+      [/\(Persona 5\)/g, '(Style Urbain)'],
+      [/Persona 5/g, 'Style Urbain'],
+      [/Ogre Déchaîné \(Style Baki\)/g, 'Titan Calisthénie & Hypertrophie'],
+      [/Style Baki Hanma/g, 'Calisthénie Extrême & Force Brute'],
+      [/\(Style Baki\)/g, '(Hypertrophie Pure)'],
+      [/Baki Hanma/g, 'Titan Athlétique'],
+      [/Ogre Déchaîné/g, 'Titan Hypertrophie'],
+      [/\(Style Ippo\)/g, '(Boxe & Cardio)'],
+      [/Style Ippo/g, 'Boxe & Cardio Explosif'],
+      [/Guerrier Sayan/g, 'Athlète Puissance Pure'],
+      [/Berserker de Fer/g, 'Athlète Force Pure'],
+      [/Gantelets du Berserker/g, 'Bandages de Force Pro'],
+      [/IronPulse Z/g, 'ALTHER FIT'],
+      [/IRONPULSE Z/g, 'ALTHER FIT'],
+      [/hero-berserker\.jpg/g, 'hero-anime-original.svg'],
+      [/hero-original-athlete\.jpg/g, 'hero-anime-original.svg']
+    ];
+
+    var SVG_ICONS = {
+      helmet: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8v7c0 1.1.9 2 2 2h2v-5H6v-4a6 6 0 0 1 12 0v4h-2v5h2c1.1 0 2-.9 2-2v-7a8 8 0 0 0-8-8z"/><path d="M12 2v6"/><circle cx="12" cy="14" r="1"/></svg>',
+      wraps: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M7 6v12M12 6v12M17 6v12"/></svg>',
+      belt: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="8" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 8v8M18 8v8"/></svg>',
+      boots: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h5v10l5 3v3H5V4z"/><path d="M10 7h4M10 11h4"/></svg>',
+      amulet: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l6 8 6-8"/><polygon points="12 11 16 16 12 21 8 16" fill="rgba(6,182,212,0.2)"/></svg>',
+      ring: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><polygon points="12 4 15 8 9 8" fill="rgba(34,211,238,0.4)"/></svg>',
+      navHero: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7v6c0 1.1.9 2 2 2h1v-4H6V9a6 6 0 1 1 12 0v4h-2v4h1c1.1 0 2-.9 2-2V9a7 7 0 0 0-7-7z"/><path d="M12 2v5"/></svg>',
+      navGuild: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 7v7M9 10h6"/></svg>',
+      navCombat: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="14.5" y1="17.5" x2="3" y2="6"/><line x1="10" y1="20" x2="20" y2="10"/><line x1="14" y1="4" x2="20" y2="10"/><line x1="4" y1="14" x2="10" y2="20"/><line x1="16.5" y1="7.5" x2="9.5" y2="14.5"/></svg>',
+      navCampaign: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="7" y1="6" x2="7" y2="18"/><line x1="17" y1="6" x2="17" y2="18"/><polygon points="12 2 9 6 15 6"/><polygon points="7 6 5 9 9 9"/><polygon points="17 6 15 9 19 9"/></svg>',
+      navOracle: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>'
+    };
+
+    function syncTopBrandHeader() {
+      var hdrBrand = document.querySelector('.shonen-top-header > div:first-child');
+      if (hdrBrand && hdrBrand.innerHTML.indexOf('ALTHER') === -1) {
+        hdrBrand.innerHTML = '<img src="./src/icon.svg?v=5.1" alt="ALTHER FIT" class="w-8 h-8 rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.5)] border border-cyan-400/50 object-cover shrink-0" />' +
+          '<div class="leading-tight">' +
+          '  <div class="text-sm font-black tracking-wider text-white font-mono">ALTHER <span class="text-cyan-400">FIT</span></div>' +
+          '  <div class="text-[9px] font-extrabold uppercase tracking-widest text-amber-400">FORGE TON ALTR</div>' +
+          '</div>';
+      }
+    }
+
+    function sanitizeDOMAndAssets() {
+      var root = document.getElementById('app-root');
+      if (!root) return;
+      var imgs = root.querySelectorAll('img');
+      for (var i = 0; i < imgs.length; i++) {
+        var s = imgs[i].getAttribute('src') || '';
+        if (s.indexOf('hero-berserker') !== -1 || s.indexOf('hero-air-focus') !== -1 || s.indexOf('hero-original-athlete') !== -1) {
+          imgs[i].setAttribute('src', './src/assets/hero-anime-original.svg');
         }
       }
-    </script>
-  </head>
-  <body class="bg-[#05080D] text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
-    <!-- Splash Screen Éclair & Préchargeur Shōnen (Vision Alpha & Bêta) -->
-    <div id="ironpulse-splash" style="position:fixed;inset:0;z-index:99999;background:#060910;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.45s cubic-bezier(0.16,1,0.3,1),visibility 0.45s;font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;">
-      <style>
-        @keyframes pulse-ring {
-          0%, 100% { transform: scale(1); opacity: 0.35; }
-          50% { transform: scale(1.08); opacity: 0.85; }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { filter: drop-shadow(0 0 14px rgba(6,182,212,0.45)); }
-          50% { filter: drop-shadow(0 0 28px rgba(245,158,11,0.65)); }
-        }
-        @keyframes shimmer-bar {
-          0% { width: 15%; transform: translateX(-20%); }
-          50% { width: 78%; transform: translateX(10%); }
-          100% { width: 96%; transform: translateX(4%); }
-        }
-      </style>
-      <div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
-        <div style="position:absolute;width:124px;height:124px;border-radius:50%;border:2px dashed rgba(6,182,212,0.5);animation:pulse-ring 2.4s ease-in-out infinite;"></div>
-        <div style="width:84px;height:84px;border-radius:24px;background:linear-gradient(135deg,#0E1524,#182338);border:1.5px solid rgba(56,189,248,0.4);display:flex;align-items:center;justify-content:center;animation:pulse-glow 2.4s ease-in-out infinite;box-shadow:0 12px 32px rgba(0,0,0,0.85);">
-          <span style="font-size:42px;line-height:1;">⚡</span>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:19px;font-weight:900;letter-spacing:0.08em;color:#FFFFFF;text-transform:uppercase;">IRONPULSE</span>
-        <span style="font-size:19px;font-weight:900;color:#F59E0B;text-transform:uppercase;">Z</span>
-        <span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);letter-spacing:0.05em;margin-left:4px;">AURA FIT</span>
-      </div>
-      <p id="splash-status" style="font-size:11px;font-weight:600;color:#94A3B8;letter-spacing:0.03em;margin:0 0 16px 0;">Éveil du Chasseur de Fonte...</p>
-      <div style="width:160px;height:4px;border-radius:999px;background:#1E293B;overflow:hidden;position:relative;">
-        <div id="splash-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,#06B6D4,#10B981,#F59E0B);animation:shimmer-bar 1.6s ease-in-out infinite;"></div>
-      </div>
-      <div id="splash-fallback" style="display:none;margin-top:20px;text-align:center;max-width:280px;">
-        <p style="font-size:11px;color:#EF4444;margin-bottom:8px;">Connexion ou ressource différée.</p>
-        <button onclick="window.location.reload()" style="padding:6px 14px;border-radius:10px;background:#1E293B;color:#F8FAFC;font-size:11px;font-weight:700;border:1px solid #334155;cursor:pointer;">Réessayer ↻</button>
-      </div>
-    </div>
-
-    <!-- Conteneur Mobile Principal -->
-    <div id="app-root" class="app-shell-framed"></div>
-
-    <!-- Moteur WebGL 3D Three.js + Modules de l'application (v3.7 - Sports & Martial Arts Manga Archetypes) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="./src/audio.js?v=3.7"></script>
-    <script src="./src/data.js?v=3.7"></script>
-    <script src="./src/storage.js?v=3.7"></script>
-    <script src="./src/rpg.js?v=3.7"></script>
-    <script src="./src/hero3d.js?v=3.7"></script>
-    <script src="./src/aiCoach.js?v=3.7"></script>
-    <script src="./src/hardware.js?v=3.7"></script>
-    <script src="./src/charts.js?v=3.7"></script>
-    <script src="./src/app.js?v=3.7"></script>
-    <script>
-      // Bootloader Résilient Tout-Terrain (Vision Gamma)
-      function dismissSplash() {
-        var splash = document.getElementById('ironpulse-splash');
-        if (!splash) return;
-        splash.style.opacity = '0';
-        splash.style.visibility = 'hidden';
-        setTimeout(function () {
-          if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-        }, 460);
-      }
-
-      function tryBoot() {
-        if (window.__ironpulse_ready) return true;
-        if (window.IronPulse && window.IronPulse.App) {
-          try {
-            var saved = localStorage.getItem('ironpulse_app_state_v1');
-            if (saved) {
-              var st = JSON.parse(saved);
-              if (st && st.rpg && st.rpg.appearance) {
-                st.rpg.appearance.visualMode = 'model-3d';
-                localStorage.setItem('ironpulse_app_state_v1', JSON.stringify(st));
-              }
+      var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+      var node;
+      while ((node = walker.nextNode())) {
+        var val = node.nodeValue;
+        if (val && val.length > 2) {
+          var changed = false;
+          for (var j = 0; j < CLEAN_MAP.length; j++) {
+            if (CLEAN_MAP[j][0].test(val)) {
+              val = val.replace(CLEAN_MAP[j][0], CLEAN_MAP[j][1]);
+              changed = true;
             }
-          } catch (e) {}
-
-          window.__ironpulse_ready = true;
-          try {
-            window.IronPulse.App.init();
-          } catch (err) {
-            console.error('[IronPulse App.init Error]:', err);
           }
-          dismissSplash();
-
-          if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-            navigator.serviceWorker.register('./sw.js').catch(function () {});
-          }
-          return true;
+          if (changed) node.nodeValue = val;
         }
-        return false;
+      }
+      if (window.__current_tab === 'rpg') {
+        var mainEl = document.querySelector('#app-root main');
+        if (mainEl && !document.getElementById('guild-quick-creator-bar')) {
+          var bar = document.createElement('div');
+          bar.id = 'guild-quick-creator-bar';
+          bar.className = 'mb-3 p-3 rounded-2xl bg-gradient-to-r from-indigo-950/80 via-[#0E1628] to-cyan-950/70 border border-cyan-500/40 flex flex-wrap items-center justify-between gap-2 shadow-lg';
+          bar.innerHTML = '<div><div class="text-[10px] font-black uppercase tracking-wider text-cyan-300">⚔️ Hub Social & Guildes</div><div class="text-xs font-extrabold text-white">Créez votre Dojo, invitez vos amis par code ou lancez un duel</div></div>' +
+            '<div class="flex items-center gap-1.5">' +
+            '  <button onclick="IronPulse.App.openCreateGuildModal()" class="px-3 py-1.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black text-[11px] shadow">➕ Créer / Code Ami</button>' +
+            '  <button onclick="IronPulse.App.openCreateChallengeModal()" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] shadow">⚔️ Duel Ami</button>' +
+            '</div>';
+          mainEl.insertBefore(bar, mainEl.firstChild);
+        }
+      }
+      if (window.__current_tab === 'workout') {
+        var wMain = document.querySelector('#app-root main');
+        if (wMain && !document.getElementById('workout-pro-tools-bar')) {
+          var wBar = document.createElement('div');
+          wBar.id = 'workout-pro-tools-bar';
+          wBar.className = 'mb-3 p-2.5 rounded-2xl bg-[#0B1220]/95 border border-cyan-500/35 flex flex-wrap items-center justify-between gap-2 shadow-lg';
+          wBar.innerHTML = '<div class="text-[10px] font-black uppercase tracking-wider text-cyan-300 px-1">⚡ Outils Pro de Séance</div>' +
+            '<div class="flex flex-wrap items-center gap-1.5">' +
+            '  <button onclick="IronPulse.App.openPlateCalculatorModal(100)" class="px-2.5 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 font-black text-[11px]">⚖️ Calculateur Disques</button>' +
+            '  <button onclick="IronPulse.App.openMuscleRecoveryModal()" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-200 font-black text-[11px]">🧬 Récup 48h</button>' +
+            '  <button onclick="IronPulse.App.openVictoryShareModal()" class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 font-black text-[11px]">📸 Carte Victoire</button>' +
+            '</div>';
+          wMain.insertBefore(wBar, wMain.firstChild);
+        }
+      }
+    }
+
+    function syncFiveTabDock() {
+      syncTopBrandHeader();
+      var dock = document.querySelector('.shonen-bottom-dock');
+      if (!dock) return;
+      var t = window.__current_tab || 'home';
+      var tabs = [
+        { id: 'home', iconSvg: SVG_ICONS.navHero, label: 'MON ALTR' },
+        { id: 'rpg', iconSvg: SVG_ICONS.navGuild, label: 'GUILDES' },
+        { id: 'workout', iconSvg: SVG_ICONS.navCombat, label: 'SÉANCE', isCenter: true },
+        { id: 'programs', iconSvg: SVG_ICONS.navCampaign, label: 'CAMPAGNES' },
+        { id: 'progress', iconSvg: SVG_ICONS.navOracle, label: 'ORACLE IA' }
+      ];
+
+      dock.style.cssText = 'display:grid !important; grid-template-columns:repeat(5, minmax(0, 1fr)) !important; width:100% !important; gap:4px !important; padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px)) !important; align-items:end !important; box-sizing:border-box !important;';
+
+      dock.innerHTML = tabs.map(function(item) {
+        var active = (t === item.id) || (item.id === 'programs' && t === 'exercises') || (item.id === 'progress' && t === 'history');
+        if (item.isCenter) {
+          return '<button onclick="IronPulse.App.navigate(\'' + item.id + '\')" class="flex flex-col items-center justify-center -translate-y-2 py-1 px-0.5 rounded-2xl transition duration-150 ' +
+            (active ? 'text-amber-300 font-black' : 'text-slate-300 hover:text-white') + '">' +
+            '<div class="w-12 h-12 rounded-2xl flex items-center justify-center ' +
+            (active ? 'bg-gradient-to-tr from-cyan-500 to-amber-400 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,0.7)]' : 'bg-[#0E1726] border border-cyan-400/60 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.3)]') + '">' +
+            item.iconSvg +
+            '</div>' +
+            '<span class="text-[9px] font-black tracking-widest uppercase mt-0.5 text-amber-300">' + item.label + '</span>' +
+            '</button>';
+        }
+
+        return '<button onclick="IronPulse.App.navigate(\'' + item.id + '\')" class="flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition ' +
+          (active ? 'text-cyan-300 font-extrabold bg-cyan-950/40 border border-cyan-400/40 shadow-[0_0_12px_rgba(6,182,212,0.25)]' : 'text-slate-400 hover:text-slate-200 font-medium') + '">' +
+          '<div class="mb-1 ' + (active ? 'text-cyan-300 drop-shadow-[0_0_6px_rgba(34,211,238,0.6)]' : 'text-slate-400') + '">' + item.iconSvg + '</div>' +
+          '<span class="text-[9px] font-black tracking-wider uppercase truncate max-w-full">' + item.label + '</span>' +
+          (active ? '<span class="text-[7.5px] font-bold text-cyan-400 tracking-wider">Actif</span>' : '') +
+          '</button>';
+      }).join('');
+    }
+
+    function renderAirFocusHomeScreen() {
+      if (window.__current_tab && window.__current_tab !== 'home') {
+        syncFiveTabDock();
+        sanitizeDOMAndAssets();
+        return;
+      }
+      var ns = window.IronPulse;
+      if (!ns || !ns.Storage || !ns.RPG) return;
+      var state = ns.Storage.getState();
+      var hero = ns.RPG.getHeroProfile();
+      if (!hero) return;
+      var mainEl = document.querySelector('#app-root main');
+      if (!mainEl) return;
+
+      var is3D = window.__hero3d_mode === true;
+      var activeProg = (ns.Data && ns.Data.PREDEFINED_PROGRAMS) ? (ns.Data.PREDEFINED_PROGRAMS.find(function(p){ return p.id === state.profile.activeProgramId; }) || ns.Data.PREDEFINED_PROGRAMS[0]) : { id: 'prog-ppl', name: 'Éveil du Géant' };
+      var nextSession = (activeProg && activeProg.sessions && activeProg.sessions.length) ? (activeProg.sessions[state.history.length % activeProg.sessions.length] || activeProg.sessions[0]) : { id: 'sess-ppl-push', name: 'Éveil du Géant' };
+
+      var relics = [
+        { id: 'relic-crown', svg: SVG_ICONS.helmet, label: 'Casque Sparte' },
+        { id: 'relic-gauntlets', svg: SVG_ICONS.wraps, label: 'Bandages Force' },
+        { id: 'relic-belt', svg: SVG_ICONS.belt, label: 'Ceinture Champion' },
+        { id: 'relic-boots', svg: SVG_ICONS.boots, label: 'Bottes Haltéro' },
+        { id: 'relic-pauldrons', svg: SVG_ICONS.amulet, label: 'Amulette Aura' },
+        { id: 'relic-blade', svg: SVG_ICONS.ring, label: 'Anneau Puissance' }
+      ];
+      var relicsHtml = relics.map(function(s) {
+        var m = (hero.relicsStatus || []).find(function(r){ return r.id === s.id; });
+        var eq = m && m.equipped;
+        var unl = m && m.unlocked;
+        var act = unl ? "IronPulse.App.toggleEquipRelic('" + s.id + "'); setTimeout(renderAirFocusHomeScreen, 40);" : "IronPulse.App.openRpgSubTab('relics')";
+        return '<button onclick="' + act + '" class="relic-glow-slot ' + (eq ? 'equipped' : '') + '" title="' + s.label + '">' +
+               '<span class="text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.7)]">' + s.svg + '</span></button>';
+      }).join('');
+
+      var stObj = hero.stats || {};
+      var stats = [
+        { k: 'STR', val: stObj.strength || 78, col: '#22D3EE', icon: '💪' },
+        { k: 'VIT', val: stObj.vitality || 72, col: '#34D399', icon: '❤️' },
+        { k: 'PWR', val: stObj.power || 84, col: '#38BDF8', icon: '⚡' },
+        { k: 'END', val: stObj.endurance || 75, col: '#F59E0B', icon: '🎯' },
+        { k: 'AGI', val: stObj.agility || 69, col: '#FBBF24', icon: '⚔️' },
+        { k: 'INT', val: stObj.intelligence || 61, col: '#818CF8', icon: '🧠' }
+      ];
+      var dialsHtml = stats.map(function(st) {
+        var pct = Math.min(100, Math.max(12, st.val));
+        var off = 100 - pct;
+        return '<div onclick="IronPulse.App.openRpgSubTab(\'hero\')" class="radial-dial-card cursor-pointer flex flex-col items-center justify-center p-1.5 rounded-2xl bg-[#090F1C]/90 border border-slate-800/80 hover:border-cyan-500/50 shadow-md">' +
+               '<span class="text-[9px] font-black tracking-wider text-slate-400 uppercase leading-none mb-0.5">' + st.k + '</span>' +
+               '<div class="relative w-12 h-12 flex items-center justify-center" style="width:48px;height:48px;">' +
+               '<svg width="48" height="48" style="width:48px;height:48px;" class="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">' +
+               '<path class="text-slate-800/80" stroke-width="3" stroke="#1E293B" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />' +
+               '<path stroke-dasharray="100, 100" stroke-dashoffset="' + off + '" stroke-width="3" stroke-linecap="round" stroke="' + st.col + '" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />' +
+               '</svg>' +
+               '<span class="absolute font-black text-xs font-mono text-white">' + st.val + '</span></div>' +
+               '<span class="text-[10px] mt-0.5">' + st.icon + '</span></div>';
+      }).join('');
+
+      var stageContent = '';
+      if (is3D && ns.Hero3D && ns.Hero3D.renderStageHTML) {
+        stageContent = '<div class="w-full h-full">' + ns.Hero3D.renderStageHTML(hero, { height: 260, showControls: true }) + '</div>';
+      } else {
+        stageContent = '<div class="relative flex flex-col items-center justify-center h-full altr-hero-blend">' +
+          '<img src="./src/assets/hero-anime-original.svg" alt="ALTR Shonen Athlète" style="max-height:250px;width:auto;" class="relative z-10 w-auto h-[240px] sm:h-[250px] object-contain drop-shadow-[0_10px_22px_rgba(6,182,212,0.35)]" />' +
+          '</div>';
       }
 
-      function startIronPulse() {
-        if (tryBoot()) return;
+      var firstChild = mainEl.firstElementChild;
+      var tourOuterHtml = (firstChild && firstChild.innerHTML && firstChild.innerHTML.indexOf('closeGuidedTour') !== -1) ? firstChild.outerHTML : '';
 
-        // Boucle d'écoute active jusqu'au chargement complet des scripts
-        var bootInterval = setInterval(function () {
-          if (tryBoot()) {
-            clearInterval(bootInterval);
-          }
+      var heroName = (state.profile && state.profile.name ? state.profile.name : 'MEHDI').toUpperCase();
+      var cpVal = (hero.combatPower ? hero.combatPower : '6,593');
+      var goldVal = (typeof state.rpg.gold === 'number' ? state.rpg.gold : 1005);
+      var streakDays = (state.streakDays || 14);
+
+      var html = tourOuterHtml + '<div class="space-y-2 pb-2 animate-fade-in">' +
+        '<!-- TOP HUD COMPACT (IMAGE 2) -->' +
+        '<div class="air-focus-glass rounded-2xl px-3 py-2 shadow-xl border border-cyan-500/20 bg-[#070D18]/95 space-y-1.5">' +
+        '  <div class="flex items-center justify-between gap-1.5">' +
+        '    <!-- Gauche : Avatar + Nom + LVL -->' +
+        '    <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="IronPulse.App.openRpgSubTab(\'hero\')">' +
+        '      <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.5)] bg-slate-900 shrink-0">' +
+        '        <img src="./src/assets/hero-anime-original.svg" alt="ALTR Avatar" class="w-full h-full object-cover object-top scale-125" />' +
+        '      </div>' +
+        '      <div class="leading-tight">' +
+        '        <div class="text-xs font-black text-white tracking-wide truncate max-w-[85px]">' + heroName + '</div>' +
+        '        <span class="inline-block px-1.5 py-0.2 rounded bg-slate-800 text-[8.5px] font-mono font-extrabold text-cyan-300 border border-slate-700">LV. ' + (hero.level || 12) + '</span>' +
+        '      </div>' +
+        '    </div>' +
+        '    <!-- Centre : Brand ALTHER FIT + CP Pill -->' +
+        '    <div class="flex flex-col items-center justify-center shrink-0">' +
+        '      <div class="text-[12px] font-black tracking-widest text-white font-mono">ALTHER <span class="text-cyan-400">FIT</span></div>' +
+        '      <div class="cp-trapezoid-pill px-3 py-0.5 mt-0.5 text-center cursor-pointer" onclick="IronPulse.App.openRpgSubTab(\'hero\')">' +
+        '        <span class="text-[9px] font-black tracking-wider text-cyan-300 font-mono">CP : <strong class="text-white text-[11px]">' + cpVal + '</strong></span>' +
+        '      </div>' +
+        '    </div>' +
+        '    <!-- Droite : Or + Streak Fire -->' +
+        '    <div class="flex flex-col items-end justify-center shrink-0 leading-tight">' +
+        '      <div class="flex items-center gap-1 text-[11px] font-mono font-black text-amber-300">' +
+        '        <span>🪙</span><span>' + goldVal.toLocaleString() + '</span>' +
+        '      </div>' +
+        '      <div class="flex items-center gap-1 text-[9.5px] font-mono font-extrabold text-orange-400 mt-0.5">' +
+        '        <span>🔥</span><span>' + streakDays + ' JOURS</span>' +
+        '      </div>' +
+        '    </div>' +
+        '  </div>' +
+        '  <!-- Barres de statut HP & SP (Image 2) -->' +
+        '  <div class="grid grid-cols-2 gap-2 pt-0.5">' +
+        '    <div class="space-y-0.5">' +
+        '      <div class="flex items-center justify-between text-[8.5px] font-mono font-bold text-slate-300">' +
+        '        <span class="text-rose-400 font-black">❤️ HP</span><span>3,450 / 3,500</span>' +
+        '      </div>' +
+        '      <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-rose-950/40"><div class="h-full bg-gradient-to-r from-rose-500 to-red-400 rounded-full shadow-[0_0_8px_#f43f5e]" style="width: 95%;"></div></div>' +
+        '    </div>' +
+        '    <div class="space-y-0.5">' +
+        '      <div class="flex items-center justify-between text-[8.5px] font-mono font-bold text-slate-300">' +
+        '        <span class="text-cyan-400 font-black">⚡ SP</span><span>210 / 220</span>' +
+        '      </div>' +
+        '      <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-cyan-950/40"><div class="h-full bg-gradient-to-r from-cyan-400 to-sky-300 rounded-full shadow-[0_0_8px_#22d3ee]" style="width: 92%;"></div></div>' +
+        '    </div>' +
+        '  </div>' +
+        '</div>' +
+
+        '<!-- SCÈNE CENTRALE AMBIANCE GYM DARK NEON (IMAGE 2) -->' +
+        '<div class="relative w-full h-[260px] sm:h-[275px] rounded-3xl overflow-hidden border border-cyan-500/25 shadow-2xl flex flex-col justify-between p-2.5" style="background: linear-gradient(180deg, rgba(6,10,18,0.4) 0%, rgba(5,8,15,0.1) 45%, rgba(6,10,18,0.95) 100%), url(\'./src/assets/arena-bg.jpg\') center/cover no-repeat;">' +
+        '  <!-- Neon overhead cyan bar -->' +
+        '  <div class="absolute top-2 left-1/2 -translate-x-1/2 w-48 h-1 rounded-full bg-cyan-300 shadow-[0_0_16px_#22d3ee,0_0_30px_#06b6d4] opacity-80 pointer-events-none"></div>' +
+        '  <div class="flex items-center justify-between z-10">' +
+        '    <button onclick="window.__hero3d_mode = !window.__hero3d_mode; renderAirFocusHomeScreen();" class="px-2.5 py-1 rounded-full text-[10px] font-black border transition backdrop-blur-md ' + (is3D ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.4)]' : 'bg-[#070D18]/85 text-slate-300 border-slate-700/80 hover:border-cyan-400') + '">' +
+        '      [ 3D / 360° ]' +
+        '    </button>' +
+        '    <div class="flex items-center gap-1">' +
+        '      <button onclick="IronPulse.App.openPlateCalculatorModal(100)" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#070D18]/85 text-cyan-200 border border-cyan-500/40 backdrop-blur-md">⚖️ Disques</button>' +
+        '      <button onclick="IronPulse.App.openMuscleRecoveryModal()" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#070D18]/85 text-emerald-200 border border-emerald-500/40 backdrop-blur-md">🧬 48h</button>' +
+        '      <button onclick="IronPulse.App.openVictoryShareModal()" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#070D18]/85 text-amber-200 border border-amber-500/40 backdrop-blur-md">📸 Carte</button>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div class="relative z-0 flex-1 flex items-center justify-center">' + stageContent + '</div>' +
+        '</div>' +
+
+        '<!-- RACK D\'ÉQUIPEMENTS NÉON CYAN (6 MONOGRAMMES VECTORIELS IMAGE 2) -->' +
+        '<div class="rounded-2xl bg-[#090F1C]/95 border border-slate-800/90 p-2 shadow-xl">' +
+        '  <div class="grid grid-cols-6 gap-1.5">' + relicsHtml + '</div>' +
+        '</div>' +
+
+        '<!-- 6 DIALS RADIAUX COMPACTS (IMAGE 2) -->' +
+        '<div class="grid grid-cols-6 gap-1">' + dialsHtml + '</div>' +
+
+        '<!-- BANDEAU COMBAT QUOTIDIEN (IMAGE 2) -->' +
+        '<div class="dungeon-combat-card rounded-2xl p-2.5 flex items-center justify-between gap-2">' +
+        '  <div class="min-w-0">' +
+        '    <div class="text-[11px] font-black uppercase tracking-wider text-white font-mono leading-tight truncate">L’ÉPREUVE DU JOUR - ÉVEIL DU GÉANT</div>' +
+        '    <div class="text-[9px] font-bold text-amber-300 mt-0.5 flex items-center gap-1.5">' +
+        '      <span>NIVEAU RECOMMANDÉ 11+</span>' +
+        '      <span class="text-slate-500">•</span>' +
+        '      <button onclick="IronPulse.App.openCreateGuildModal()" class="text-cyan-300 underline font-semibold">Club & Escouades</button>' +
+        '    </div>' +
+        '  </div>' +
+        '  <button onclick="window.__current_tab=\'workout\'; IronPulse.App.startProgramSession(\'' + activeProg.id + '\', \'' + nextSession.id + '\');" class="combat-cta-pill px-3.5 py-2 rounded-xl font-black text-[10.5px] uppercase tracking-wider text-cyan-100 hover:text-white shrink-0 active:scale-95 transition whitespace-nowrap">' +
+        '    DÉMARRER LA SÉANCE' +
+        '  </button>' +
+        '</div>' +
+        '</div>';
+
+      mainEl.innerHTML = html;
+      syncFiveTabDock();
+      sanitizeDOMAndAssets();
+      if (is3D && ns.Hero3D) {
+        setTimeout(function() {
+          if (ns.Hero3D.startLoop) ns.Hero3D.startLoop();
+          if (ns.Hero3D.renderNow) ns.Hero3D.renderNow();
         }, 50);
+      }
+    }
 
-        window.addEventListener('load', function () {
-          if (tryBoot()) {
-            clearInterval(bootInterval);
+    function setupAirFocusHooks() {
+      if (!window.IronPulse || !window.IronPulse.App) return false;
+      if (window.__hooks_installed) return true;
+      window.__hooks_installed = true;
+
+      var app = window.IronPulse.App;
+
+      app.openCreateGuildModal = function() {
+        var state = window.IronPulse.Storage.getState();
+        if (window.IronPulse.RPG) window.IronPulse.RPG.ensureRpgState(state);
+        var gName = (state.rpg && state.rpg.guildName) ? state.rpg.guildName : 'Dojo ALTR Apex';
+        var gMotto = (state.rpg && state.rpg.guildMotto) ? state.rpg.guildMotto : 'Forger le corps, élever son ALTR.';
+        var code = 'ALTR-' + ((state.profile && state.profile.name) ? state.profile.name.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5) : 'HERO') + '-77';
+        var old = document.getElementById('custom-guild-modal');
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+        var div = document.createElement('div');
+        div.id = 'custom-guild-modal';
+        div.className = 'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 animate-fade-in';
+        div.innerHTML = '<div class="bg-[#0E1422] border-2 border-cyan-500/40 rounded-3xl w-full max-w-md p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">' +
+          '<div class="flex items-center justify-between border-b border-slate-800 pb-3">' +
+          '  <div><h3 class="text-base font-black text-white">⚔️ Créer ma Guilde ALTR & Inviter des Amis</h3><p class="text-[11px] text-slate-400">Fondez votre Dojo sur ALTHER FIT, partagez votre code ou rejoignez un ami</p></div>' +
+          '  <button onclick="var m=document.getElementById(\'custom-guild-modal\');if(m)m.remove();" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 font-bold">✕</button>' +
+          '</div>' +
+          '<div class="p-3.5 rounded-2xl bg-cyan-950/30 border border-cyan-500/40 space-y-2">' +
+          '  <div class="flex items-center justify-between"><span class="text-[10px] font-black uppercase text-cyan-300">📲 Votre Code d\'Invitation ALTR</span><span class="font-mono text-xs font-black text-amber-300 px-2 py-0.5 rounded bg-slate-900 border border-amber-400/40">' + code + '</span></div>' +
+          '  <div class="grid grid-cols-2 gap-2 pt-1">' +
+          '    <button onclick="IronPulse.App.shareHunterChallenge(\'Rejoins ma Guilde ' + gName.replace(/\'/g, '') + ' sur ALTHER FIT (Code: ' + code + ')\')" class="py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 font-black text-xs shadow">📲 Inviter un Ami</button>' +
+          '    <button onclick="var m=document.getElementById(\'custom-guild-modal\');if(m)m.remove(); IronPulse.App.openCreateChallengeModal();" class="py-2 px-3 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 font-black text-xs">⚔️ Lancer un Duel 7J</button>' +
+          '  </div>' +
+          '</div>' +
+          '<div class="space-y-2.5 pt-1">' +
+          '  <div class="text-xs font-black text-white uppercase tracking-wider">➕ Fonder / Personnaliser votre Guilde</div>' +
+          '  <div><label class="block text-[11px] font-bold text-slate-300 mb-1">Nom de votre Guilde / Dojo</label><input id="cg-name" type="text" value="' + gName.replace(/"/g, '&quot;') + '" placeholder="Ex: Escouade Titan, Dojo Sparte..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white" /></div>' +
+          '  <div><label class="block text-[11px] font-bold text-slate-300 mb-1">Devise du Club</label><input id="cg-motto" type="text" value="' + gMotto.replace(/"/g, '&quot;') + '" placeholder="Ex: Aucune répétition laissée au hasard" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200" /></div>' +
+          '  <button onclick="IronPulse.App.submitCustomGuild()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow">✓ Enregistrer & Créer ma Guilde</button>' +
+          '</div>' +
+          '<div class="space-y-2 pt-2 border-t border-slate-800">' +
+          '  <div class="text-xs font-black text-indigo-300 uppercase tracking-wider">🤝 Rejoindre la Guilde d\'un Ami par Code</div>' +
+          '  <div class="flex gap-2"><input id="cg-join-code" type="text" placeholder="Ex: ALTR-KARIM-77" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white uppercase" /><button onclick="IronPulse.App.joinGuildByCode()" class="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-xs">Rejoindre</button></div>' +
+          '</div>' +
+          '</div>';
+        document.body.appendChild(div);
+      };
+
+      app.submitCustomGuild = function() {
+        var nameEl = document.getElementById('cg-name');
+        var mottoEl = document.getElementById('cg-motto');
+        var name = (nameEl && nameEl.value.trim()) ? nameEl.value.trim() : 'Guilde Souveraine';
+        var motto = (mottoEl && mottoEl.value.trim()) ? mottoEl.value.trim() : 'La constance bat le talent.';
+        var state = window.IronPulse.Storage.getState();
+        if (window.IronPulse.RPG) window.IronPulse.RPG.ensureRpgState(state);
+        state.rpg.clubId = 'custom-' + Date.now();
+        state.rpg.guildName = name;
+        state.rpg.guildMotto = motto;
+        state.rpg.guildTier = 'Ligue Souveraine ★';
+        window.IronPulse.Storage.saveState();
+        var m = document.getElementById('custom-guild-modal');
+        if (m) m.remove();
+        window.__current_tab = 'rpg';
+        if (app.openRpgSubTab) app.openRpgSubTab('guild');
+      };
+
+      app.joinGuildByCode = function() {
+        var codeEl = document.getElementById('cg-join-code');
+        var code = (codeEl && codeEl.value.trim()) ? codeEl.value.trim().toUpperCase() : 'ALTR-AMI';
+        var state = window.IronPulse.Storage.getState();
+        if (window.IronPulse.RPG) window.IronPulse.RPG.ensureRpgState(state);
+        state.rpg.clubId = 'joined-' + code;
+        state.rpg.guildName = 'Guilde Alliée (' + code + ')';
+        state.rpg.guildMotto = 'Escouade connectée par code d\'invitation ' + code;
+        state.rpg.guildTier = 'Ligue Alliée ⚡';
+        window.IronPulse.Storage.saveState();
+        var m = document.getElementById('custom-guild-modal');
+        if (m) m.remove();
+        window.__current_tab = 'rpg';
+        if (app.openRpgSubTab) app.openRpgSubTab('guild');
+      };
+
+      /* 1. CALCULATEUR VISUEL DE DISQUES OLYMPIQUES (CLEAN-ROOM) */
+      app.openPlateCalculatorModal = function(defaultWeight) {
+        window.__plate_target = Number(defaultWeight) || 100;
+        window.__plate_bar = window.__plate_bar || 20;
+        var old = document.getElementById('ipz-plate-modal');
+        if (old) old.remove();
+        var div = document.createElement('div');
+        div.id = 'ipz-plate-modal';
+        div.className = 'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 animate-fade-in';
+        div.innerHTML = '<div class="bg-[#0B101B] border-2 border-cyan-500/40 rounded-3xl w-full max-w-md p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">' +
+          '<div class="flex items-center justify-between border-b border-slate-800 pb-3">' +
+          '  <div><h3 class="text-base font-black text-white">⚖️ Calculateur Visuel de Disques</h3><p class="text-[11px] text-slate-400">Répartition exacte par côté de barre (Norme Olympique)</p></div>' +
+          '  <button onclick="var m=document.getElementById(\'ipz-plate-modal\');if(m)m.remove();" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 font-bold">✕</button>' +
+          '</div>' +
+          '<div class="grid grid-cols-2 gap-2.5">' +
+          '  <div><label class="block text-[10px] font-black uppercase text-cyan-300 mb-1">Charge Totale (kg)</label>' +
+          '    <input id="ipz-plate-input" type="number" step="2.5" min="10" max="400" value="' + window.__plate_target + '" oninput="IronPulse.App.updatePlateCalcView(this.value, null)" class="w-full bg-slate-950 border border-cyan-500/40 rounded-xl px-3 py-2 text-sm font-black font-mono text-white" />' +
+          '  </div>' +
+          '  <div><label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Type de Barre</label>' +
+          '    <select id="ipz-bar-select" onchange="IronPulse.App.updatePlateCalcView(null, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">' +
+          '      <option value="20" ' + (window.__plate_bar === 20 ? 'selected' : '') + '>Barre Olympique (20 kg)</option>' +
+          '      <option value="15" ' + (window.__plate_bar === 15 ? 'selected' : '') + '>Barre Technique (15 kg)</option>' +
+          '      <option value="10" ' + (window.__plate_bar === 10 ? 'selected' : '') + '>Barre EZ / Courte (10 kg)</option>' +
+          '    </select>' +
+          '  </div>' +
+          '</div>' +
+          '<div class="flex flex-wrap gap-1.5">' +
+          [60, 80, 100, 120, 140, 160, 200].map(function(w) {
+            return '<button onclick="document.getElementById(\'ipz-plate-input\').value=' + w + '; IronPulse.App.updatePlateCalcView(' + w + ', null);" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-cyan-500/20 border border-slate-700 text-[11px] font-mono font-bold text-slate-200">' + w + 'kg</button>';
+          }).join('') +
+          '</div>' +
+          '<div id="ipz-plate-visual" class="p-4 rounded-2xl bg-[#060A12] border border-slate-800 space-y-3"></div>' +
+          '</div>';
+        document.body.appendChild(div);
+        app.updatePlateCalcView(window.__plate_target, window.__plate_bar);
+      };
+
+      app.updatePlateCalcView = function(wVal, bVal) {
+        if (wVal !== null && wVal !== undefined) window.__plate_target = Math.max(0, Number(wVal) || 0);
+        if (bVal !== null && bVal !== undefined) window.__plate_bar = Number(bVal) || 20;
+        var box = document.getElementById('ipz-plate-visual');
+        if (!box) return;
+        var total = window.__plate_target;
+        var bar = window.__plate_bar;
+        var perSide = Math.max(0, (total - bar) / 2);
+        var rem = perSide;
+        var specs = [
+          { w: 25, col: '#EF4444', h: 96, txt: '#fff' },
+          { w: 20, col: '#2563EB', h: 92, txt: '#fff' },
+          { w: 15, col: '#EAB308', h: 82, txt: '#000' },
+          { w: 10, col: '#16A34A', h: 74, txt: '#fff' },
+          { w: 5,  col: '#F8FAFC', h: 62, txt: '#000' },
+          { w: 2.5,col: '#334155', h: 52, txt: '#fff' },
+          { w: 1.25,col:'#94A3B8', h: 44, txt: '#000' }
+        ];
+        var chosen = [];
+        var summary = [];
+        for (var i = 0; i < specs.length; i++) {
+          var count = Math.floor((rem + 0.001) / specs[i].w);
+          if (count > 0) {
+            summary.push(count + ' × ' + specs[i].w + ' kg');
+            for (var c = 0; c < count; c++) chosen.push(specs[i]);
+            rem = Math.round((rem - count * specs[i].w) * 100) / 100;
+          }
+        }
+        var platesHtml = chosen.length ? chosen.map(function(p) {
+          return '<div style="height:' + p.h + 'px;background:' + p.col + ';color:' + p.txt + ';" class="w-6 rounded-md border border-white/25 flex items-center justify-center font-mono text-[9px] font-black shadow-md shrink-0">' + p.w + '</div>';
+        }).join('') : '<span class="text-xs text-slate-400 font-bold">Barre à vide uniquement</span>';
+
+        box.innerHTML = '<div class="flex items-center justify-between text-xs font-bold">' +
+          '<span class="text-slate-400">À charger <strong class="text-cyan-300">PAR CÔTÉ</strong> :</span>' +
+          '<span class="font-mono text-sm font-black text-amber-300">' + perSide.toFixed(2).replace(/\.00$/, '') + ' kg / côté</span>' +
+          '</div>' +
+          '<div class="relative h-28 flex items-center justify-center bg-slate-950/90 rounded-xl border border-slate-800/80 px-3 overflow-x-auto">' +
+          '  <div class="w-10 h-3 bg-slate-500 rounded-l-full shrink-0"></div>' +
+          '  <div class="w-3 h-7 bg-slate-400 rounded-sm shrink-0 mr-1"></div>' +
+          '  <div class="flex items-center gap-1">' + platesHtml + '</div>' +
+          '  <div class="w-8 h-4 bg-slate-600 rounded-r-md shrink-0 ml-1"></div>' +
+          '</div>' +
+          '<div class="text-xs text-center font-mono font-bold text-cyan-200 bg-cyan-950/30 border border-cyan-500/30 rounded-xl py-2 px-3">' +
+          (summary.length ? ('Par côté : ' + summary.join(' + ')) : 'Aucun disque requis (Barre de ' + bar + ' kg)') +
+          '</div>';
+      };
+
+      /* 2. RADAR DE RÉCUPÉRATION MUSCULAIRE 48H/72H (CLEAN-ROOM) */
+      app.openMuscleRecoveryModal = function() {
+        var state = window.IronPulse.Storage.getState();
+        var history = (state && state.history) ? state.history : [];
+        var now = Date.now();
+        var groups = [
+          { id: 'chest', label: 'Pectoraux & Poussée', icon: '🛡️', match: /bench|developpe|pompe|dip|chest|pec|incline/i, rec: 94 },
+          { id: 'back', label: 'Dos & Tirage Lourd', icon: '🦅', match: /row|traction|pull|deadlift|souleve|dos|lat/i, rec: 88 },
+          { id: 'legs', label: 'Jambes & Chaîne Post.', icon: '⚡', match: /squat|leg|presse|fente|mollet|rdl|hip/i, rec: 76 },
+          { id: 'shoulders', label: 'Épaules & Deltoïdes', icon: '🔱', match: /ohp|militaire|lateral|epaule|shoulder/i, rec: 91 },
+          { id: 'arms', label: 'Bras (Biceps & Triceps)', icon: '💪', match: /curl|triceps|extension|bras|skull/i, rec: 96 },
+          { id: 'core', label: 'Sangle Abdominale', icon: '🔥', match: /abdo|plank|gainage|crunch|core/i, rec: 98 }
+        ];
+        history.slice(-6).forEach(function(sess, idx) {
+          var ageHours = sess.date ? Math.max(2, (now - new Date(sess.date).getTime()) / 3600000) : ((6 - idx) * 14);
+          if (ageHours < 72 && sess.exercises) {
+            sess.exercises.forEach(function(ex) {
+              var name = (ex.name || ex.exerciseId || '') + ' ' + (sess.name || '');
+              var setsCount = (ex.sets && ex.sets.length) ? ex.sets.length : 3;
+              var fatigueImpact = Math.max(0, Math.round((1 - ageHours / 72) * setsCount * 9));
+              groups.forEach(function(g) {
+                if (g.match.test(name)) {
+                  g.rec = Math.max(32, Math.min(100, g.rec - fatigueImpact));
+                }
+              });
+            });
           }
         });
+        var freshGroup = groups.slice().sort(function(a, b) { return b.rec - a.rec; })[0];
+        var old = document.getElementById('ipz-recovery-modal');
+        if (old) old.remove();
+        var div = document.createElement('div');
+        div.id = 'ipz-recovery-modal';
+        div.className = 'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 animate-fade-in';
+        div.innerHTML = '<div class="bg-[#0B101B] border-2 border-emerald-500/40 rounded-3xl w-full max-w-md p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">' +
+          '<div class="flex items-center justify-between border-b border-slate-800 pb-3">' +
+          '  <div><h3 class="text-base font-black text-white">🧬 Radar de Récupération 48h</h3><p class="text-[11px] text-slate-400">État de fraîcheur neuromusculaire calculé sur vos séances</p></div>' +
+          '  <button onclick="var m=document.getElementById(\'ipz-recovery-modal\');if(m)m.remove();" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 font-bold">✕</button>' +
+          '</div>' +
+          '<div class="space-y-2.5">' +
+          groups.map(function(g) {
+            var status = g.rec >= 85 ? { txt: 'Prêt à l\'impact', col: 'bg-emerald-400', badge: 'text-emerald-300 border-emerald-500/40 bg-emerald-500/10' }
+                       : (g.rec >= 60 ? { txt: 'Synthèse en cours', col: 'bg-amber-400', badge: 'text-amber-300 border-amber-500/40 bg-amber-500/10' }
+                                      : { txt: 'Repos conseillé', col: 'bg-rose-500', badge: 'text-rose-300 border-rose-500/40 bg-rose-500/10' });
+            return '<div class="p-3 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-1.5">' +
+              '<div class="flex items-center justify-between">' +
+              '  <span class="text-xs font-extrabold text-white">' + g.icon + ' ' + g.label + '</span>' +
+              '  <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full border ' + status.badge + '">' + g.rec + '% • ' + status.txt + '</span>' +
+              '</div>' +
+              '<div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">' +
+              '  <div class="h-full ' + status.col + ' rounded-full transition-all" style="width:' + g.rec + '%;"></div>' +
+              '</div>' +
+              '</div>';
+          }).join('') +
+          '</div>' +
+          '<div class="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/40 text-xs text-emerald-200">' +
+          '  <div class="font-black uppercase text-[10px] text-emerald-300 mb-0.5">🎯 Recommandation Biomécanique du Jour</div>' +
+          '  Votre zone la plus fraîche est <strong>' + freshGroup.label + ' (' + freshGroup.rec + '%)</strong>. Idéal pour viser un record 1RM ou un volume lourd aujourd\'hui.' +
+          '</div>' +
+          '</div>';
+        document.body.appendChild(div);
+      };
 
-        // Garde-fou de sécurité étendu à 12 secondes pour les réseaux mobiles
-        setTimeout(function () {
-          if (!window.__ironpulse_ready) {
-            var fallback = document.getElementById('splash-fallback');
-            if (fallback) fallback.style.display = 'block';
-          } else {
-            clearInterval(bootInterval);
+      /* 3. CARTE DE VICTOIRE PARTAGEABLE (HTML5 CANVAS HD 100% PROCÉDURAL) */
+      app.openVictoryShareModal = function() {
+        var old = document.getElementById('ipz-victory-modal');
+        if (old) old.remove();
+        var div = document.createElement('div');
+        div.id = 'ipz-victory-modal';
+        div.className = 'fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 animate-fade-in';
+        div.innerHTML = '<div class="bg-[#0B101B] border-2 border-amber-400/50 rounded-3xl w-full max-w-md p-5 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">' +
+          '<div class="flex items-center justify-between border-b border-slate-800 pb-3">' +
+          '  <div><h3 class="text-base font-black text-white">📸 Carte de Victoire Partageable</h3><p class="text-[11px] text-slate-400">Génération haute définition instantanée (Story / Post)</p></div>' +
+          '  <button onclick="var m=document.getElementById(\'ipz-victory-modal\');if(m)m.remove();" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 font-bold">✕</button>' +
+          '</div>' +
+          '<div class="flex justify-center bg-slate-950 p-2 rounded-2xl border border-slate-800">' +
+          '  <canvas id="ipz-victory-canvas" width="540" height="680" class="w-full max-w-[300px] h-auto rounded-xl shadow-lg border border-cyan-500/30"></canvas>' +
+          '</div>' +
+          '<div class="grid grid-cols-2 gap-2.5">' +
+          '  <button onclick="IronPulse.App.downloadVictoryCard()" class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 font-black text-xs shadow">💾 Télécharger PNG</button>' +
+          '  <button onclick="IronPulse.App.shareVictoryCardNative()" class="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow">📲 Partager aux Amis</button>' +
+          '</div>' +
+          '</div>';
+        document.body.appendChild(div);
+        setTimeout(app.renderVictoryCanvas, 30);
+      };
+
+      app.renderVictoryCanvas = function() {
+        var cv = document.getElementById('ipz-victory-canvas');
+        if (!cv) return;
+        var ctx = cv.getContext('2d');
+        var state = window.IronPulse.Storage.getState();
+        var hero = window.IronPulse.RPG ? window.IronPulse.RPG.getHeroProfile() : {};
+        var name = ((state.profile && state.profile.name) ? state.profile.name : 'MEHDI').toUpperCase();
+        var lvl = hero.level || 12;
+        var cp = hero.combatPower || 6593;
+        var streak = state.streakDays || 14;
+        var gName = (state.rpg && state.rpg.guildName) ? state.rpg.guildName : 'Dojo ALTR Apex';
+        var code = 'ALTR-' + name.replace(/[^A-Z0-9]/g, '').slice(0, 5) + '-77';
+        var st = hero.stats || { strength: 78, vitality: 72, power: 84, endurance: 75, agility: 69, intelligence: 61 };
+
+        var grad = ctx.createLinearGradient(0, 0, 540, 680);
+        grad.addColorStop(0, '#050912');
+        grad.addColorStop(0.5, '#0B1528');
+        grad.addColorStop(1, '#060A14');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 540, 680);
+
+        ctx.strokeStyle = 'rgba(6, 182, 212, 0.55)';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(14, 14, 512, 652);
+
+        ctx.fillStyle = '#06B6D4';
+        ctx.font = '900 16px Inter, sans-serif';
+        ctx.fillText('⚡ ALTHER FIT — CARTE D\'ÉVEIL ALTR', 36, 54);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '900 36px Inter, sans-serif';
+        ctx.fillText('ALTR : ' + name + '  •  LV.' + lvl, 36, 105);
+
+        ctx.fillStyle = '#F59E0B';
+        ctx.font = '800 20px Inter, sans-serif';
+        ctx.fillText('AURA & PUISSANCE : CP ' + cp + '   |   🔥 ' + streak + ' JOURS', 36, 140);
+
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(36, 168, 468, 250);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(36, 168, 468, 250);
+
+        var items = [
+          ['STR (Force Pure)', st.strength || 78, '#06B6D4'],
+          ['PWR (Explosivité)', st.power || 84, '#38BDF8'],
+          ['VIT (Récupération)', st.vitality || 72, '#10B981'],
+          ['END (Cardio & Volume)', st.endurance || 75, '#F59E0B'],
+          ['AGI (Mobilité 3-1-1)', st.agility || 69, '#FBBF24'],
+          ['INT (Précision 1RM)', st.intelligence || 61, '#818CF8']
+        ];
+        for (var i = 0; i < items.length; i++) {
+          var y = 205 + i * 36;
+          ctx.fillStyle = '#E2E8F0';
+          ctx.font = '700 14px Inter, sans-serif';
+          ctx.fillText(items[i][0], 56, y);
+          ctx.fillStyle = '#1E293B';
+          ctx.fillRect(235, y - 12, 200, 12);
+          ctx.fillStyle = items[i][2];
+          ctx.fillRect(235, y - 12, Math.min(200, items[i][1] * 2), 12);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = '900 14px monospace';
+          ctx.fillText(String(items[i][1]), 450, y);
+        }
+
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.12)';
+        ctx.fillRect(36, 444, 468, 120);
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.5)';
+        ctx.strokeRect(36, 444, 468, 120);
+
+        ctx.fillStyle = '#38BDF8';
+        ctx.font = '800 14px Inter, sans-serif';
+        ctx.fillText('GUILDE ACTIVE : ' + gName.toUpperCase(), 56, 480);
+
+        ctx.fillStyle = '#FBBF24';
+        ctx.font = '900 24px monospace';
+        ctx.fillText('CODE INVITATION : ' + code, 56, 520);
+
+        ctx.fillStyle = '#94A3B8';
+        ctx.font = '600 13px Inter, sans-serif';
+        ctx.fillText('Forge ton ALTR sur : ironpulse-pwa.vercel.app', 56, 548);
+
+        ctx.fillStyle = '#64748B';
+        ctx.font = '700 12px Inter, sans-serif';
+        ctx.fillText('ALTHER FIT • TON ALTER EGO MUSCULATION & AURA 3D', 36, 635);
+      };
+
+      app.downloadVictoryCard = function() {
+        var cv = document.getElementById('ipz-victory-canvas');
+        if (!cv) return;
+        var a = document.createElement('a');
+        a.download = 'alther-fit-carte-altr.png';
+        a.href = cv.toDataURL('image/png');
+        a.click();
+      };
+
+      app.shareVictoryCardNative = function() {
+        var state = window.IronPulse.Storage.getState();
+        var name = ((state.profile && state.profile.name) ? state.profile.name : 'MEHDI').toUpperCase();
+        var code = 'ALTR-' + name.replace(/[^A-Z0-9]/g, '').slice(0, 5) + '-77';
+        var msg = '⚡ Carte d\'Éveil ALTR de ' + name + ' sur ALTHER FIT ! Rejoins ma Guilde avec le code ' + code + ' sur https://ironpulse-pwa.vercel.app';
+        if (navigator.share) {
+          navigator.share({ title: 'ALTHER FIT — Carte d\'Éveil ALTR', text: msg, url: 'https://ironpulse-pwa.vercel.app' }).catch(function(){});
+        } else if (app.shareHunterChallenge) {
+          app.shareHunterChallenge(msg);
+        }
+      };
+      var origNav = app.navigate;
+      app.navigate = function(tabId) {
+        window.__current_tab = tabId;
+        origNav.apply(this, arguments);
+        setTimeout(function() {
+          if (window.__current_tab === 'home') renderAirFocusHomeScreen();
+          else { syncFiveTabDock(); sanitizeDOMAndAssets(); }
+        }, 25);
+      };
+
+      if (app.openRpgSubTab) {
+        var origRpg = app.openRpgSubTab;
+        app.openRpgSubTab = function(sub) {
+          window.__current_tab = 'rpg';
+          origRpg.apply(this, arguments);
+          setTimeout(function(){ syncFiveTabDock(); sanitizeDOMAndAssets(); }, 25);
+        };
+      }
+
+      if (app.startProgramSession) {
+        var origStart = app.startProgramSession;
+        app.startProgramSession = function(pId, sId) {
+          window.__current_tab = 'workout';
+          origStart.apply(this, arguments);
+          setTimeout(function(){ syncFiveTabDock(); sanitizeDOMAndAssets(); }, 25);
+        };
+      }
+
+      if (app.startFreeWorkout) {
+        var origFree = app.startFreeWorkout;
+        app.startFreeWorkout = function() {
+          window.__current_tab = 'workout';
+          origFree.apply(this, arguments);
+          setTimeout(function(){ syncFiveTabDock(); sanitizeDOMAndAssets(); }, 25);
+        };
+      }
+
+      if (app.refresh) {
+        var origRefresh = app.refresh;
+        app.refresh = function() {
+          origRefresh.apply(this, arguments);
+          setTimeout(function() {
+            if (window.__current_tab === 'home') renderAirFocusHomeScreen();
+            else { syncFiveTabDock(); sanitizeDOMAndAssets(); }
+          }, 25);
+        };
+      }
+
+      var tourTabs = ['home', 'rpg', 'workout', 'programs', 'exercises', 'progress'];
+      window.__tour_step = 0;
+
+      if (app.startGuidedTour) {
+        var origStartTour = app.startGuidedTour;
+        app.startGuidedTour = function() {
+          window.__tour_step = 0;
+          window.__current_tab = 'home';
+          origStartTour.apply(this, arguments);
+          setTimeout(function() {
+            renderAirFocusHomeScreen();
+          }, 25);
+        };
+      }
+
+      if (app.nextGuidedTourStep) {
+        var origNextTour = app.nextGuidedTourStep;
+        app.nextGuidedTourStep = function() {
+          window.__tour_step = (window.__tour_step || 0) + 1;
+          if (window.__tour_step < tourTabs.length) {
+            window.__current_tab = tourTabs[window.__tour_step];
           }
-        }, 12000);
+          origNextTour.apply(this, arguments);
+          setTimeout(function() {
+            if (window.__current_tab === 'home') renderAirFocusHomeScreen();
+            else { syncFiveTabDock(); sanitizeDOMAndAssets(); }
+          }, 25);
+        };
       }
 
-      if (document.readyState === 'loading') {
-        window.addEventListener('DOMContentLoaded', startIronPulse);
-      } else {
-        startIronPulse();
+      if (app.prevGuidedTourStep) {
+        var origPrevTour = app.prevGuidedTourStep;
+        app.prevGuidedTourStep = function() {
+          window.__tour_step = Math.max(0, (window.__tour_step || 0) - 1);
+          window.__current_tab = tourTabs[window.__tour_step];
+          origPrevTour.apply(this, arguments);
+          setTimeout(function() {
+            if (window.__current_tab === 'home') renderAirFocusHomeScreen();
+            else { syncFiveTabDock(); sanitizeDOMAndAssets(); }
+          }, 25);
+        };
       }
-    </script>
-  </body>
+
+      if (app.closeGuidedTour) {
+        var origCloseTour = app.closeGuidedTour;
+        app.closeGuidedTour = function() {
+          origCloseTour.apply(this, arguments);
+          setTimeout(function() {
+            if (window.__current_tab === 'home') renderAirFocusHomeScreen();
+            else { syncFiveTabDock(); sanitizeDOMAndAssets(); }
+          }, 25);
+        };
+      }
+
+      ['openOnboardingWizard', 'setOnboardingStep', 'setTutorialSlide', 'finishOnboarding', 'loadMehdiProfile'].forEach(function(fnName) {
+        if (app[fnName]) {
+          var origFn = app[fnName];
+          app[fnName] = function() {
+            if (fnName === 'finishOnboarding') {
+              window.__tour_step = 0;
+              window.__current_tab = 'home';
+            }
+            origFn.apply(this, arguments);
+            setTimeout(function() {
+              if (window.__current_tab === 'home') renderAirFocusHomeScreen();
+              else { syncFiveTabDock(); sanitizeDOMAndAssets(); }
+            }, 30);
+          };
+        }
+      });
+
+      renderAirFocusHomeScreen();
+      return true;
+    }
+
+    function dismissSplash() {
+      var s = document.getElementById('ironpulse-splash');
+      if (s) { s.style.opacity = '0'; setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); }, 360); }
+    }
+    function tryBoot() {
+      if (window.__ironpulse_ready) return true;
+      if (window.IronPulse && window.IronPulse.App && window.IronPulse.Storage) {
+        try {
+          if ('caches' in window) {
+            caches.keys().then(function(keys) {
+              keys.forEach(function(k) {
+                if (k !== 'alther-fit-v5.1-altr-clean') caches.delete(k);
+              });
+            }).catch(function(){});
+          }
+          var st = window.IronPulse.Storage.getState();
+          if (st) {
+            if (st.profile) st.profile.onboardingCompleted = true;
+            if (st.rpg && st.rpg.appearance) st.rpg.appearance.visualMode = '2d';
+            window.IronPulse.Storage.saveState();
+          }
+        } catch(e){}
+        window.__ironpulse_ready = true;
+        try { window.IronPulse.App.init(); } catch(e){ console.error(e); }
+        setupAirFocusHooks();
+        setTimeout(renderAirFocusHomeScreen, 30);
+        dismissSplash();
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+          navigator.serviceWorker.register('./sw.js?v=5.1').then(function(reg) {
+            if (reg && reg.update) reg.update();
+          }).catch(function(){});
+        }
+        return true;
+      }
+      return false;
+    }
+    function startApp() {
+      if (tryBoot()) return;
+      var itv = setInterval(function(){ if (tryBoot()) clearInterval(itv); }, 50);
+      window.addEventListener('load', function(){ if (tryBoot()) clearInterval(itv); });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startApp);
+    else startApp();
+  </script>
+</body>
 </html>

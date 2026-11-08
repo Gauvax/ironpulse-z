@@ -1,20 +1,22 @@
-// IronPulse Z — Service Worker PWA (Cache Hors-Ligne & Rechargement Dynamique)
-const CACHE_NAME = 'ironpulse-z-v3.7';
+// ALTHER FIT — Service Worker PWA (Cache Hors-Ligne & Rechargement Dynamique v5.2)
+const CACHE_NAME = 'alther-fit-v5.2-image2-ergo';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './src/styles.css',
-  './src/data.js',
-  './src/storage.js',
-  './src/rpg.js',
-  './src/hero3d.js',
-  './src/audio.js',
-  './src/hardware.js',
-  './src/charts.js',
-  './src/aiCoach.js',
-  './src/app.js',
-  './src/icon.svg',
+  './src/styles.css?v=5.0',
+  './src/data.js?v=4.1',
+  './src/storage.js?v=4.1',
+  './src/rpg.js?v=4.1',
+  './src/hero3d.js?v=4.1',
+  './src/audio.js?v=4.1',
+  './src/hardware.js?v=4.1',
+  './src/charts.js?v=4.1',
+  './src/aiCoach.js?v=4.1',
+  './src/app.js?v=4.1',
+  './src/icon.svg?v=5.1',
+  './src/assets/hero-anime-original.svg',
+  './src/assets/arena-bg.jpg',
   './avatar_gallery.html',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js'
@@ -50,7 +52,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Stratégie Network-First : charge toujours le code le plus frais du serveur ou du disque
+// Stratégie Network-First : charge toujours le code le plus frais du serveur
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || event.request.url.includes('generativelanguage.googleapis.com')) {
     return;
